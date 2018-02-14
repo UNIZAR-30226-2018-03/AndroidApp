@@ -1,4 +1,4 @@
-package com.spreadyourmusic
+package com.spreadyourmusic.spreadyourmusic
 
 import org.junit.Test
 
