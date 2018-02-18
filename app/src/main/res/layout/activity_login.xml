@@ -2,26 +2,12 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fondo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.spreadyourmusic.spreadyourmusic.activities.LoginActivity"
     android:background="@drawable/login_bg"
-    android:id="@+id/fondo"
-    android:onClick="test"
-    >
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="72dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/btn_google_light_normal" />
+    android:onClick="randomBackgroundColorGenerator"
+    tools:context="com.spreadyourmusic.spreadyourmusic.activities.LoginActivity">
 
     <EditText
         android:id="@+id/user"
@@ -31,13 +17,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="184dp"
         android:background="@drawable/trans_rounded_white"
-        android:drawableLeft="@drawable/ic_person_black_24dp"
         android:drawablePadding="5dp"
         android:drawableStart="@drawable/ic_person_black_24dp"
         android:ems="10"
-        android:hint="User"
+        android:hint="@string/user"
         android:inputType="textPersonName"
-        android:paddingLeft="10dp"
+        android:paddingEnd="10dp"
         android:paddingStart="10dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,14 +37,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/trans_rounded_white"
-        android:drawableLeft="@drawable/ic_lock_black_24dp"
         android:drawablePadding="5dp"
         android:drawableStart="@drawable/ic_lock_black_24dp"
-
         android:ems="10"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword"
-        android:paddingLeft="10dp"
+        android:paddingEnd="10dp"
         android:paddingStart="10dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,8 +58,8 @@
         android:layout_marginTop="44dp"
 
         android:background="@drawable/rounded_white"
-        android:onClick="abrirHome"
-        android:text="Login"
+        android:onClick="loginAction"
+        android:text="@string/login"
         app:layout_constraintEnd_toStartOf="@+id/signup"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
@@ -88,26 +71,24 @@
         android:layout_marginEnd="40dp"
         android:layout_marginTop="44dp"
         android:background="@android:color/transparent"
-        android:text="Signup"
+        android:onClick="signupAction"
+        android:text="@string/signup"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="OR CONNECT WITH"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        android:text="@string/or_connect_with"
+        app:layout_constraintBottom_toTopOf="@+id/loginGoogle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -119,5 +100,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/loginGoogle"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="loginGoogleAction"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/btn_google_light_normal" />
 
 </android.support.constraint.ConstraintLayout>

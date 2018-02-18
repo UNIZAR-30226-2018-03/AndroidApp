@@ -5,6 +5,11 @@
     <string name="title_activity_artist">ArtistActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="or_connect_with">OR CONNECT WITH</string>
+    <string name="signup">Signup</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="user">User</string>
 
     <string name="action_settings">Settings</string>
 </resources>

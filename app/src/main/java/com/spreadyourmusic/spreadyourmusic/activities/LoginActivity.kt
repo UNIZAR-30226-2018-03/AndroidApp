@@ -17,7 +17,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
     }
 
-    fun test(v: View){
+    fun randomBackgroundColorGenerator(v: View){
         val randomGenerator = Random()
         val red:Int = randomGenerator.nextInt(180)
         val green:Int = randomGenerator.nextInt(180)
@@ -41,8 +41,16 @@ class LoginActivity : AppCompatActivity() {
         findViewById<View>(R.id.fondo).background = mDrawable
     }
 
-    fun abrirHome(v: View){
+    fun loginAction(v: View){
         val int = Intent(applicationContext, HomeActivity::class.java)
         startActivity(int)
+    }
+
+    fun signupAction(v: View){
+
+    }
+
+    fun loginGoogleAction(v: View){
+
     }
 }
