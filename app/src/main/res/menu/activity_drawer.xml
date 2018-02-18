@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:icon="@android:drawable/presence_online"
+            android:title="Explorar" />
+
+        <item
+            android:icon="@android:drawable/presence_online"
+            android:title="Novedades" />
+        <item
+            android:icon="@android:drawable/presence_online"
+            android:title="Recomendaciones" />
+    </group>
+
+    <item android:title="Mi biblioteca">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@android:drawable/presence_online"
+                android:title="Playlists" />
+            <item
+                android:icon="@android:drawable/presence_online"
+                android:title="Artistas" />
+            <item
+                android:icon="@android:drawable/presence_online"
+                android:title="Canciones" />
+        </menu>
+    </item>
+
+</menu>
