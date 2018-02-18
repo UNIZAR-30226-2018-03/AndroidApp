@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="61dp"
-        android:layout_height="41dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="72dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/google" />
+        app:srcCompat="@drawable/btn_google_light_normal" />
 
     <EditText
         android:id="@+id/user"
