@@ -4,9 +4,12 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.support.v7.app.ActionBarDrawerToggle
 import android.view.View
 import android.widget.Button
 import com.spreadyourmusic.spreadyourmusic.R
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.app_bar_home.*
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -16,6 +19,11 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
+        setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle(
+                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
 /*
         mediaPlayer = MediaPlayer()
         controlButton = findViewById<View>(R.id.button) as Button
