@@ -50,7 +50,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     //https://github.com/hdodenhof/CircleImageView
-    //compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
 
     //https://www.uplabs.com/posts/android-circular-music-progressbar
     compile 'com.github.aliab:circular-music-progressbar:v1.3.0'
