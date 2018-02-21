@@ -10,6 +10,11 @@ import android.widget.Button
 import com.spreadyourmusic.spreadyourmusic.R
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
+import com.spreadyourmusic.spreadyourmusic.R.id.imageView
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import kotlinx.android.synthetic.main.item_player_bg.*
+import java.net.URL
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -24,6 +29,16 @@ class PlayerActivity : AppCompatActivity() {
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+       /* Thread{
+            val url = URL("http://image10.bizrate-images.com/resize?sq=60&uid=2216744464")
+            val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+
+            runOnUiThread ({
+                player_background.setImageBitmap(bmp)
+            })
+        }.start()*/
+
+
 /*
         mediaPlayer = MediaPlayer()
         controlButton = findViewById<View>(R.id.button) as Button

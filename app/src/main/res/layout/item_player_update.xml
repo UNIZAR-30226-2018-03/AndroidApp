@@ -8,7 +8,7 @@
     >
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/randomReproduction"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginBottom="8dp"
@@ -21,7 +21,7 @@
         app:srcCompat="@drawable/ic_shuffle_white_24dp" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/previousSong"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="48dp"
@@ -34,7 +34,7 @@
         app:srcCompat="@drawable/ic_skip_previous_white_24dp" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/playPauseSong"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginEnd="8dp"
@@ -43,13 +43,13 @@
         android:adjustViewBounds="true"
         android:background="@drawable/circle_play"
         android:scaleType="fitCenter"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton5"
-        app:layout_constraintStart_toEndOf="@+id/imageButton3"
+        app:layout_constraintEnd_toStartOf="@+id/nextSong"
+        app:layout_constraintStart_toEndOf="@+id/previousSong"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
 
     <ImageButton
-        android:id="@+id/imageButton5"
+        android:id="@+id/nextSong"
         android:layout_width="40dp"
 
         android:layout_height="40dp"
