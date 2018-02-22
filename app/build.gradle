@@ -54,4 +54,7 @@ dependencies {
 
     //https://www.uplabs.com/posts/android-circular-music-progressbar
     compile 'com.github.aliab:circular-music-progressbar:v1.3.0'
+
+    //RecyclerView
+    compile 'com.android.support:recyclerview-v7:27.0.2'
 }
