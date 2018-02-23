@@ -44,7 +44,17 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:design:27.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    //https://github.com/hdodenhof/CircleImageView
+    compile 'de.hdodenhof:circleimageview:2.2.0'
+
+    //https://www.uplabs.com/posts/android-circular-music-progressbar
+    compile 'com.github.aliab:circular-music-progressbar:v1.3.0'
+
+    //RecyclerView
+    compile 'com.android.support:recyclerview-v7:27.0.2'
 }
