@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/darker_gray">
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="270dp"
+        android:layout_height="21dp"
+        tools:layout_editor_absoluteX="54dp"
+        tools:layout_editor_absoluteY="15dp" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5:15"
+        tools:layout_editor_absoluteX="340dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0:00"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageButton
+        android:id="@+id/randomReproduction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_shuffle_white_24dp"
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="53dp" />
+
+    <ImageButton
+        android:id="@+id/previousSong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/randomReproduction"
+        app:srcCompat="@drawable/ic_skip_previous_white_24dp"
+        tools:layout_editor_absoluteY="53dp" />
+
+    <ImageButton
+        android:id="@+id/playPauseSong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/previousSong"
+        app:srcCompat="@drawable/ic_play_arrow_white_24dp"
+        tools:layout_editor_absoluteY="53dp" />
+
+    <ImageButton
+        android:id="@+id/nextSong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/playPauseSong"
+        app:srcCompat="@drawable/ic_skip_next_white_24dp"
+        tools:layout_editor_absoluteY="53dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/imageButton7"
+        app:srcCompat="@drawable/ic_get_app_white_24dp"
+        tools:layout_editor_absoluteY="53dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/nextSong"
+        app:srcCompat="@drawable/ic_star_border_white_24dp"
+        tools:layout_editor_absoluteY="53dp" />
+</android.support.constraint.ConstraintLayout>
