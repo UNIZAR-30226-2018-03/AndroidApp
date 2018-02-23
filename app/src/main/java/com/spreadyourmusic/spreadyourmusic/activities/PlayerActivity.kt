@@ -5,16 +5,11 @@ import android.os.Bundle
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.support.v7.app.ActionBarDrawerToggle
-import android.view.View
-import android.widget.Button
+
 import com.spreadyourmusic.spreadyourmusic.R
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
-import com.spreadyourmusic.spreadyourmusic.R.id.imageView
-import android.graphics.BitmapFactory
-import android.graphics.Bitmap
-import kotlinx.android.synthetic.main.item_player_bg.*
-import java.net.URL
+
 
 
 class PlayerActivity : AppCompatActivity() {
