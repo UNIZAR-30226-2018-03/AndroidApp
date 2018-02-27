@@ -10,7 +10,7 @@
     tools:context="com.spreadyourmusic.spreadyourmusic.activities.LoginActivity">
 
     <EditText
-        android:id="@+id/user"
+        android:id="@+id/userEditText"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/passwordEditText"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
@@ -47,10 +47,10 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user" />
+        app:layout_constraintTop_toBottomOf="@+id/userEditText" />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/loginButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -60,12 +60,12 @@
         android:background="@drawable/rounded_white"
         android:onClick="loginAction"
         android:text="@string/login"
-        app:layout_constraintEnd_toStartOf="@+id/signup"
+        app:layout_constraintEnd_toStartOf="@+id/signupButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <Button
-        android:id="@+id/signup"
+        android:id="@+id/signupButton"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
@@ -75,7 +75,7 @@
         android:text="@string/signup"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="@string/or_connect_with"
-        app:layout_constraintBottom_toTopOf="@+id/loginGoogle"
+        app:layout_constraintBottom_toTopOf="@+id/loginGoogleButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -102,7 +102,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/loginGoogle"
+        android:id="@+id/loginGoogleButton"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginBottom="72dp"
