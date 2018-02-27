@@ -20,4 +20,17 @@
 
     <string name="follow">Follow</string>
 
+    <!-- Navigation drawer-->
+    <string name="browse">Explorar</string>
+    <string name="my_library">Mi biblioteca</string>
+    <string name="playlist">Playlists</string>
+    <string name="artist">Artistas</string>
+    <string name="songs">Canciones</string>
+    <string name="home">Home</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
+
 </resources>
