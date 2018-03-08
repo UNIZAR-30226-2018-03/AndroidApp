@@ -6,28 +6,44 @@
     <group android:checkableBehavior="single">
         <item
             android:icon="@android:drawable/presence_online"
-            android:title="Explorar" />
+            android:title="@string/home"
+            android:id="@+id/home"
+            />
+        <item
+            android:icon="@android:drawable/presence_online"
+            android:title="@string/browse"
+            android:id="@+id/browse"
+            />
 
         <item
             android:icon="@android:drawable/presence_online"
-            android:title="Novedades" />
+            android:title="@string/news"
+            android:id="@+id/news"
+            />
         <item
             android:icon="@android:drawable/presence_online"
-            android:title="Recomendaciones" />
+            android:title="@string/recommendations"
+            android:id="@+id/recommendations"
+            />
     </group>
 
-    <item android:title="Mi biblioteca">
+    <item android:title="@string/my_library">
         <menu>
             <item
-                android:id="@+id/nav_share"
                 android:icon="@android:drawable/presence_online"
-                android:title="Playlists" />
+                android:title="@string/playlist"
+                android:id="@+id/playlist"
+                />
             <item
                 android:icon="@android:drawable/presence_online"
-                android:title="Artistas" />
+                android:title="@string/artist"
+                android:id="@+id/artist"
+                />
             <item
                 android:icon="@android:drawable/presence_online"
-                android:title="Canciones" />
+                android:title="@string/songs"
+                android:id="@+id/songs"
+                />
         </menu>
     </item>
 
