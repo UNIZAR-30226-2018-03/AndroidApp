@@ -5,5 +5,4 @@ package com.spreadyourmusic.spreadyourmusic.session
  */
 
 object SessionSingleton {
-
 }

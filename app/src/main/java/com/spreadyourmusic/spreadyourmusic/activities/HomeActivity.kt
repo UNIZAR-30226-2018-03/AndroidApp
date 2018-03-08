@@ -41,16 +41,16 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         // Handle navigation view item clicks here.
-        val fragmento:Fragment? =  when(item.itemId){
+        val fragmento: Fragment? = when (item.itemId) {
             R.id.browse ->
-                    BrowseFragment.newInstance()
+                BrowseFragment.newInstance()
             R.id.home ->
                 HomeFragment.newInstance()
             else ->
-                    null
+                null
         }
 
-        if(fragmento!=null){
+        if (fragmento != null) {
             // Todo: Comprobar si el fragmento expandido no es el actual
             // Insert the fragment by replacing any existing fragment
             changeActualFragment(fragmento)
@@ -60,7 +60,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun changeActualFragment(fragmento: Fragment){
+    fun changeActualFragment(fragmento: Fragment) {
         val fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
                 .replace(R.id.contentForFragments, fragmento)

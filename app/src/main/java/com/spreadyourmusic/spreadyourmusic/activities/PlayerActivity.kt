@@ -5,33 +5,48 @@ import android.os.Bundle
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.support.v7.app.ActionBarDrawerToggle
+import android.view.TextureView
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.helpers.getCurrentSong
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
-
+import java.util.*
 
 
 class PlayerActivity : AppCompatActivity() {
-   // private lateinit var mediaPlayer:MediaPlayer
-   // private lateinit var controlButton:Button
+    // private lateinit var mediaPlayer:MediaPlayer
+    // private lateinit var controlButton:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-       /* Thread{
-            val url = URL("http://image10.bizrate-images.com/resize?sq=60&uid=2216744464")
-            val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+        val songCreator = findViewById<TextView>(R.id.songAuthor)
+        val songName = findViewById<TextView>(R.id.songName)
+        val playerBackGround = findViewById<ImageView>(R.id.player_background)
+        val albumArt = findViewById<info.abdolahi.CircularMusicProgressBar>(R.id.album_art)
 
-            runOnUiThread ({
-                player_background.setImageBitmap(bmp)
-            })
-        }.start()*/
+        val cancionActual = getCurrentSong(this)
+        songName.text = cancionActual.nombre
+        val creatorplusalbum = cancionActual.creador.nombre + " | " + cancionActual.album.nombre + " , " + Integer.toString(cancionActual.fecha.get(Calendar.YEAR))
+        songCreator.text = creatorplusalbum
+
+        playerBackGround.setImageBitmap(cancionActual.album.getCover())
+        albumArt.setImageBitmap(cancionActual.album.getCover())
+
+
+        /* Thread{
+             val url = URL("http://image10.bizrate-images.com/resize?sq=60&uid=2216744464")
+             val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+
+             runOnUiThread ({
+                 player_background.setImageBitmap(bmp)
+             })
+         }.start()*/
 
 
 /*
