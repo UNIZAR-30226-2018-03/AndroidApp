@@ -65,39 +65,21 @@ class PlayerActivity : AppCompatActivity() {
         playPauseImageButton.setOnClickListener {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.pause()
-                playPauseImageButton.setImageResource(R.drawable.ic_pause_white_24dp)
+                playPauseImageButton.setImageResource(R.drawable.ic_play_arrow_white_24dp)
             } else {
                 mediaPlayer.start()
-                playPauseImageButton.setImageResource(R.drawable.ic_play_arrow_white_24dp)
+                playPauseImageButton.setImageResource(R.drawable.ic_pause_white_24dp)
             }
         }
 
         nextSongImageButton.setOnClickListener {
-            val estadoAnterior = mediaPlayer.isPlaying
             changeToNextSong(this)
             prepareCurrentSong()
-
-            if (estadoAnterior) {
-                mediaPlayer.start()
-                playPauseImageButton.setImageResource(R.drawable.ic_play_arrow_white_24dp)
-            } else {
-                mediaPlayer.pause()
-                playPauseImageButton.setImageResource(R.drawable.ic_pause_white_24dp)
-            }
         }
 
         previousSongImageButton.setOnClickListener {
-            val estadoAnterior = mediaPlayer.isPlaying
             changeToPreviousSong(this)
             prepareCurrentSong()
-
-            if (estadoAnterior) {
-                mediaPlayer.start()
-                playPauseImageButton.setImageResource(R.drawable.ic_play_arrow_white_24dp)
-            } else {
-                mediaPlayer.pause()
-                playPauseImageButton.setImageResource(R.drawable.ic_pause_white_24dp)
-            }
         }
     }
 
@@ -109,14 +91,38 @@ class PlayerActivity : AppCompatActivity() {
 
         playerBackGroundImageView.setImageBitmap(cancionActual.album.getCover())
         albumArtCircularMusicProgressBar.setImageBitmap(cancionActual.album.getCover())
-/*
-        val url = "https://upload.wikimedia.org/wikipedia/commons/d/d5/Pop_Goes_the_Weasel.ogg"
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
+
+        val currentState = mediaPlayer.isPlaying
+
+        mediaPlayer.reset()
+
+        if(cancionActual.isDownloaded()){
+            // TODO: Hacer posible reproducir canciones descargadas
+            /*
+            // https://developer.android.com/guide/topics/media/mediaplayer.html
+            Uri myUri = ....; // initialize Uri here
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mediaPlayer.setDataSource(getApplicationContext(), myUri)
+            */
+        }else{
+            val url = cancionActual.getUrl()
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mediaPlayer.setDataSource(url)
+        }
+
+        playPauseImageButton.isEnabled = false
+
         mediaPlayer.setOnPreparedListener {
             playPauseImageButton.isEnabled = true
-        }*/
+            if(currentState){
+                mediaPlayer.start()
+                playPauseImageButton.setImageResource(R.drawable.ic_pause_white_24dp)
+            }else{
+                playPauseImageButton.setImageResource(R.drawable.ic_play_arrow_white_24dp)
+            }
+        }
+
+        mediaPlayer.prepareAsync()
     }
 
     override fun onDestroy() {

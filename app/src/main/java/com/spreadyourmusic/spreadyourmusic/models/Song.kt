@@ -10,4 +10,7 @@ class Song(public val id: Long, public val nombre: String, public val album: Alb
     fun isDownloaded() : Boolean{
         return false
     }
+    fun getUrl() : String{
+        return "https://upload.wikimedia.org/wikipedia/commons/d/d5/Pop_Goes_the_Weasel.ogg"
+    }
 }
