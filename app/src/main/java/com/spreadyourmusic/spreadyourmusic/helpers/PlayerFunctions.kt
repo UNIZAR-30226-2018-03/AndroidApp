@@ -29,3 +29,25 @@ fun getCurrentSongList(context: Context):List<Song>{
     devolver.add(cancion2)
     return devolver
 }
+
+fun changeToNextSong(context: Context){
+
+}
+
+fun changeToPreviousSong(context: Context){
+
+}
+
+fun setFavoriteCurrentSong(context: Context, estado: Boolean){
+
+}
+
+// Si es true descarga la cancion, sino la elimina
+fun downloadCurrentSong(context: Context, estado: Boolean){
+
+}
+
+// Si es true crea reproduccion aleatoria
+fun randomReproduction(context: Context, estado: Boolean){
+
+}
