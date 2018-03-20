@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.uamp.playback;
+package com.spreadyourmusic.spreadyourmusic.media.playback;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,10 +26,9 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
-import com.example.android.uamp.MusicService;
-import com.example.android.uamp.model.MusicProviderSource;
-import com.example.android.uamp.utils.LogHelper;
-import com.example.android.uamp.utils.MediaIDHelper;
+import com.spreadyourmusic.spreadyourmusic.services.MusicService;
+import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;

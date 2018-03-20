@@ -3,17 +3,12 @@ package com.spreadyourmusic.spreadyourmusic.activities
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
 
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
-import android.widget.Toast
-import com.example.android.uamp.playback.QueueManager
-import com.example.android.uamp.utils.LogHelper
+import com.spreadyourmusic.spreadyourmusic.media.playback.QueueManager
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.fragment.BrowseFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment

@@ -13,10 +13,10 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.example.android.uamp.MusicService;
+import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 import com.spreadyourmusic.spreadyourmusic.media.MediaBrowserProvider;
 import com.spreadyourmusic.spreadyourmusic.fragment.PlayerControlsFragment;
-import com.example.android.uamp.utils.NetworkHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.NetworkHelper;
 import com.spreadyourmusic.spreadyourmusic.R;
 
 /**

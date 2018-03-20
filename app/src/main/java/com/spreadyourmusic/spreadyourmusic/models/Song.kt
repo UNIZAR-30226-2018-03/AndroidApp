@@ -2,8 +2,8 @@ package com.spreadyourmusic.spreadyourmusic.models
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
-import com.example.android.uamp.model.MusicProviderSource
-import com.example.android.uamp.utils.MediaIDHelper
+import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource
+import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
 import java.util.*
 
 /**

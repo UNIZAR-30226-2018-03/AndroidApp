@@ -1,4 +1,4 @@
-package com.spreadyourmusic.spreadyourmusic.helpers
+package com.spreadyourmusic.spreadyourmusic.controller
 
 /**
  * Created by Abel

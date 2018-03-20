@@ -1,4 +1,4 @@
-package com.example.android.uamp.playback;
+package com.spreadyourmusic.spreadyourmusic.media.playback;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.os.SystemClock;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.example.android.uamp.utils.LogHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 
 /**
  * Manage the interactions among the container service, the queue manager and the actual playback.

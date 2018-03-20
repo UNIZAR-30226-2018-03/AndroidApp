@@ -1,4 +1,4 @@
-package com.spreadyourmusic.spreadyourmusic.helpers
+package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.content.Context
 import com.spreadyourmusic.spreadyourmusic.models.Album

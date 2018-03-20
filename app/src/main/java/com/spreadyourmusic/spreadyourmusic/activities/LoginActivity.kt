@@ -7,9 +7,9 @@ import android.view.View
 import android.graphics.drawable.GradientDrawable
 import android.widget.Toast
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.helpers.doGoogleLogin
-import com.spreadyourmusic.spreadyourmusic.helpers.doLogin
-import com.spreadyourmusic.spreadyourmusic.helpers.isLogin
+import com.spreadyourmusic.spreadyourmusic.controller.doGoogleLogin
+import com.spreadyourmusic.spreadyourmusic.controller.doLogin
+import com.spreadyourmusic.spreadyourmusic.controller.isLogin
 import kotlinx.android.synthetic.main.activity_login.*
 
 import java.util.*

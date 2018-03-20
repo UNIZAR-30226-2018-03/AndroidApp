@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.uamp.playback;
+package com.spreadyourmusic.spreadyourmusic.media.playback;
 
-import com.example.android.uamp.MusicService;
+import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 
 import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
 

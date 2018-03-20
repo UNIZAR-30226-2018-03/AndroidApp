@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.uamp;
+package com.spreadyourmusic.spreadyourmusic.media;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -39,10 +39,11 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.example.android.uamp.utils.LogHelper;
-import com.example.android.uamp.utils.ResourceHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.ResourceHelper;
 import com.spreadyourmusic.spreadyourmusic.R;
 import com.spreadyourmusic.spreadyourmusic.activities.HomeActivity;
+import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 
 /**
  * Keeps track of a notification and updates it automatically for a given

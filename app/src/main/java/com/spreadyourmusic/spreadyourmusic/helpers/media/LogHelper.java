@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.uamp.utils;
+package com.spreadyourmusic.spreadyourmusic.helpers.media;
 
 import android.util.Log;
 

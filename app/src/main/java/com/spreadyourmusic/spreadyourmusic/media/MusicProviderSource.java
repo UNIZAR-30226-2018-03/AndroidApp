@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.uamp.model;
+package com.spreadyourmusic.spreadyourmusic.media;
 
 import android.support.v4.media.MediaMetadataCompat;
 

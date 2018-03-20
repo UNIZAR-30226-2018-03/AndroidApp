@@ -6,8 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.media.AudioManager
-import android.media.MediaPlayer
 import android.os.Handler
 import android.os.RemoteException
 import android.os.SystemClock
@@ -25,8 +23,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 
 import android.widget.TextView
-import com.example.android.uamp.AlbumArtCache
-import com.example.android.uamp.MusicService
+import com.spreadyourmusic.spreadyourmusic.media.AlbumArtCache
+import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
 import com.spreadyourmusic.spreadyourmusic.R

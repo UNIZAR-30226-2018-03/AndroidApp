@@ -1,13 +1,13 @@
-package com.example.android.uamp.playback;
+package com.spreadyourmusic.spreadyourmusic.media.playback;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
-import com.example.android.uamp.AlbumArtCache;
-import com.example.android.uamp.utils.MediaIDHelper;
-import com.example.android.uamp.utils.QueueHelper;
+import com.spreadyourmusic.spreadyourmusic.media.AlbumArtCache;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.QueueHelper;
 import com.spreadyourmusic.spreadyourmusic.models.Song;
 
 import java.util.ArrayList;

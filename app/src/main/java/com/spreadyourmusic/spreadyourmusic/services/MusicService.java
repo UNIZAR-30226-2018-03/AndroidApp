@@ -1,4 +1,4 @@
-package com.example.android.uamp;
+package com.spreadyourmusic.spreadyourmusic.services;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,11 +16,12 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 
-import com.example.android.uamp.playback.LocalPlayback;
-import com.example.android.uamp.playback.PlaybackManager;
-import com.example.android.uamp.playback.QueueManager;
+import com.spreadyourmusic.spreadyourmusic.media.MediaNotificationManager;
+import com.spreadyourmusic.spreadyourmusic.media.playback.LocalPlayback;
+import com.spreadyourmusic.spreadyourmusic.media.playback.PlaybackManager;
+import com.spreadyourmusic.spreadyourmusic.media.playback.QueueManager;
 
-import com.example.android.uamp.utils.LogHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 import com.spreadyourmusic.spreadyourmusic.activities.HomeActivity;
 
 
@@ -28,8 +29,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.android.uamp.utils.MediaIDHelper.MEDIA_ID_EMPTY_ROOT;
-import static com.example.android.uamp.utils.MediaIDHelper.MEDIA_ID_ROOT;
+import static com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper.MEDIA_ID_ROOT;
 
 /**
  * This class provides a MediaBrowser through a service. It exposes the media library to a browsing

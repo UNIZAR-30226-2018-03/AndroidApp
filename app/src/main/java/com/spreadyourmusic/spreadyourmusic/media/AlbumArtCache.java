@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.android.uamp;
+package com.spreadyourmusic.spreadyourmusic.media;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.LruCache;
 
-import com.example.android.uamp.utils.BitmapHelper;
-import com.example.android.uamp.utils.LogHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.BitmapHelper;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 
 import java.io.IOException;
 

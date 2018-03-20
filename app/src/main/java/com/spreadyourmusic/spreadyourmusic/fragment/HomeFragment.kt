@@ -1,12 +1,9 @@
 package com.spreadyourmusic.spreadyourmusic.fragment
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,12 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.activities.PlayerActivity
-import com.spreadyourmusic.spreadyourmusic.activities.PlaylistActivity
 import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerViewAdapter
-import com.spreadyourmusic.spreadyourmusic.helpers.obtainNewsSongs
-import com.spreadyourmusic.spreadyourmusic.helpers.obtainPopularSongs
-import com.spreadyourmusic.spreadyourmusic.helpers.obtainRecommendations
+import com.spreadyourmusic.spreadyourmusic.controller.obtainNewsSongs
+import com.spreadyourmusic.spreadyourmusic.controller.obtainPopularSongs
+import com.spreadyourmusic.spreadyourmusic.controller.obtainRecommendations
 import com.spreadyourmusic.spreadyourmusic.listeners.MediaHomeListener
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
