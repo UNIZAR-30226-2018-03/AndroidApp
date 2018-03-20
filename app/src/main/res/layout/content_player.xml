@@ -176,6 +176,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="0.5"
         app:srcCompat="@drawable/ic_shuffle_white_24dp" />
 
     <ImageButton

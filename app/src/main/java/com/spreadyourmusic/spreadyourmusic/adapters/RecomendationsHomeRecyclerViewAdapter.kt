@@ -17,7 +17,6 @@ import com.spreadyourmusic.spreadyourmusic.models.User
  * On 8/03/18.
  */
 class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecyclerViewViewHolder>() {
-
     private val VIEW_TYPE_SONG = 0
     private val VIEW_TYPE_USER = 1
     private val VIEW_TYPE_PLAYLIST = 2
@@ -33,8 +32,8 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
         notifyDataSetChanged()
     }
 
-    override fun onBindViewHolder(holder: GeneralRecyclerViewViewHolder?, position: Int) {
-        holder!!.bind(datos[position])
+   override fun onBindViewHolder(holder: GeneralRecyclerViewViewHolder, position: Int) {
+        holder.bind(datos[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,

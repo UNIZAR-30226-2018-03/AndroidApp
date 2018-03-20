@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.spreadyourmusic.spreadyourmusic">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -16,7 +21,6 @@
             android:label="Reproductor"
             android:theme="@style/AppTheme.NoActionBar"
             >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,6 +55,15 @@
             android:name=".activities.PlaylistActivity"
             android:label="Playlist 1"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <service android:name="com.example.android.uamp.MusicService"
+            android:exported="true"
+            tools:ignore="ExportedService"
+            >
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
 
     </application>
 

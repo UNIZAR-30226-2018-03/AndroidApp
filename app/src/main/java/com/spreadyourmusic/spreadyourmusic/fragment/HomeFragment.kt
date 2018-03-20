@@ -1,5 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.fragment
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,9 +20,14 @@ import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerVi
 import com.spreadyourmusic.spreadyourmusic.helpers.obtainNewsSongs
 import com.spreadyourmusic.spreadyourmusic.helpers.obtainPopularSongs
 import com.spreadyourmusic.spreadyourmusic.helpers.obtainRecommendations
+import com.spreadyourmusic.spreadyourmusic.listeners.MediaHomeListener
+import com.spreadyourmusic.spreadyourmusic.models.Playlist
+import com.spreadyourmusic.spreadyourmusic.models.Song
+import com.spreadyourmusic.spreadyourmusic.models.User
 
 class HomeFragment : Fragment() {
 
+    private var mMediaHomeListener: MediaHomeListener? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -54,28 +61,45 @@ class HomeFragment : Fragment() {
         listaPopulares.itemAnimator = DefaultItemAnimator()
 
         recomendacionesRecyclerViewAdapter.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
-            startActivity(intent)
+            when(it){
+                is Song -> mMediaHomeListener!!.onSongSelected(it)
+                is User -> mMediaHomeListener!!.onUserSelected(it)
+                is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
+            }
         }
 
         recomendacionesRecyclerViewAdapter.changeData(obtainRecommendations(activity!!.applicationContext))
 
         popularesRecyclerViewAdapter.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
-            startActivity(intent)
+            when(it){
+                is Song -> mMediaHomeListener!!.onSongSelected(it)
+                is User -> mMediaHomeListener!!.onUserSelected(it)
+                is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
+            }
         }
 
         popularesRecyclerViewAdapter.changeData(obtainPopularSongs(activity!!.applicationContext))
 
         novedadesRecyclerViewAdapter.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
-            startActivity(intent)
+            when(it){
+                is Song -> mMediaHomeListener!!.onSongSelected(it)
+                is User -> mMediaHomeListener!!.onUserSelected(it)
+                is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
+            }
         }
 
         novedadesRecyclerViewAdapter.changeData(obtainNewsSongs(activity!!.applicationContext))
 
         // Inflate the layout for this fragment
         return inflaterD
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // If used on an activity that doesn't implement MediaFragmentListener, it
+        // will throw an exception as expected:
+        mMediaHomeListener = activity as MediaHomeListener
     }
 
     companion object {

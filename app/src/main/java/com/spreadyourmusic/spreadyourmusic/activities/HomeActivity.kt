@@ -3,18 +3,27 @@ package com.spreadyourmusic.spreadyourmusic.activities
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
+import com.example.android.uamp.utils.LogHelper
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.fragment.BrowseFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment
+import com.spreadyourmusic.spreadyourmusic.listeners.MediaHomeListener
+import com.spreadyourmusic.spreadyourmusic.models.Playlist
+import com.spreadyourmusic.spreadyourmusic.models.Song
+import com.spreadyourmusic.spreadyourmusic.models.User
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, MediaHomeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,5 +74,21 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fragmentManager.beginTransaction()
                 .replace(R.id.contentForFragments, fragmento)
                 .commit()
+    }
+
+    override fun onSongSelected(song: Song?) {
+       // val intent = Intent(context, PlayerActivity::class.java)
+        //startActivity(intent)
+        //TODO: Abrir fullscreen
+        MediaControllerCompat.getMediaController(this).transportControls
+                .playFromMediaId(song!!.getMediaItem().getMediaId(), null)
+    }
+
+    override fun onPlaylistSelected(playlist: Playlist?) {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onUserSelected(user: User?) {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
