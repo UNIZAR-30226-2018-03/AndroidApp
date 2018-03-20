@@ -1,16 +1,12 @@
 package com.example.android.uamp.playback;
 
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.example.android.uamp.model.MusicProvider;
 import com.example.android.uamp.utils.LogHelper;
-import com.example.android.uamp.utils.MediaIDHelper;
 
 /**
  * Manage the interactions among the container service, the queue manager and the actual playback.
@@ -20,8 +16,6 @@ public class PlaybackManager implements Playback.Callback {
     private static final String TAG = LogHelper.makeLogTag(PlaybackManager.class);
     // Action to thumbs up a media item
 
-
-    private MusicProvider mMusicProvider;
     private QueueManager mQueueManager;
     private Resources mResources;
     private Playback mPlayback;
@@ -29,9 +23,8 @@ public class PlaybackManager implements Playback.Callback {
     private MediaSessionCallback mMediaSessionCallback;
 
     public PlaybackManager(PlaybackServiceCallback serviceCallback, Resources resources,
-                           MusicProvider musicProvider, QueueManager queueManager,
+                          QueueManager queueManager,
                            Playback playback) {
-        mMusicProvider = musicProvider;
         mServiceCallback = serviceCallback;
         mResources = resources;
         mQueueManager = queueManager;
@@ -172,7 +165,7 @@ public class PlaybackManager implements Playback.Callback {
     @Override
     public void setCurrentMediaId(String mediaId) {
         LogHelper.d(TAG, "setCurrentMediaId", mediaId);
-        mQueueManager.setQueueFromMusic(mediaId);
+        //mQueueManager.setQueueFromMusic(mediaId);
     }
 
 
@@ -199,7 +192,7 @@ public class PlaybackManager implements Playback.Callback {
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             LogHelper.d(TAG, "playFromMediaId mediaId:", mediaId, "  extras=", extras);
-            mQueueManager.setQueueFromMusic(mediaId);
+           // mQueueManager.setQueueFromMusic(mediaId);
             handlePlayRequest();
         }
 

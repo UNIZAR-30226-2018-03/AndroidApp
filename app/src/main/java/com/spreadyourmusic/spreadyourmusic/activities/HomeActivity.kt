@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.android.uamp.playback.QueueManager
 import com.example.android.uamp.utils.LogHelper
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.fragment.BrowseFragment
@@ -80,7 +81,9 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
        // val intent = Intent(context, PlayerActivity::class.java)
         //startActivity(intent)
         //TODO: Abrir fullscreen
-        MediaControllerCompat.getMediaController(this).transportControls
+        val mediaController = MediaControllerCompat.getMediaController(this)
+        QueueManager.getInstance().setCurrentQueue("Prueba",song)
+        mediaController.transportControls
                 .playFromMediaId(song!!.getMediaItem().getMediaId(), null)
     }
 

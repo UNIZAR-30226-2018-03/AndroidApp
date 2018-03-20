@@ -39,9 +39,10 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.example.android.uamp.ui.MusicPlayerActivity;
 import com.example.android.uamp.utils.LogHelper;
 import com.example.android.uamp.utils.ResourceHelper;
+import com.spreadyourmusic.spreadyourmusic.R;
+import com.spreadyourmusic.spreadyourmusic.activities.HomeActivity;
 
 /**
  * Keeps track of a notification and updates it automatically for a given
@@ -207,12 +208,8 @@ public class MediaNotificationManager extends BroadcastReceiver {
     }
 
     private PendingIntent createContentIntent(MediaDescriptionCompat description) {
-        Intent openUI = new Intent(mService, MusicPlayerActivity.class);
+        Intent openUI = new Intent(mService, HomeActivity.class);
         openUI.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        openUI.putExtra(MusicPlayerActivity.EXTRA_START_FULLSCREEN, true);
-        if (description != null) {
-            openUI.putExtra(MusicPlayerActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION, description);
-        }
         return PendingIntent.getActivity(mService, REQUEST_CODE, openUI,
                 PendingIntent.FLAG_CANCEL_CURRENT);
     }
@@ -275,7 +272,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                 fetchArtUrl = artUrl;
                 // use a placeholder art while the remote art is being downloaded
                 art = BitmapFactory.decodeResource(mService.getResources(),
-                        R.drawable.ic_default_art);
+                        R.drawable.ic_music_note_white_24dp);
             }
         }
 
@@ -297,7 +294,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                         .setMediaSession(mSessionToken))
                 .setDeleteIntent(mStopIntent)
                 .setColor(mNotificationColor)
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_music_note_white_24dp)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(createContentIntent(description))
@@ -319,7 +316,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
         // If skip to previous action is enabled
         if ((mPlaybackState.getActions() & PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS) != 0) {
             notificationBuilder.addAction(R.drawable.ic_skip_previous_white_24dp,
-                    mService.getString(R.string.label_previous), mPreviousIntent);
+                    "Anterior", mPreviousIntent);
 
             // If there is a "skip to previous" button, the play/pause button will
             // be the second one. We need to keep track of it, because the MediaStyle notification
@@ -333,12 +330,12 @@ public class MediaNotificationManager extends BroadcastReceiver {
         final int icon;
         final PendingIntent intent;
         if (mPlaybackState.getState() == PlaybackStateCompat.STATE_PLAYING) {
-            label = mService.getString(R.string.label_pause);
-            icon = R.drawable.uamp_ic_pause_white_24dp;
+            label ="Pausa";
+            icon = R.drawable.ic_pause_white_24dp;
             intent = mPauseIntent;
         } else {
-            label = mService.getString(R.string.label_play);
-            icon = R.drawable.uamp_ic_play_arrow_white_24dp;
+            label = "Play";
+            icon = R.drawable.ic_play_arrow_white_24dp;
             intent = mPlayIntent;
         }
         notificationBuilder.addAction(new NotificationCompat.Action(icon, label, intent));
@@ -346,7 +343,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
         // If skip to next action is enabled
         if ((mPlaybackState.getActions() & PlaybackStateCompat.ACTION_SKIP_TO_NEXT) != 0) {
             notificationBuilder.addAction(R.drawable.ic_skip_next_white_24dp,
-                    mService.getString(R.string.label_next), mNextIntent);
+                    "Siguiente", mNextIntent);
         }
 
         return playPauseButtonPosition;

@@ -1,19 +1,3 @@
- /*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.android.uamp;
 
 import android.app.PendingIntent;
@@ -32,12 +16,12 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 
-import com.example.android.uamp.model.MusicProvider;
 import com.example.android.uamp.playback.LocalPlayback;
 import com.example.android.uamp.playback.PlaybackManager;
 import com.example.android.uamp.playback.QueueManager;
-import com.example.android.uamp.ui.MusicPlayerActivity;
+
 import com.example.android.uamp.utils.LogHelper;
+import com.spreadyourmusic.spreadyourmusic.activities.HomeActivity;
 
 
 import java.lang.ref.WeakReference;
@@ -123,14 +107,12 @@ public class MusicService extends MediaBrowserServiceCompat implements
     // Delay stopSelf by using a handler.
     private static final int STOP_DELAY = 30000;
 
-    private MusicProvider mMusicProvider;
     private PlaybackManager mPlaybackManager;
 
     private MediaSessionCompat mSession;
     private MediaNotificationManager mMediaNotificationManager;
     private Bundle mSessionExtras;
     private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
-    private PackageValidator mPackageValidator;
 
     /*
      * (non-Javadoc)
@@ -141,16 +123,13 @@ public class MusicService extends MediaBrowserServiceCompat implements
         super.onCreate();
         LogHelper.d(TAG, "onCreate");
 
-        mMusicProvider = new MusicProvider();
-
         // To make the app more responsive, fetch and cache catalog information now.
         // This can help improve the response time in the method
         // {@link #onLoadChildren(String, Result<List<MediaItem>>) onLoadChildren()}.
-        mMusicProvider.retrieveMediaAsync(null /* Callback */);
 
-        mPackageValidator = new PackageValidator(this);
+        QueueManager queueManager = QueueManager.getInstance();
 
-        QueueManager queueManager = new QueueManager(mMusicProvider, getResources(),
+        queueManager.setListener(
                 new QueueManager.MetadataUpdateListener() {
                     @Override
                     public void onMetadataChanged(MediaMetadataCompat metadata) {
@@ -160,7 +139,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
                     @Override
                     public void onMetadataRetrieveError() {
                         mPlaybackManager.updatePlaybackState(
-                                getString(R.string.error_no_metadata));
+                                "No hay metadata");
                     }
 
                     @Override
@@ -176,8 +155,8 @@ public class MusicService extends MediaBrowserServiceCompat implements
                     }
                 });
 
-        LocalPlayback playback = new LocalPlayback(this, mMusicProvider);
-        mPlaybackManager = new PlaybackManager(this, getResources(), mMusicProvider, queueManager,
+        LocalPlayback playback = new LocalPlayback(this, queueManager);
+        mPlaybackManager = new PlaybackManager(this, getResources(), queueManager,
                 playback);
 
         // Start a new MediaSession
@@ -188,7 +167,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         Context context = getApplicationContext();
-        Intent intent = new Intent(context, MusicPlayerActivity.class);
+        Intent intent = new Intent(context, HomeActivity.class);
         PendingIntent pi = PendingIntent.getActivity(context, 99 /*request code*/,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mSession.setSessionActivity(pi);
@@ -260,18 +239,6 @@ public class MusicService extends MediaBrowserServiceCompat implements
                                  Bundle rootHints) {
         LogHelper.d(TAG, "OnGetRoot: clientPackageName=" + clientPackageName,
                 "; clientUid=" + clientUid + " ; rootHints=", rootHints);
-        // To ensure you are not allowing any arbitrary app to browse your app's contents, you
-        // need to check the origin:
-        if (!mPackageValidator.isCallerAllowed(this, clientPackageName, clientUid)) {
-            // If the request comes from an untrusted package, return an empty browser root.
-            // If you return null, then the media browser will not be able to connect and
-            // no further calls will be made to other media browsing methods.
-            LogHelper.i(TAG, "OnGetRoot: Browsing NOT ALLOWED for unknown caller. "
-                    + "Returning empty browser root so all apps can use MediaController."
-                    + clientPackageName);
-            return new MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_EMPTY_ROOT, null);
-        }
-
 
         return new BrowserRoot(MEDIA_ID_ROOT, null);
     }
@@ -280,9 +247,9 @@ public class MusicService extends MediaBrowserServiceCompat implements
     public void onLoadChildren(@NonNull final String parentMediaId,
                                @NonNull final Result<List<MediaItem>> result) {
         LogHelper.d(TAG, "OnLoadChildren: parentMediaId=", parentMediaId);
-        if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
+       /* if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
             result.sendResult(new ArrayList<MediaItem>());
-        } else if (mMusicProvider.isInitialized()) {
+        } else if (mMusicProvider.isInitialized()) { // LLamar a queue manager is inicializated
             // if music library is ready, return immediately
             result.sendResult(mMusicProvider.getCurrentList());
         } else {
@@ -294,7 +261,9 @@ public class MusicService extends MediaBrowserServiceCompat implements
                     result.sendResult(mMusicProvider.getCurrentList());
                 }
             });
-        }
+        }*/
+
+        result.sendResult(new ArrayList<MediaItem>());
     }
 
     /**

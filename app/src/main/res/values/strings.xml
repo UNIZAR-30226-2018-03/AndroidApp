@@ -33,4 +33,9 @@
 
     <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
 
+
+    <!-- Notificaiton Channel -->
+    <string name="notification_channel">SYM_Channel_ID</string>
+    <string name="notification_channel_description">Channel ID for SYM</string>
+
 </resources>

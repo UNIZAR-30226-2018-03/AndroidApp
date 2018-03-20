@@ -62,4 +62,8 @@ dependencies {
     // Reproductor
     compile 'com.android.support:cardview-v7:27.1.0'
     compile 'com.google.android.exoplayer:exoplayer:r2.5.0'
+
+    compile 'com.android.support:support-media-compat:27.1.0'
+
+
 }

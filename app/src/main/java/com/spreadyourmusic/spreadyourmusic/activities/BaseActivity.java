@@ -115,6 +115,12 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
      */
     protected boolean shouldShowControls() {
         MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(this);
+        boolean prueba1 = mediaController == null;
+        prueba1 = mediaController == null ||
+                mediaController.getMetadata() == null;
+        prueba1 = mediaController == null ||
+                mediaController.getMetadata() == null ||
+                mediaController.getPlaybackState() == null;
         if (mediaController == null ||
             mediaController.getMetadata() == null ||
             mediaController.getPlaybackState() == null) {

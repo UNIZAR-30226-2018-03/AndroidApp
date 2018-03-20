@@ -27,7 +27,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
 import com.example.android.uamp.MusicService;
-import com.example.android.uamp.model.MusicProvider;
 import com.example.android.uamp.model.MusicProviderSource;
 import com.example.android.uamp.utils.LogHelper;
 import com.example.android.uamp.utils.MediaIDHelper;
@@ -79,9 +78,10 @@ public final class LocalPlayback implements Playback {
     private final WifiManager.WifiLock mWifiLock;
     private boolean mPlayOnFocusGain;
     private Callback mCallback;
-    private final MusicProvider mMusicProvider;
     private boolean mAudioNoisyReceiverRegistered;
     private String mCurrentMediaId;
+
+    private QueueManager mQueueManager;
 
     private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
     private final AudioManager mAudioManager;
@@ -110,10 +110,9 @@ public final class LocalPlayback implements Playback {
                 }
             };
 
-    public LocalPlayback(Context context, MusicProvider musicProvider) {
+    public LocalPlayback(Context context, QueueManager mmQueueManager) {
         Context applicationContext = context.getApplicationContext();
         this.mContext = applicationContext;
-        this.mMusicProvider = musicProvider;
 
         this.mAudioManager =
                 (AudioManager) applicationContext.getSystemService(Context.AUDIO_SERVICE);
@@ -121,6 +120,8 @@ public final class LocalPlayback implements Playback {
         this.mWifiLock =
                 ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
                         .createWifiLock(WifiManager.WIFI_MODE_FULL, "uAmp_lock");
+
+        this.mQueueManager = mmQueueManager;
     }
 
     @Override
@@ -196,10 +197,7 @@ public final class LocalPlayback implements Playback {
 
         if (mediaHasChanged || mExoPlayer == null) {
             releaseResources(false); // release everything except the player
-            MediaMetadataCompat track =
-                    mMusicProvider.getMusic(
-                            MediaIDHelper.extractMusicIDFromMediaID(
-                                    item.getDescription().getMediaId()));
+            MediaMetadataCompat track = mQueueManager.getCurrentMusicMetadata();
 
             String source = track.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
             if (source != null) {
