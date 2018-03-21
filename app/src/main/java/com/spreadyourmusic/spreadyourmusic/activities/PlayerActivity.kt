@@ -158,7 +158,7 @@ class PlayerActivity : AppCompatActivity() {
 
         albumArtCircularMusicProgressBar.setOnCircularBarChangeListener(object : OnCircularSeekBarChangeListener {
             override fun onProgressChanged(circularBar: CircularMusicProgressBar?, progress: Int, fromUser: Boolean) {
-                startTimeTextView.text = DateUtils.formatElapsedTime((progress / 1000).toLong())
+               // startTimeTextView.text = DateUtils.formatElapsedTime(((progress.toFloat() / 100) * songDuration.toFloat()).toLong())
             }
 
             override fun onClick(circularBar: CircularMusicProgressBar?) {
@@ -173,8 +173,9 @@ class PlayerActivity : AppCompatActivity() {
             updateFromParams(intent)
         }
 
-        mMediaBrowser = MediaBrowserCompat(this,
+       mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
+
     }
 
 
@@ -195,20 +196,20 @@ class PlayerActivity : AppCompatActivity() {
             updateMediaDescription(metadata.description)
             updateDuration(metadata)
         }
-        updateProgress()
+        //updateProgress()
         if (state != null && (state.state == PlaybackStateCompat.STATE_PLAYING || state.state == PlaybackStateCompat.STATE_BUFFERING)) {
             scheduleSeekbarUpdate()
         }
     }
 
     private fun updateFromParams(intent: Intent?) {
-        if (intent != null) {
-          //  val description = intent.getParcelableExtra<MediaDescriptionCompat>(
-           //         MusicPlayerActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION)
-          //  if (description != null) {
-         //       updateMediaDescription(description)
-         //   }
-        }
+        /*if (intent != null) {
+           val description = intent.getParcelableExtra<MediaDescriptionCompat>(
+                  MusicPlayerActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION)
+            if (description != null) {
+                updateMediaDescription(description)
+            }
+        }*/
     }
 
     private fun scheduleSeekbarUpdate() {
@@ -347,6 +348,7 @@ class PlayerActivity : AppCompatActivity() {
             val timeDelta = SystemClock.elapsedRealtime() - (mLastPlaybackState as PlaybackStateCompat).getLastPositionUpdateTime()
             currentPosition += (timeDelta.toInt() * (mLastPlaybackState as PlaybackStateCompat).getPlaybackSpeed()).toLong()
         }
-        albumArtCircularMusicProgressBar.setValue(currentPosition.toInt().toFloat()/songDuration.toFloat())
+        startTimeTextView.text = DateUtils.formatElapsedTime((currentPosition.toFloat() / 1000).toLong())
+        albumArtCircularMusicProgressBar.setValue((currentPosition.toFloat()/songDuration.toFloat()) * 100)
     }
 }

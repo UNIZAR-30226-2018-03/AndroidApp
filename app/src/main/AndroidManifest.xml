@@ -20,14 +20,13 @@
         <activity
             android:name=".activities.PlayerActivity"
             android:label="Reproductor"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activities.LoginActivity"
             android:label="Login"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        </activity>
 
         <activity
             android:name=".activities.HomeActivity"
@@ -38,14 +37,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
             android:name=".activities.ArtistActivity"
             android:label="Artista"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activities.PlaylistActivity"

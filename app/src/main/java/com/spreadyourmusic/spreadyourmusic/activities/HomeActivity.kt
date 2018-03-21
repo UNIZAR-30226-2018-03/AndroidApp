@@ -81,8 +81,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         QueueManager.getInstance().setCurrentQueue("Prueba",song)
         mediaController.transportControls
                 .playFromMediaId(song!!.getMediaItem().getMediaId(), null)
-        //val intent = Intent(this, PlayerActivity::class.java)
-        //startActivity(intent)
+        val intent = Intent(this, PlayerActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onPlaylistSelected(playlist: Playlist?) {
