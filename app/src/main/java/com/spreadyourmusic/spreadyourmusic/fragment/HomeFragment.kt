@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
         listaPopulares.itemAnimator = DefaultItemAnimator()
 
         recomendacionesRecyclerViewAdapter.setOnClickListener {
-            when(it){
+            when (it) {
                 is Song -> mMediaHomeListener!!.onSongSelected(it)
                 is User -> mMediaHomeListener!!.onUserSelected(it)
                 is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
@@ -66,7 +66,7 @@ class HomeFragment : Fragment() {
         recomendacionesRecyclerViewAdapter.changeData(obtainRecommendations(activity!!.applicationContext))
 
         popularesRecyclerViewAdapter.setOnClickListener {
-            when(it){
+            when (it) {
                 is Song -> mMediaHomeListener!!.onSongSelected(it)
                 is User -> mMediaHomeListener!!.onUserSelected(it)
                 is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
         popularesRecyclerViewAdapter.changeData(obtainPopularSongs(activity!!.applicationContext))
 
         novedadesRecyclerViewAdapter.setOnClickListener {
-            when(it){
+            when (it) {
                 is Song -> mMediaHomeListener!!.onSongSelected(it)
                 is User -> mMediaHomeListener!!.onUserSelected(it)
                 is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)

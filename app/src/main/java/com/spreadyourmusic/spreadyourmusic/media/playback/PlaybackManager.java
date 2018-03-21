@@ -16,18 +16,16 @@ public class PlaybackManager implements Playback.Callback {
     private static final String TAG = LogHelper.makeLogTag(PlaybackManager.class);
     // Action to thumbs up a media item
 
-    private QueueManager mQueueManager;
-    private Resources mResources;
+    private MusicQueueManager mMusicQueueManager;
     private Playback mPlayback;
     private PlaybackServiceCallback mServiceCallback;
     private MediaSessionCallback mMediaSessionCallback;
 
-    public PlaybackManager(PlaybackServiceCallback serviceCallback, Resources resources,
-                          QueueManager queueManager,
+    public PlaybackManager(PlaybackServiceCallback serviceCallback,
+                          MusicQueueManager musicQueueManager,
                            Playback playback) {
         mServiceCallback = serviceCallback;
-        mResources = resources;
-        mQueueManager = queueManager;
+        mMusicQueueManager = musicQueueManager;
         mMediaSessionCallback = new MediaSessionCallback();
         mPlayback = playback;
         mPlayback.setCallback(this);
@@ -46,7 +44,7 @@ public class PlaybackManager implements Playback.Callback {
      */
     public void handlePlayRequest() {
         LogHelper.d(TAG, "handlePlayRequest: mState=" + mPlayback.getState());
-        MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
+        MediaSessionCompat.QueueItem currentMusic = mMusicQueueManager.getCurrentMusic();
         if (currentMusic != null) {
             mServiceCallback.onPlaybackStart();
             mPlayback.play(currentMusic);
@@ -108,7 +106,7 @@ public class PlaybackManager implements Playback.Callback {
         stateBuilder.setState(state, position, 1.0f, SystemClock.elapsedRealtime());
 
         // Set the activeQueueItemId if the current index is valid.
-        MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
+        MediaSessionCompat.QueueItem currentMusic = mMusicQueueManager.getCurrentMusic();
         if (currentMusic != null) {
             stateBuilder.setActiveQueueItemId(currentMusic.getQueueId());
         }
@@ -143,9 +141,9 @@ public class PlaybackManager implements Playback.Callback {
     public void onCompletion() {
         // The media player finished playing the current song, so we go ahead
         // and start the next.
-        if (mQueueManager.skipQueuePosition(1)) {
+        if (mMusicQueueManager.skipQueuePosition(1)) {
             handlePlayRequest();
-            mQueueManager.updateMetadata();
+            mMusicQueueManager.updateMetadata();
         } else {
             // If skipping was not possible, we stop and release the resources:
             handleStopRequest(null);
@@ -165,7 +163,7 @@ public class PlaybackManager implements Playback.Callback {
     @Override
     public void setCurrentMediaId(String mediaId) {
         LogHelper.d(TAG, "setCurrentMediaId", mediaId);
-        //mQueueManager.setQueueFromMusic(mediaId);
+        //mMusicQueueManager.setQueueFromMusic(mediaId);
     }
 
 
@@ -179,8 +177,8 @@ public class PlaybackManager implements Playback.Callback {
         @Override
         public void onSkipToQueueItem(long queueId) {
             LogHelper.d(TAG, "OnSkipToQueueItem:" + queueId);
-            mQueueManager.setCurrentQueueItem(queueId);
-            mQueueManager.updateMetadata();
+            mMusicQueueManager.setCurrentQueueItem(queueId);
+            mMusicQueueManager.updateMetadata();
         }
 
         @Override
@@ -192,7 +190,7 @@ public class PlaybackManager implements Playback.Callback {
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             LogHelper.d(TAG, "playFromMediaId mediaId:", mediaId, "  extras=", extras);
-           // mQueueManager.setQueueFromMusic(mediaId);
+           // mMusicQueueManager.setQueueFromMusic(mediaId);
             handlePlayRequest();
         }
 
@@ -211,22 +209,22 @@ public class PlaybackManager implements Playback.Callback {
         @Override
         public void onSkipToNext() {
             LogHelper.d(TAG, "skipToNext");
-            if (mQueueManager.skipQueuePosition(1)) {
+            if (mMusicQueueManager.skipQueuePosition(1)) {
                 handlePlayRequest();
             } else {
                 handleStopRequest("Cannot skip");
             }
-            mQueueManager.updateMetadata();
+            mMusicQueueManager.updateMetadata();
         }
 
         @Override
         public void onSkipToPrevious() {
-            if (mQueueManager.skipQueuePosition(-1)) {
+            if (mMusicQueueManager.skipQueuePosition(-1)) {
                 handlePlayRequest();
             } else {
                 handleStopRequest("Cannot skip");
             }
-            mQueueManager.updateMetadata();
+            mMusicQueueManager.updateMetadata();
         }
 
     }

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Pair;
 
 import com.spreadyourmusic.spreadyourmusic.media.AlbumArtCache;
 import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper;
@@ -21,52 +22,39 @@ import java.util.List;
  * queue. Also provides methods to set the current queue based on common queries, relying on a
  * given MusicProvider to provide the actual media metadata.
  */
-public class QueueManager {
+public class MusicQueueManager {
 
     private MetadataUpdateListener mListener;
 
     // "Now playing" queue:
-    private List<MediaSessionCompat.QueueItem> mPlayingQueue;
-    private List<Song> mCurrentMetadata;
+    private List<Pair<Song, MediaSessionCompat.QueueItem>> mPlayingQueue;
+
     private int mCurrentIndex;
 
-    private static QueueManager instancia = null;
+    private static MusicQueueManager instancia = null;
 
 
-    private QueueManager() {
-        mPlayingQueue = Collections.synchronizedList(new ArrayList<MediaSessionCompat.QueueItem>());
-        mCurrentMetadata = Collections.synchronizedList(new ArrayList<Song>());
+    private MusicQueueManager() {
+        mPlayingQueue = Collections.synchronizedList(new ArrayList<Pair<Song, MediaSessionCompat.QueueItem>>());
         mCurrentIndex = 0;
     }
 
 
     private synchronized static void createInstance() {
         if (instancia == null) {
-            instancia = new QueueManager();
+            instancia = new MusicQueueManager();
         }
     }
 
-    public static QueueManager getInstance(){
-        if(instancia == null){
+    public static MusicQueueManager getInstance() {
+        if (instancia == null) {
             createInstance();
         }
         return instancia;
     }
 
-    public void setListener(@NonNull MetadataUpdateListener listener){
+    public void setListener(@NonNull MetadataUpdateListener listener) {
         this.mListener = listener;
-    }
-
-    public boolean isSameBrowsingCategory(@NonNull String mediaId) {
-        String[] newBrowseHierarchy = MediaIDHelper.getHierarchy(mediaId);
-        MediaSessionCompat.QueueItem current = getCurrentMusic();
-        if (current == null) {
-            return false;
-        }
-        String[] currentBrowseHierarchy = MediaIDHelper.getHierarchy(
-                current.getDescription().getMediaId());
-
-        return Arrays.equals(newBrowseHierarchy, currentBrowseHierarchy);
     }
 
     private void setCurrentQueueIndex(int index) {
@@ -110,14 +98,14 @@ public class QueueManager {
         if (!QueueHelper.isIndexPlayable(mCurrentIndex, mPlayingQueue)) {
             return null;
         }
-        return mPlayingQueue.get(mCurrentIndex);
+        return mPlayingQueue.get(mCurrentIndex).second;
     }
 
     public MediaMetadataCompat getCurrentMusicMetadata() {
         if (!QueueHelper.isIndexPlayable(mCurrentIndex, mPlayingQueue)) {
             return null;
         }
-        return mCurrentMetadata.get(mCurrentIndex).getMetadata();
+        return mPlayingQueue.get(mCurrentIndex).first.getMetadata();
     }
 
     public int getCurrentQueueSize() {
@@ -127,46 +115,35 @@ public class QueueManager {
         return mPlayingQueue.size();
     }
 
-    public void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue, List<Song> newSongList) {
-        setCurrentQueue(title, newQueue, newSongList, null);
-    }
-
-    public void setCurrentQueue(String title, List<Song> newSongList) {
-        setCurrentQueue(title, QueueHelper.convertToQueueFromSong(newSongList), newSongList, null);
-    }
-
     public void setCurrentQueue(String title, Song newSong) {
         List<Song> canciones = new ArrayList<Song>();
         canciones.add(newSong);
-        setCurrentQueue(title,canciones);
+        setCurrentQueue(title, canciones);
     }
 
-    protected void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue, List<Song> newSongList,
-                                   String initialMediaId) {
-        mPlayingQueue = newQueue;
-        mCurrentMetadata = newSongList;
-        int index = 0;
-        if (initialMediaId != null) {
-            index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, initialMediaId);
+    public void setCurrentQueue(String title, List<Song> newSongList) {
+        mPlayingQueue = QueueHelper.convertToQueue(newSongList);
+        mCurrentIndex = 0;
+        ArrayList<MediaSessionCompat.QueueItem> newQueue = new ArrayList<MediaSessionCompat.QueueItem>();
+        for (Pair<Song, MediaSessionCompat.QueueItem> item : mPlayingQueue) {
+            newQueue.add(item.second);
         }
-        mCurrentIndex = Math.max(index, 0);
         updateMetadata();
         mListener.onQueueUpdated(title, newQueue);
     }
 
-    public List<MediaBrowserCompat.MediaItem> getCurrentMediaItemList(){
+    public List<MediaBrowserCompat.MediaItem> getCurrentMediaItemList() {
 
-        List<MediaBrowserCompat.MediaItem> lista = new ArrayList<>(mPlayingQueue.size());
-        for (Song dato: mCurrentMetadata) {
-            lista.add(dato.getMediaItem());
+        List<MediaBrowserCompat.MediaItem> list = new ArrayList<>(mPlayingQueue.size());
+        for (Pair<Song, MediaSessionCompat.QueueItem> item : mPlayingQueue) {
+            list.add(item.first.getMediaItem());
         }
-        return lista;
+        return list;
     }
 
     public synchronized void updateMusicArt(int index, Bitmap albumArt, Bitmap icon) {
-        MediaMetadataCompat metadata = mCurrentMetadata.get(index).getMetadata();
+        MediaMetadataCompat metadata = mPlayingQueue.get(index).first.getMetadata();
         metadata = new MediaMetadataCompat.Builder(metadata)
-
                 // set high resolution bitmap in METADATA_KEY_ALBUM_ART. This is used, for
                 // example, on the lockscreen background when the media session is active.
                 .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt)
@@ -178,14 +155,13 @@ public class QueueManager {
 
                 .build();
 
-        mCurrentMetadata.get(index).setMetadata(metadata);
-
+        mPlayingQueue.get(index).first.setMetadata(metadata);
     }
 
 
     public void updateMetadata() {
         MediaSessionCompat.QueueItem currentMusic = getCurrentMusic();
-        if (currentMusic == null) {
+        if (currentMusic == null || currentMusic.getDescription() == null || currentMusic.getDescription().getMediaId() == null) {
             mListener.onMetadataRetrieveError();
             return;
         }
@@ -207,11 +183,11 @@ public class QueueManager {
             AlbumArtCache.getInstance().fetch(albumUri, new AlbumArtCache.FetchListener() {
                 @Override
                 public void onFetched(String artUrl, Bitmap bitmap, Bitmap icon) {
-                   updateMusicArt(lastIndex, bitmap, icon);
+                    updateMusicArt(lastIndex, bitmap, icon);
 
                     // If we are still playing the same music, notify the listeners:
                     MediaSessionCompat.QueueItem currentMusic = getCurrentMusic();
-                    if (currentMusic == null) {
+                    if (currentMusic == null || currentMusic.getDescription() == null || currentMusic.getDescription().getMediaId() == null || musicId == null) {
                         return;
                     }
                     String currentPlayingId = MediaIDHelper.extractMusicIDFromMediaID(
@@ -226,8 +202,11 @@ public class QueueManager {
 
     public interface MetadataUpdateListener {
         void onMetadataChanged(MediaMetadataCompat metadata);
+
         void onMetadataRetrieveError();
+
         void onCurrentQueueIndexUpdated(int queueIndex);
+
         void onQueueUpdated(String title, List<MediaSessionCompat.QueueItem> newQueue);
     }
 }

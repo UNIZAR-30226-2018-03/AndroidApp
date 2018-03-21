@@ -18,8 +18,8 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.spreadyourmusic.spreadyourmusic.media.MediaNotificationManager;
 import com.spreadyourmusic.spreadyourmusic.media.playback.LocalPlayback;
+import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager;
 import com.spreadyourmusic.spreadyourmusic.media.playback.PlaybackManager;
-import com.spreadyourmusic.spreadyourmusic.media.playback.QueueManager;
 
 import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 import com.spreadyourmusic.spreadyourmusic.activities.HomeActivity;
@@ -66,26 +66,6 @@ import static com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper.ME
  *      android.media.browse.MediaBrowserService
  *
  * </ul>
- *
- * To make your app compatible with Android Auto, you also need to:
- *
- * <ul>
- *
- * <li> Declare a meta-data tag in AndroidManifest.xml linking to a xml resource
- *      with a &lt;automotiveApp&gt; root element. For a media app, this must include
- *      an &lt;uses name="media"/&gt; element as a child.
- *      For example, in AndroidManifest.xml:
- *          &lt;meta-data android:name="com.google.android.gms.car.application"
- *              android:resource="@xml/automotive_app_desc"/&gt;
- *      And in res/values/automotive_app_desc.xml:
- *          &lt;automotiveApp&gt;
- *              &lt;uses name="media"/&gt;
- *          &lt;/automotiveApp&gt;
- *
- * </ul>
-
- * @see <a href="README.md">README.md</a> for more details.
- *
  */
 public class MusicService extends MediaBrowserServiceCompat implements
         PlaybackManager.PlaybackServiceCallback {
@@ -111,7 +91,6 @@ public class MusicService extends MediaBrowserServiceCompat implements
 
     private MediaSessionCompat mSession;
     private MediaNotificationManager mMediaNotificationManager;
-    private Bundle mSessionExtras;
     private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
 
     /*
@@ -127,10 +106,10 @@ public class MusicService extends MediaBrowserServiceCompat implements
         // This can help improve the response time in the method
         // {@link #onLoadChildren(String, Result<List<MediaItem>>) onLoadChildren()}.
 
-        QueueManager queueManager = QueueManager.getInstance();
+        MusicQueueManager musicQueueManager = MusicQueueManager.getInstance();
 
-        queueManager.setListener(
-                new QueueManager.MetadataUpdateListener() {
+        musicQueueManager.setListener(
+                new MusicQueueManager.MetadataUpdateListener() {
                     @Override
                     public void onMetadataChanged(MediaMetadataCompat metadata) {
                         mSession.setMetadata(metadata);
@@ -155,8 +134,8 @@ public class MusicService extends MediaBrowserServiceCompat implements
                     }
                 });
 
-        LocalPlayback playback = new LocalPlayback(this, queueManager);
-        mPlaybackManager = new PlaybackManager(this, getResources(), queueManager,
+        LocalPlayback playback = new LocalPlayback(this, musicQueueManager);
+        mPlaybackManager = new PlaybackManager(this, musicQueueManager,
                 playback);
 
         // Start a new MediaSession
@@ -171,9 +150,6 @@ public class MusicService extends MediaBrowserServiceCompat implements
         PendingIntent pi = PendingIntent.getActivity(context, 99 /*request code*/,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mSession.setSessionActivity(pi);
-
-        mSessionExtras = new Bundle();
-        mSession.setExtras(mSessionExtras);
 
         mPlaybackManager.updatePlaybackState(null);
 
@@ -248,7 +224,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
                                @NonNull final Result<List<MediaItem>> result) {
         LogHelper.d(TAG, "OnLoadChildren: parentMediaId=", parentMediaId);
 
-        result.sendResult(QueueManager.getInstance().getCurrentMediaItemList());
+        result.sendResult(MusicQueueManager.getInstance().getCurrentMediaItemList());
 
        /* if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
             result.sendResult(new ArrayList<MediaItem>());

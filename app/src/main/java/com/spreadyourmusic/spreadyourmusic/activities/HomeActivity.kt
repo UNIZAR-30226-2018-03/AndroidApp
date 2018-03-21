@@ -9,7 +9,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
-import com.spreadyourmusic.spreadyourmusic.media.playback.QueueManager
+import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.fragment.BrowseFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment
@@ -78,7 +78,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //startActivity(intent)
         //TODO: Abrir fullscreen
         val mediaController = MediaControllerCompat.getMediaController(this)
-        QueueManager.getInstance().setCurrentQueue("Prueba",song)
+        MusicQueueManager.getInstance().setCurrentQueue("Prueba",song)
         mediaController.transportControls
                 .playFromMediaId(song!!.getMediaItem().getMediaId(), null)
         val intent = Intent(this, PlayerActivity::class.java)

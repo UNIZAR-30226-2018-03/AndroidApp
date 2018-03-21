@@ -80,7 +80,7 @@ public final class LocalPlayback implements Playback {
     private boolean mAudioNoisyReceiverRegistered;
     private String mCurrentMediaId;
 
-    private QueueManager mQueueManager;
+    private MusicQueueManager mMusicQueueManager;
 
     private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
     private final AudioManager mAudioManager;
@@ -109,7 +109,7 @@ public final class LocalPlayback implements Playback {
                 }
             };
 
-    public LocalPlayback(Context context, QueueManager mmQueueManager) {
+    public LocalPlayback(Context context, MusicQueueManager mmMusicQueueManager) {
         Context applicationContext = context.getApplicationContext();
         this.mContext = applicationContext;
 
@@ -120,7 +120,7 @@ public final class LocalPlayback implements Playback {
                 ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
                         .createWifiLock(WifiManager.WIFI_MODE_FULL, "uAmp_lock");
 
-        this.mQueueManager = mmQueueManager;
+        this.mMusicQueueManager = mmMusicQueueManager;
     }
 
     @Override
@@ -196,7 +196,7 @@ public final class LocalPlayback implements Playback {
 
         if (mediaHasChanged || mExoPlayer == null) {
             releaseResources(false); // release everything except the player
-            MediaMetadataCompat track = mQueueManager.getCurrentMusicMetadata();
+            MediaMetadataCompat track = mMusicQueueManager.getCurrentMusicMetadata();
 
             String source = track.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
             if (source != null) {

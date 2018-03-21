@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.spreadyourmusic.spreadyourmusic.R;
 
 /**
@@ -24,7 +25,7 @@ public class PlayerControlsFragment extends Fragment {
     private TextView mTitle;
     private TextView mSubtitle;
     //private ImageView mAlbumArt;
-   // private String mArtUrl;
+    // private String mArtUrl;
 
     // Receive callbacks from the MediaController. Here we update our state such as which queue
     // is being shown, the current title and description and the PlaybackState.

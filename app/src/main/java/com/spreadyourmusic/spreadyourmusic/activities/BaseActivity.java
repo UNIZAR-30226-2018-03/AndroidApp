@@ -35,14 +35,14 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
         // Connect a media browser just to get the media session token. There are other ways
         // this can be done, for example by sharing the session token directly.
         mMediaBrowser = new MediaBrowserCompat(this,
-            new ComponentName(this, MusicService.class), mConnectionCallback, null);
+                new ComponentName(this, MusicService.class), mConnectionCallback, null);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mControlsFragment = (PlayerControlsFragment) getFragmentManager()
-            .findFragmentById(R.id.fragment_player_controls);
+                .findFragmentById(R.id.fragment_player_controls);
 
         hidePlaybackControls();
 
@@ -93,18 +93,18 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
     protected void showPlaybackControls() {
         if (NetworkHelper.isOnline(this)) {
             getFragmentManager().beginTransaction()
-                .setCustomAnimations(
-                    R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom,
-                    R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom)
-                .show(mControlsFragment)
-                .commit();
+                    .setCustomAnimations(
+                            R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom,
+                            R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom)
+                    .show(mControlsFragment)
+                    .commit();
         }
     }
 
     protected void hidePlaybackControls() {
         getFragmentManager().beginTransaction()
-            .hide(mControlsFragment)
-            .commit();
+                .hide(mControlsFragment)
+                .commit();
     }
 
     /**
@@ -115,15 +115,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
      */
     protected boolean shouldShowControls() {
         MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(this);
-        boolean prueba1 = mediaController == null;
-        prueba1 = mediaController == null ||
-                mediaController.getMetadata() == null;
-        prueba1 = mediaController == null ||
-                mediaController.getMetadata() == null ||
-                mediaController.getPlaybackState() == null;
         if (mediaController == null ||
-            mediaController.getMetadata() == null ||
-            mediaController.getPlaybackState() == null) {
+                mediaController.getMetadata() == null ||
+                mediaController.getPlaybackState() == null) {
             return false;
         }
         switch (mediaController.getPlaybackState().getState()) {
@@ -156,37 +150,37 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
 
     // Callback that ensures that we are showing the controls
     private final MediaControllerCompat.Callback mMediaControllerCallback =
-        new MediaControllerCompat.Callback() {
-            @Override
-            public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-                if (shouldShowControls()) {
-                    showPlaybackControls();
-                } else {
-                    hidePlaybackControls();
+            new MediaControllerCompat.Callback() {
+                @Override
+                public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
+                    if (shouldShowControls()) {
+                        showPlaybackControls();
+                    } else {
+                        hidePlaybackControls();
+                    }
                 }
-            }
 
-            @Override
-            public void onMetadataChanged(MediaMetadataCompat metadata) {
-                if (shouldShowControls()) {
-                    showPlaybackControls();
-                } else {
-                    hidePlaybackControls();
+                @Override
+                public void onMetadataChanged(MediaMetadataCompat metadata) {
+                    if (shouldShowControls()) {
+                        showPlaybackControls();
+                    } else {
+                        hidePlaybackControls();
+                    }
                 }
-            }
-        };
+            };
 
     private final MediaBrowserCompat.ConnectionCallback mConnectionCallback =
-        new MediaBrowserCompat.ConnectionCallback() {
-            @Override
-            public void onConnected() {
+            new MediaBrowserCompat.ConnectionCallback() {
+                @Override
+                public void onConnected() {
 
-                try {
-                    connectToSession(mMediaBrowser.getSessionToken());
-                } catch (RemoteException e) {
-                    hidePlaybackControls();
+                    try {
+                        connectToSession(mMediaBrowser.getSessionToken());
+                    } catch (RemoteException e) {
+                        hidePlaybackControls();
+                    }
                 }
-            }
-        };
+            };
 
 }
