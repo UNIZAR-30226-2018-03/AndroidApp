@@ -2,6 +2,7 @@ package com.spreadyourmusic.spreadyourmusic.media.playback;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
@@ -149,7 +150,17 @@ public class QueueManager {
             index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, initialMediaId);
         }
         mCurrentIndex = Math.max(index, 0);
+        updateMetadata();
         mListener.onQueueUpdated(title, newQueue);
+    }
+
+    public List<MediaBrowserCompat.MediaItem> getCurrentMediaItemList(){
+
+        List<MediaBrowserCompat.MediaItem> lista = new ArrayList<>(mPlayingQueue.size());
+        for (Song dato: mCurrentMetadata) {
+            lista.add(dato.getMediaItem());
+        }
+        return lista;
     }
 
     public synchronized void updateMusicArt(int index, Bitmap albumArt, Bitmap icon) {

@@ -171,7 +171,6 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
                 if (shouldShowControls()) {
                     showPlaybackControls();
                 } else {
-
                     hidePlaybackControls();
                 }
             }

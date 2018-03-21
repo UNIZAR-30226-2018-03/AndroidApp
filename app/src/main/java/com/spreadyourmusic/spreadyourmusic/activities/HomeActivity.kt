@@ -1,5 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -80,6 +81,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         QueueManager.getInstance().setCurrentQueue("Prueba",song)
         mediaController.transportControls
                 .playFromMediaId(song!!.getMediaItem().getMediaId(), null)
+        //val intent = Intent(this, PlayerActivity::class.java)
+        //startActivity(intent)
     }
 
     override fun onPlaylistSelected(playlist: Playlist?) {
