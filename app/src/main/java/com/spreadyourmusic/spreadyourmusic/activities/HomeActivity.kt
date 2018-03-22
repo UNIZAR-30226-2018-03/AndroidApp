@@ -13,14 +13,13 @@ import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.fragment.BrowseFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment
-import com.spreadyourmusic.spreadyourmusic.listeners.MediaHomeListener
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 
-class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, MediaHomeListener {
+class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +32,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        changeActualFragment(HomeFragment.newInstance())
+        changeActualFragment(HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected))
     }
 
     override fun onBackPressed() {
@@ -51,7 +50,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.browse ->
                 BrowseFragment.newInstance()
             R.id.home ->
-                HomeFragment.newInstance()
+                HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
             else ->
                 null
         }
@@ -66,30 +65,27 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
-    fun changeActualFragment(fragmento: Fragment) {
+    private fun changeActualFragment(fragmento: Fragment) {
         val fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
                 .replace(R.id.contentForFragments, fragmento)
                 .commit()
     }
 
-    override fun onSongSelected(song: Song?) {
-       // val intent = Intent(context, PlayerActivity::class.java)
-        //startActivity(intent)
+    private val onSongSelected: (Song) -> Unit = {
         //TODO: Abrir fullscreen
         val mediaController = MediaControllerCompat.getMediaController(this)
-        MusicQueueManager.getInstance().setCurrentQueue("Prueba",song)
+        MusicQueueManager.getInstance().setCurrentQueue("Prueba",it)
         mediaController.transportControls
-                .playFromMediaId(song!!.getMediaItem().getMediaId(), null)
+                .playFromMediaId(it.getMediaItem().mediaId, null)
         val intent = Intent(this, PlayerActivity::class.java)
         startActivity(intent)
     }
 
-    override fun onPlaylistSelected(playlist: Playlist?) {
+    private val onUserSelected: (User) -> Unit = {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
-    override fun onUserSelected(user: User?) {
+    private val onPlaylistSelected: (Playlist) -> Unit = {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

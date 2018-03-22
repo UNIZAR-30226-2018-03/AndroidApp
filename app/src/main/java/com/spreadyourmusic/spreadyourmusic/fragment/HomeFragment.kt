@@ -15,14 +15,14 @@ import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerVi
 import com.spreadyourmusic.spreadyourmusic.controller.obtainNewsSongs
 import com.spreadyourmusic.spreadyourmusic.controller.obtainPopularSongs
 import com.spreadyourmusic.spreadyourmusic.controller.obtainRecommendations
-import com.spreadyourmusic.spreadyourmusic.listeners.MediaHomeListener
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 
 class HomeFragment : Fragment() {
-
-    private var mMediaHomeListener: MediaHomeListener? = null
+    private var mSongSelectedListener: (Song) -> Unit = {}
+    private var mUserSelectedListener: (User) -> Unit = {}
+    private var mPlaylistSelectedListener: (Playlist) -> Unit = {}
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -57,9 +57,9 @@ class HomeFragment : Fragment() {
 
         recomendacionesRecyclerViewAdapter.setOnClickListener {
             when (it) {
-                is Song -> mMediaHomeListener!!.onSongSelected(it)
-                is User -> mMediaHomeListener!!.onUserSelected(it)
-                is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
+                is Song -> mSongSelectedListener(it)
+                is User -> mUserSelectedListener(it)
+                is Playlist -> mPlaylistSelectedListener(it)
             }
         }
 
@@ -67,9 +67,9 @@ class HomeFragment : Fragment() {
 
         popularesRecyclerViewAdapter.setOnClickListener {
             when (it) {
-                is Song -> mMediaHomeListener!!.onSongSelected(it)
-                is User -> mMediaHomeListener!!.onUserSelected(it)
-                is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
+                is Song -> mSongSelectedListener(it)
+                is User -> mUserSelectedListener(it)
+                is Playlist -> mPlaylistSelectedListener(it)
             }
         }
 
@@ -77,9 +77,9 @@ class HomeFragment : Fragment() {
 
         novedadesRecyclerViewAdapter.setOnClickListener {
             when (it) {
-                is Song -> mMediaHomeListener!!.onSongSelected(it)
-                is User -> mMediaHomeListener!!.onUserSelected(it)
-                is Playlist -> mMediaHomeListener!!.onPlaylistSelected(it)
+                is Song -> mSongSelectedListener(it)
+                is User -> mUserSelectedListener(it)
+                is Playlist -> mPlaylistSelectedListener(it)
             }
         }
 
@@ -89,17 +89,15 @@ class HomeFragment : Fragment() {
         return inflaterD
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        // If used on an activity that doesn't implement MediaFragmentListener, it
-        // will throw an exception as expected:
-        mMediaHomeListener = activity as MediaHomeListener
-    }
-
     companion object {
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
+        fun newInstance(mmSongSelectedListener: (Song) -> Unit, mmUserSelectedListener: (User) -> Unit,
+                        mmPlaylistSelectedListener: (Playlist) -> Unit): HomeFragment {
+
+            val fragment = HomeFragment()
+            fragment.mSongSelectedListener = mmSongSelectedListener
+            fragment.mUserSelectedListener = mmUserSelectedListener
+            fragment.mPlaylistSelectedListener = mmPlaylistSelectedListener
+            return fragment
         }
     }
 }// Required empty public constructor
