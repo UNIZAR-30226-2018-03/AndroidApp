@@ -64,7 +64,7 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
                 SongHomeRecyclerViewViewHolder(itemView)
 
         }
-        itemView!!.setOnClickListener(devolver)
+        //itemView!!.setOnClickListener(devolver)
         return devolver
     }
 
@@ -85,11 +85,6 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
         }
     }
 
-    /*
-    fun setOnClickListener(l: (ClientVo) -> Unit) {
-        clickListener = l
-    }*/
-
 
     inner class SongHomeRecyclerViewViewHolder(itemView: View) : GeneralRecyclerViewViewHolder(itemView) {
         override fun bind(obj: Any) {
@@ -99,6 +94,8 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
                 titulo.text = obj.name
                 autor.text = obj.album.creator.username
             }
+            itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -118,6 +115,8 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
                 val usuario = itemView.findViewById<View>(R.id.nombre_artista) as TextView
                 usuario.text = obj.username
             }
+            itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -137,6 +136,8 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
                 usuario.text = obj.nombre
                 titulo.text = obj.autor.username
             }
+            itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
