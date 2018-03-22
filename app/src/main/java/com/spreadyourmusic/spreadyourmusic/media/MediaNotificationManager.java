@@ -263,7 +263,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
 
         String fetchArtUrl = null;
         Bitmap art = null;
-        if (description.getIconUri() != null) {
+        /*if (description.getIconUri() != null) {
             // This sample assumes the iconUri will be a valid URL formatted String, but
             // it can actually be any valid Android Uri formatted String.
             // async fetch the album art icon
@@ -275,7 +275,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                 art = BitmapFactory.decodeResource(mService.getResources(),
                         R.drawable.ic_music_note_white_24dp);
             }
-        }
+        }*/
 
         // Notification channels are only supported on Android O+.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -300,12 +300,12 @@ public class MediaNotificationManager extends BroadcastReceiver {
                 .setOnlyAlertOnce(true)
                 .setContentIntent(createContentIntent(description))
                 .setContentTitle(description.getTitle())
-                .setContentText(description.getSubtitle())
-                .setLargeIcon(art);
+                .setContentText(description.getSubtitle());
+              //  .setLargeIcon(art);
         setNotificationPlaybackState(notificationBuilder);
-        if (fetchArtUrl != null) {
+       /* if (fetchArtUrl != null) {
             fetchBitmapFromURLAsync(fetchArtUrl, notificationBuilder);
-        }
+        }*/
 
         return notificationBuilder.build();
     }
@@ -362,7 +362,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
         builder.setOngoing(mPlaybackState.getState() == PlaybackStateCompat.STATE_PLAYING);
     }
 
-    private void fetchBitmapFromURLAsync(final String bitmapUrl,
+   /* private void fetchBitmapFromURLAsync(final String bitmapUrl,
                                          final NotificationCompat.Builder builder) {
         AlbumArtCache.getInstance().fetch(bitmapUrl, new AlbumArtCache.FetchListener() {
             @Override
@@ -377,7 +377,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                 }
             }
         });
-    }
+    }*/
 
     /**
      * Creates Notification Channel. This is required in Android O+ to display notifications.

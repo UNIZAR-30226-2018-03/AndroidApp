@@ -2,7 +2,6 @@ package com.spreadyourmusic.spreadyourmusic.activities
 
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -23,7 +22,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 
 import android.widget.TextView
-import com.spreadyourmusic.spreadyourmusic.media.AlbumArtCache
+import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
@@ -248,26 +247,16 @@ class PlayerActivity : AppCompatActivity() {
         mExecutorService.shutdown()
     }
 
-    private fun fetchImageAsync(description: MediaDescriptionCompat) {
-        if (description.iconUri == null) {
-            return
-        }
-        val artUrl = description.iconUri!!.toString()
-        AlbumArtCache.instance.getBigImage(artUrl, {url, bitmap ->
-            if (artUrl == url) {
-                playerBackGroundImageView.setImageBitmap(bitmap)
-                albumArtCircularMusicProgressBar.setImageBitmap(bitmap)
-            }
-        })
-    }
-
     private fun updateMediaDescription(description: MediaDescriptionCompat?) {
         if (description == null) {
             return
         }
         songNameTextView.text = description.title
         songCreatorTextView.text = description.subtitle
-        fetchImageAsync(description)
+
+        val artUrl = description.iconUri!!.toString()
+        Glide.with(this).load(artUrl).into(playerBackGroundImageView)
+        Glide.with(this).load(artUrl).into(albumArtCircularMusicProgressBar)
     }
 
     private fun updateDuration(metadata: MediaMetadataCompat?) {

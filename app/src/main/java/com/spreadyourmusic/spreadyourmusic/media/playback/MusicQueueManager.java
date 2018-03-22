@@ -7,13 +7,11 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Pair;
 
-import com.spreadyourmusic.spreadyourmusic.media.AlbumArtCache;
 import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper;
 import com.spreadyourmusic.spreadyourmusic.helpers.media.QueueHelper;
 import com.spreadyourmusic.spreadyourmusic.models.Song;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -141,22 +139,6 @@ public class MusicQueueManager {
         return list;
     }
 
-    public synchronized void updateMusicArt(int index, Bitmap albumArt, Bitmap icon) {
-        MediaMetadataCompat metadata = mPlayingQueue.get(index).first.getMetadata();
-        metadata = new MediaMetadataCompat.Builder(metadata)
-                // set high resolution bitmap in METADATA_KEY_ALBUM_ART. This is used, for
-                // example, on the lockscreen background when the media session is active.
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt)
-
-                // set small version of the album art in the DISPLAY_ICON. This is used on
-                // the MediaDescription and thus it should be small to be serialized if
-                // necessary
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, icon)
-
-                .build();
-
-        mPlayingQueue.get(index).first.setMetadata(metadata);
-    }
 
 
     public void updateMetadata() {
@@ -173,31 +155,7 @@ public class MusicQueueManager {
         }
 
         mListener.onMetadataChanged(metadata);
-        final int lastIndex = mCurrentIndex;
 
-        // Set the proper album artwork on the media session, so it can be shown in the
-        // locked screen and in other places.
-        if (metadata.getDescription().getIconBitmap() == null &&
-                metadata.getDescription().getIconUri() != null) {
-            String albumUri = metadata.getDescription().getIconUri().toString();
-            AlbumArtCache.getInstance().fetch(albumUri, new AlbumArtCache.FetchListener() {
-                @Override
-                public void onFetched(String artUrl, Bitmap bitmap, Bitmap icon) {
-                    updateMusicArt(lastIndex, bitmap, icon);
-
-                    // If we are still playing the same music, notify the listeners:
-                    MediaSessionCompat.QueueItem currentMusic = getCurrentMusic();
-                    if (currentMusic == null || currentMusic.getDescription() == null || currentMusic.getDescription().getMediaId() == null || musicId == null) {
-                        return;
-                    }
-                    String currentPlayingId = MediaIDHelper.extractMusicIDFromMediaID(
-                            currentMusic.getDescription().getMediaId());
-                    if (musicId.equals(currentPlayingId)) {
-                        mListener.onMetadataChanged(getCurrentMusicMetadata());
-                    }
-                }
-            });
-        }
     }
 
     public interface MetadataUpdateListener {
