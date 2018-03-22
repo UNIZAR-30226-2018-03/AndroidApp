@@ -74,7 +74,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private val onSongSelected: (Song) -> Unit = {
-        //TODO: Abrir fullscreen
+        //TODO: Ver mejor forma de interaccionar
        val mediaController = MediaControllerCompat.getMediaController(this)
         MusicQueueManager.getInstance().setCurrentQueue(it.name,it)
         mediaController.transportControls
@@ -87,6 +87,15 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
     private val onPlaylistSelected: (Playlist) -> Unit = {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+       /*
+       No se ha de reproducir ahora la musica, este codigo se ha de copiar en el playlist
+       val mediaController = MediaControllerCompat.getMediaController(this)
+        MusicQueueManager.getInstance().setCurrentQueue(it.name,it.content)
+        mediaController.transportControls
+                .playFromMediaId(MusicQueueManager.getInstance().currentSong.getMediaItem().mediaId, null)*/
+
+        //TODO: Abrir playlist
+       /* val intent = Intent(this, PlaylistActivity::class.java)
+        startActivity(intent)*/
     }
 }

@@ -106,6 +106,13 @@ public class MusicQueueManager {
         return mPlayingQueue.get(mCurrentIndex).first.getMetadata();
     }
 
+    public Song getCurrentSong() {
+        if (!QueueHelper.isIndexPlayable(mCurrentIndex, mPlayingQueue)) {
+            return null;
+        }
+        return mPlayingQueue.get(mCurrentIndex).first;
+    }
+
     public int getCurrentQueueSize() {
         if (mPlayingQueue == null) {
             return 0;
