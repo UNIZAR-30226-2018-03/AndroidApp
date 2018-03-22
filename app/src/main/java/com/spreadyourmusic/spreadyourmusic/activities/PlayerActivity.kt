@@ -58,7 +58,6 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var songCreatorTextView: TextView
     private lateinit var songNameTextView: TextView
 
-    private var mCurrentArtUrl: String? = null
     private var mPauseDrawable: Drawable? = null
     private var mPlayDrawable: Drawable? = null
 
@@ -254,29 +253,12 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
         val artUrl = description.iconUri!!.toString()
-        mCurrentArtUrl = artUrl
-        val cache = AlbumArtCache.getInstance()
-        var art = cache.getBigImage(artUrl)
-        if (art == null) {
-            art = description.iconBitmap
-        }
-        if (art != null) {
-            // if we have the art cached or from the MediaDescription, use it:
-            playerBackGroundImageView.setImageBitmap(art)
-            albumArtCircularMusicProgressBar.setImageBitmap(art)
-        } else {
-            // otherwise, fetch a high res version and update:
-            cache.fetch(artUrl, object : AlbumArtCache.FetchListener() {
-                override fun onFetched(artUrl: String, bitmap: Bitmap, icon: Bitmap) {
-                    // sanity check, in case a new fetch request has been done while
-                    // the previous hasn't yet returned:
-                    if (artUrl == mCurrentArtUrl) {
-                        playerBackGroundImageView.setImageBitmap(bitmap)
-                        albumArtCircularMusicProgressBar.setImageBitmap(bitmap)
-                    }
-                }
-            })
-        }
+        AlbumArtCache.instance.getBigImage(artUrl, {url, bitmap ->
+            if (artUrl == url) {
+                playerBackGroundImageView.setImageBitmap(bitmap)
+                albumArtCircularMusicProgressBar.setImageBitmap(bitmap)
+            }
+        })
     }
 
     private fun updateMediaDescription(description: MediaDescriptionCompat?) {
