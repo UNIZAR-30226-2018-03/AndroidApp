@@ -27,14 +27,14 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val inflaterD = inflater.inflate(R.layout.content_home, container, false)
-        val listaRecomendaciones = inflaterD.findViewById<RecyclerView>(R.id.recommendationsRecyclerView)
+        val view = inflater.inflate(R.layout.content_home, container, false)
+        val listaRecomendaciones = view.findViewById<RecyclerView>(R.id.recommendationsRecyclerView)
         val recomendacionesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
 
-        val listaNovedades = inflaterD.findViewById<RecyclerView>(R.id.newsRecyclerView)
+        val listaNovedades = view.findViewById<RecyclerView>(R.id.newsRecyclerView)
         val novedadesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
 
-        val listaPopulares = inflaterD.findViewById<RecyclerView>(R.id.popularRecyclerView)
+        val listaPopulares = view.findViewById<RecyclerView>(R.id.popularRecyclerView)
         val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
 
         listaRecomendaciones.adapter = recomendacionesRecyclerViewAdapter
@@ -63,7 +63,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        recomendacionesRecyclerViewAdapter.changeData(obtainRecommendations(activity!!.applicationContext))
+        recomendacionesRecyclerViewAdapter.changeData(obtainRecommendations())
 
         popularesRecyclerViewAdapter.setOnClickListener {
             when (it) {
@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        popularesRecyclerViewAdapter.changeData(obtainPopularSongs(activity!!.applicationContext))
+        popularesRecyclerViewAdapter.changeData(obtainPopularSongs())
 
         novedadesRecyclerViewAdapter.setOnClickListener {
             when (it) {
@@ -83,10 +83,10 @@ class HomeFragment : Fragment() {
             }
         }
 
-        novedadesRecyclerViewAdapter.changeData(obtainNewsSongs(activity!!.applicationContext))
+        novedadesRecyclerViewAdapter.changeData(obtainNewsSongs())
 
         // Inflate the layout for this fragment
-        return inflaterD
+        return view
     }
 
     companion object {

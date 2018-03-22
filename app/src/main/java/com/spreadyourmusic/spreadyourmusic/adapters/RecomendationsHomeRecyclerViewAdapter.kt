@@ -96,8 +96,8 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
             if(obj is Song){
                 val titulo = itemView.findViewById<View>(R.id.nombre_cancion) as TextView
                 val autor = itemView.findViewById<View>(R.id.nombre_artista) as TextView
-                titulo.text = obj.nombre
-                autor.text = obj.creador.nombre
+                titulo.text = obj.name
+                autor.text = obj.album.creator.username
             }
         }
 
@@ -116,7 +116,7 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
         override fun bind(obj: Any) {
             if(obj is User){
                 val usuario = itemView.findViewById<View>(R.id.nombre_artista) as TextView
-                usuario.text = obj.nombre
+                usuario.text = obj.username
             }
         }
 
@@ -135,7 +135,7 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
                 val usuario = itemView.findViewById<View>(R.id.nombre_artista) as TextView
                 val titulo = itemView.findViewById<View>(R.id.nombre_playlist) as TextView
                 usuario.text = obj.nombre
-                titulo.text = obj.autor.nombre
+                titulo.text = obj.autor.username
             }
         }
 
