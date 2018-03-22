@@ -1,10 +1,13 @@
 package com.spreadyourmusic.spreadyourmusic.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Recommendation
@@ -16,7 +19,7 @@ import com.spreadyourmusic.spreadyourmusic.models.User
  * Created by abel
  * On 8/03/18.
  */
-class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecyclerViewViewHolder>() {
+class RecomendationsHomeRecyclerViewAdapter(val context: Context?) : RecyclerView.Adapter<GeneralRecyclerViewViewHolder>() {
     private val VIEW_TYPE_SONG = 0
     private val VIEW_TYPE_USER = 1
     private val VIEW_TYPE_PLAYLIST = 2
@@ -32,7 +35,7 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
         notifyDataSetChanged()
     }
 
-   override fun onBindViewHolder(holder: GeneralRecyclerViewViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: GeneralRecyclerViewViewHolder, position: Int) {
         holder.bind(datos[position])
     }
 
@@ -52,7 +55,7 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
                 LayoutInflater.from(parent.context).inflate(R.layout.listitem_song_home, parent, false)
         }
 
-        val devolver = when (viewType) { VIEW_TYPE_SONG ->
+        return when (viewType) { VIEW_TYPE_SONG ->
             SongHomeRecyclerViewViewHolder(itemView)
 
             VIEW_TYPE_USER ->
@@ -64,8 +67,6 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
                 SongHomeRecyclerViewViewHolder(itemView)
 
         }
-        //itemView!!.setOnClickListener(devolver)
-        return devolver
     }
 
     override fun getItemCount(): Int {
@@ -77,7 +78,7 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (datos[position]){
+        return when (datos[position]) {
             is Playlist -> VIEW_TYPE_PLAYLIST
             is Song -> VIEW_TYPE_SONG
             is User -> VIEW_TYPE_USER
@@ -88,11 +89,14 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
 
     inner class SongHomeRecyclerViewViewHolder(itemView: View) : GeneralRecyclerViewViewHolder(itemView) {
         override fun bind(obj: Any) {
-            if(obj is Song){
+            if (obj is Song) {
                 val titulo = itemView.findViewById<View>(R.id.nombre_cancion) as TextView
                 val autor = itemView.findViewById<View>(R.id.nombre_artista) as TextView
+                val imagen = itemView.findViewById<View>(R.id.caratula) as ImageView
                 titulo.text = obj.name
                 autor.text = obj.album.creator.username
+                if (context != null)
+                    Glide.with(context).load(obj.album.artLocationUri).into(imagen)
             }
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)
@@ -111,9 +115,12 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
 
     inner class UserHomeRecyclerViewViewHolder(itemView: View) : GeneralRecyclerViewViewHolder(itemView) {
         override fun bind(obj: Any) {
-            if(obj is User){
+            if (obj is User) {
                 val usuario = itemView.findViewById<View>(R.id.nombre_artista) as TextView
+                val imagen = itemView.findViewById<View>(R.id.foto_perfil) as de.hdodenhof.circleimageview.CircleImageView
                 usuario.text = obj.username
+                if (context != null)
+                    Glide.with(context).load(obj.pictureLocationUri).into(imagen)
             }
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)
@@ -130,11 +137,14 @@ class RecomendationsHomeRecyclerViewAdapter : RecyclerView.Adapter<GeneralRecycl
 
     inner class PlaylistHomeRecyclerViewViewHolder(itemView: View) : GeneralRecyclerViewViewHolder(itemView) {
         override fun bind(obj: Any) {
-            if(obj is Playlist){
+            if (obj is Playlist) {
                 val usuario = itemView.findViewById<View>(R.id.nombre_artista) as TextView
                 val titulo = itemView.findViewById<View>(R.id.nombre_playlist) as TextView
-                usuario.text = obj.nombre
-                titulo.text = obj.autor.username
+                val imagen = itemView.findViewById<View>(R.id.caratula) as de.hdodenhof.circleimageview.CircleImageView
+                usuario.text = obj.creator.username
+                titulo.text = obj.name
+                if (context != null)
+                    Glide.with(context).load(obj.artLocationUri).into(imagen)
             }
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)

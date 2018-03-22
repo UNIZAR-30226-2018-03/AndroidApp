@@ -29,13 +29,13 @@ class HomeFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.content_home, container, false)
         val listaRecomendaciones = view.findViewById<RecyclerView>(R.id.recommendationsRecyclerView)
-        val recomendacionesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
+        val recomendacionesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
         val listaNovedades = view.findViewById<RecyclerView>(R.id.newsRecyclerView)
-        val novedadesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
+        val novedadesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
         val listaPopulares = view.findViewById<RecyclerView>(R.id.popularRecyclerView)
-        val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
+        val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
         listaRecomendaciones.adapter = recomendacionesRecyclerViewAdapter
         listaRecomendaciones.setHasFixedSize(true)

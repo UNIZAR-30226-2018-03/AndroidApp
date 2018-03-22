@@ -9,12 +9,12 @@ import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
  * Created by abel
  * On 7/03/18.
  */
-class Song(val id: Long, val name: String, val locationUri: String, val duration: Long, val album: Album,  val collaborators: List<User>?,  val numOfViews: Long, val numOfLikes: Long) : Recommendation {
+class Song(val id: Long, val name: String, val locationUri: String, val duration: Long, val album: Album, val collaborators: List<User>?, val numOfViews: Long, val numOfLikes: Long) : Recommendation {
 
     private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id.toString())
             .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, locationUri)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album.nombre)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album.name)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, album.creator.username)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, album.artLocationUri)

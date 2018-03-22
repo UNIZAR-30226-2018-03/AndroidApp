@@ -13,17 +13,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/foto_perfil"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/star_off" />
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/sample_image" />
 
         <TextView
             android:id="@+id/nombre_artista"
-            android:layout_width="match_parent"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="Artista" />
+            android:maxLength="15"
+            android:maxLines="2"
+            android:text="Artista"
+            android:textSize="14sp" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
