@@ -20,17 +20,20 @@
         <activity
             android:name=".activities.PlayerActivity"
             android:label="Reproductor"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activities.LoginActivity"
             android:label="Login"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
 
         <activity
             android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,17 +46,20 @@
         <activity
             android:name=".activities.ArtistActivity"
             android:label="Artista"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activities.PlaylistActivity"
             android:label="Playlist 1"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".services.MusicService"
-            android:exported="true"
-            tools:ignore="ExportedService">
+            android:exported="false"
+            tools:ignore="ExportedService"
+         >
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>

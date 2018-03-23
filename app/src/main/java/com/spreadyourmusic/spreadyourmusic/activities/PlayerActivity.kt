@@ -1,7 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
 import android.content.ComponentName
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -156,7 +155,12 @@ class PlayerActivity : AppCompatActivity() {
 
         albumArtCircularMusicProgressBar.setOnCircularBarChangeListener(object : OnCircularSeekBarChangeListener {
             override fun onProgressChanged(circularBar: CircularMusicProgressBar?, progress: Int, fromUser: Boolean) {
-               // startTimeTextView.text = DateUtils.formatElapsedTime(((progress.toFloat() / 100) * songDuration.toFloat()).toLong())
+                if (fromUser) {
+                    //Todo: Hacer que sea mas eficiente evitando tantas llamadas, intentar que solamente se llame una vez (para ello habria que modificar la clase base)
+                    MediaControllerCompat.getMediaController(this@PlayerActivity).getTransportControls().seekTo((songDuration.toFloat() * (progress.toFloat() / 100)).toLong());
+                }
+
+
             }
 
             override fun onClick(circularBar: CircularMusicProgressBar?) {
@@ -166,12 +170,7 @@ class PlayerActivity : AppCompatActivity() {
             }
         })
 
-        // Only update from the intent if we are not recreating from a config change:
-        if (savedInstanceState == null) {
-            updateFromParams(intent)
-        }
-
-       mMediaBrowser = MediaBrowserCompat(this,
+        mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
 
     }
@@ -198,16 +197,6 @@ class PlayerActivity : AppCompatActivity() {
         if (state != null && (state.state == PlaybackStateCompat.STATE_PLAYING || state.state == PlaybackStateCompat.STATE_BUFFERING)) {
             scheduleSeekbarUpdate()
         }
-    }
-
-    private fun updateFromParams(intent: Intent?) {
-        /*if (intent != null) {
-           val description = intent.getParcelableExtra<MediaDescriptionCompat>(
-                  MusicPlayerActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION)
-            if (description != null) {
-                updateMediaDescription(description)
-            }
-        }*/
     }
 
     private fun scheduleSeekbarUpdate() {
@@ -276,50 +265,57 @@ class PlayerActivity : AppCompatActivity() {
 
         when (state.state) {
             PlaybackStateCompat.STATE_PLAYING -> {
-                playPauseImageButton.setVisibility(VISIBLE)
+                playPauseImageButton.visibility = VISIBLE
                 playPauseImageButton.setImageDrawable(mPauseDrawable)
                 scheduleSeekbarUpdate()
             }
             PlaybackStateCompat.STATE_PAUSED -> {
-                playPauseImageButton.setVisibility(VISIBLE)
+                playPauseImageButton.visibility = VISIBLE
                 playPauseImageButton.setImageDrawable(mPlayDrawable)
                 stopSeekbarUpdate()
             }
             PlaybackStateCompat.STATE_NONE, PlaybackStateCompat.STATE_STOPPED -> {
-                playPauseImageButton.setVisibility(VISIBLE)
+                playPauseImageButton.visibility = VISIBLE
                 playPauseImageButton.setImageDrawable(mPlayDrawable)
                 stopSeekbarUpdate()
             }
             PlaybackStateCompat.STATE_BUFFERING -> {
-                playPauseImageButton.setVisibility(INVISIBLE)
+                playPauseImageButton.visibility = INVISIBLE
                 stopSeekbarUpdate()
             }
         }
 
-        nextSongImageButton.setVisibility(if (state.actions and PlaybackStateCompat.ACTION_SKIP_TO_NEXT == 0L)
+        nextSongImageButton.visibility = if (state.actions and PlaybackStateCompat.ACTION_SKIP_TO_NEXT == 0L)
             INVISIBLE
         else
-            VISIBLE)
-        previousSongImageButton.setVisibility(if (state.actions and PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS == 0L)
+            VISIBLE
+
+        previousSongImageButton.visibility = if (state.actions and PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS == 0L)
             INVISIBLE
         else
-            VISIBLE)
+            VISIBLE
     }
+
+    private var lastProgress = 0
 
     private fun updateProgress() {
         if (mLastPlaybackState == null) {
             return
         }
-        var currentPosition = (mLastPlaybackState as PlaybackStateCompat).getPosition()
-        if ((mLastPlaybackState as PlaybackStateCompat).getState() == PlaybackStateCompat.STATE_PLAYING) {
+        var currentPosition = (mLastPlaybackState as PlaybackStateCompat).position
+        if ((mLastPlaybackState as PlaybackStateCompat).state == PlaybackStateCompat.STATE_PLAYING) {
             // Calculate the elapsed time between the last position update and now and unless
             // paused, we can assume (delta * speed) + current position is approximately the
             // latest position. This ensure that we do not repeatedly call the getPlaybackState()
             // on MediaControllerCompat.
-            val timeDelta = SystemClock.elapsedRealtime() - (mLastPlaybackState as PlaybackStateCompat).getLastPositionUpdateTime()
-            currentPosition += (timeDelta.toInt() * (mLastPlaybackState as PlaybackStateCompat).getPlaybackSpeed()).toLong()
+            val timeDelta = SystemClock.elapsedRealtime() - (mLastPlaybackState as PlaybackStateCompat).lastPositionUpdateTime
+            currentPosition += (timeDelta.toInt() * (mLastPlaybackState as PlaybackStateCompat).playbackSpeed).toLong()
         }
         startTimeTextView.text = DateUtils.formatElapsedTime((currentPosition.toFloat() / 1000).toLong())
-        albumArtCircularMusicProgressBar.setValue((currentPosition.toFloat()/songDuration.toFloat()) * 100)
+        val progress = (currentPosition.toFloat() / songDuration.toFloat()) * 100
+        if (progress.toInt() != lastProgress) {
+            lastProgress = progress.toInt()
+            albumArtCircularMusicProgressBar.setValue(progress)
+        }
     }
 }

@@ -31,6 +31,7 @@ fun obtainRecommendations(): List<Recommendation> {
     devolver.add(cancion2)
     devolver.add(cancion1)
     devolver.add(playlist)
+    devolver.add(autor2)
     return devolver
 }
 

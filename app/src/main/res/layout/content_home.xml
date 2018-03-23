@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment"
-    android:background="@drawable/home_bg"
+    android:background="@android:color/white"
     >
 
     <TextView

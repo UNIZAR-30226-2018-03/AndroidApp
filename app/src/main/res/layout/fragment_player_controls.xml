@@ -10,22 +10,23 @@
         android:id="@+id/songAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="Trey Songz | TREMAINE , 2014"
+        android:text="Trey Songz"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/songTitle"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/songTitle" />
 
     <TextView
         android:id="@+id/songTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="31dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Animals" />
@@ -33,12 +34,12 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
@@ -59,7 +60,7 @@
             android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
+            app:srcCompat="@drawable/ic_play_circle_filled_white_24dp" />
 
         <ImageButton
             android:id="@+id/nextSong"
@@ -77,11 +78,11 @@
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:alpha="0.5"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_shuffle_white_24dp"
-            android:alpha="0.5"
             tools:layout_editor_absoluteY="60dp" />
     </LinearLayout>
 
