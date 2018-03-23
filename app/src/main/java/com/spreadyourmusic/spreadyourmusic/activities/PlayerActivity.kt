@@ -15,8 +15,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.format.DateUtils
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import android.widget.ImageButton
 import android.widget.ImageView
 
@@ -88,7 +86,7 @@ class PlayerActivity : AppCompatActivity() {
     private val mConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             try {
-                connectToSession(mMediaBrowser!!.getSessionToken())
+                connectToSession(mMediaBrowser!!.sessionToken)
             } catch (e: RemoteException) {
             }
 
@@ -120,8 +118,8 @@ class PlayerActivity : AppCompatActivity() {
         finalTimeTextView = findViewById(R.id.finalTime)
 
 
-        mPauseDrawable = ContextCompat.getDrawable(this, R.drawable.ic_pause_white_24dp)
-        mPlayDrawable = ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_white_24dp)
+        mPauseDrawable = ContextCompat.getDrawable(this, R.drawable.ic_pause_circle_filled_white_24dp)
+        mPlayDrawable = ContextCompat.getDrawable(this, R.drawable.ic_play_circle_filled_white_24dp)
 
 
 
@@ -157,7 +155,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun onProgressChanged(circularBar: CircularMusicProgressBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     //Todo: Hacer que sea mas eficiente evitando tantas llamadas, intentar que solamente se llame una vez (para ello habria que modificar la clase base)
-                    MediaControllerCompat.getMediaController(this@PlayerActivity).getTransportControls().seekTo((songDuration.toFloat() * (progress.toFloat() / 100)).toLong());
+                    MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo((songDuration.toFloat() * (progress.toFloat() / 100)).toLong());
                 }
 
 
@@ -265,35 +263,35 @@ class PlayerActivity : AppCompatActivity() {
 
         when (state.state) {
             PlaybackStateCompat.STATE_PLAYING -> {
-                playPauseImageButton.visibility = VISIBLE
+                playPauseImageButton.alpha = 1F
                 playPauseImageButton.setImageDrawable(mPauseDrawable)
                 scheduleSeekbarUpdate()
             }
             PlaybackStateCompat.STATE_PAUSED -> {
-                playPauseImageButton.visibility = VISIBLE
+                playPauseImageButton.alpha = 1F
                 playPauseImageButton.setImageDrawable(mPlayDrawable)
                 stopSeekbarUpdate()
             }
             PlaybackStateCompat.STATE_NONE, PlaybackStateCompat.STATE_STOPPED -> {
-                playPauseImageButton.visibility = VISIBLE
+                playPauseImageButton.alpha = 1F
                 playPauseImageButton.setImageDrawable(mPlayDrawable)
                 stopSeekbarUpdate()
             }
             PlaybackStateCompat.STATE_BUFFERING -> {
-                playPauseImageButton.visibility = INVISIBLE
+                playPauseImageButton.alpha = 0.5F
                 stopSeekbarUpdate()
             }
         }
 
-        nextSongImageButton.visibility = if (state.actions and PlaybackStateCompat.ACTION_SKIP_TO_NEXT == 0L)
-            INVISIBLE
+        /*nextSongImageButton.visibility = if (MusicQueueManager.getInstance().currentQueueSize == 1)
+            View.INVISIBLE
         else
-            VISIBLE
+            View.VISIBLE*/
 
-        previousSongImageButton.visibility = if (state.actions and PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS == 0L)
-            INVISIBLE
+       /* previousSongImageButton.visibility = if (MusicQueueManager.getInstance().currentQueueSize == 1)
+            View.INVISIBLE
         else
-            VISIBLE
+            View.VISIBLE*/
     }
 
     private var lastProgress = 0

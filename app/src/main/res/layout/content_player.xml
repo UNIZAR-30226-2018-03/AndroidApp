@@ -139,14 +139,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
-        android:background="@drawable/circle_play"
+        android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toStartOf="@+id/nextSong"
         app:layout_constraintStart_toEndOf="@+id/previousSong"
         app:layout_constraintTop_toBottomOf="@+id/songAuthor"
         app:layout_constraintVertical_bias="0.3"
-        app:srcCompat="@drawable/ic_play_arrow_white_24dp"
+        app:srcCompat="@drawable/ic_play_circle_filled_white_24dp"
         />
 
     <ImageButton

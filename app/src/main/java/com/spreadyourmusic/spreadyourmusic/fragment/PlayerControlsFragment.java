@@ -24,9 +24,6 @@ public class PlayerControlsFragment extends Fragment {
     private ImageButton mPlayPause;
     private TextView mTitle;
     private TextView mSubtitle;
-    //private ImageView mAlbumArt;
-    // private String mArtUrl;
-
     // Receive callbacks from the MediaController. Here we update our state such as which queue
     // is being shown, the current title and description and the PlaybackState.
     private final MediaControllerCompat.Callback mCallback = new MediaControllerCompat.Callback() {
@@ -48,28 +45,12 @@ public class PlayerControlsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_player_controls, container, false);
-
-        mPlayPause = (ImageButton) rootView.findViewById(R.id.playPauseSong);
+        mPlayPause = rootView.findViewById(R.id.playPauseSong);
         mPlayPause.setEnabled(true);
         mPlayPause.setOnClickListener(mButtonListener);
 
-        mTitle = (TextView) rootView.findViewById(R.id.songTitle);
-        mSubtitle = (TextView) rootView.findViewById(R.id.songAuthor);
-        /*
-        rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FullScreenPlayerActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-                MediaMetadataCompat metadata = controller.getMetadata();
-                if (metadata != null) {
-                    intent.putExtra(MusicPlayerActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION,
-                        metadata.getDescription());
-                }
-                startActivity(intent);
-            }
-        });*/
+        mTitle = rootView.findViewById(R.id.songTitle);
+        mSubtitle = rootView.findViewById(R.id.songAuthor);
         return rootView;
     }
 
@@ -110,35 +91,6 @@ public class PlayerControlsFragment extends Fragment {
 
         mTitle.setText(metadata.getDescription().getTitle());
         mSubtitle.setText(metadata.getDescription().getSubtitle());
-      /*  String artUrl = null;
-        if (metadata.getDescription().getIconUri() != null) {
-            artUrl = metadata.getDescription().getIconUri().toString();
-        }
-        if (!TextUtils.equals(artUrl, mArtUrl)) {
-            mArtUrl = artUrl;
-            Bitmap art = metadata.getDescription().getIconBitmap();
-            AlbumArtCache cache = AlbumArtCache.getInstance();
-            if (art == null) {
-                art = cache.getIconImage(mArtUrl);
-            }
-            if (art != null) {
-                mAlbumArt.setImageBitmap(art);
-            } else {
-                cache.fetch(artUrl, new AlbumArtCache.FetchListener() {
-                            @Override
-                            public void onFetched(String artUrl, Bitmap bitmap, Bitmap icon) {
-                                if (icon != null) {
-                                    LogHelper.d(TAG, "album art icon of w=", icon.getWidth(),
-                                            " h=", icon.getHeight());
-                                    if (isAdded()) {
-                                        mAlbumArt.setImageBitmap(icon);
-                                    }
-                                }
-                            }
-                        }
-                );
-            }
-        }*/
     }
 
     private void onPlaybackStateChanged(PlaybackStateCompat state) {
@@ -161,10 +113,10 @@ public class PlayerControlsFragment extends Fragment {
 
         if (enablePlay) {
             mPlayPause.setImageDrawable(
-                    ContextCompat.getDrawable(getActivity(), R.drawable.ic_play_arrow_white_24dp));
+                    ContextCompat.getDrawable(getActivity(), R.drawable.ic_play_circle_filled_white_24dp));
         } else {
             mPlayPause.setImageDrawable(
-                    ContextCompat.getDrawable(getActivity(), R.drawable.ic_pause_white_24dp));
+                    ContextCompat.getDrawable(getActivity(), R.drawable.ic_pause_circle_filled_white_24dp));
         }
     }
 
