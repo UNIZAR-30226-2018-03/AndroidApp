@@ -1,10 +1,9 @@
 package com.spreadyourmusic.spreadyourmusic.fragment
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,28 +11,31 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.activities.PlayerActivity
-import com.spreadyourmusic.spreadyourmusic.activities.PlaylistActivity
 import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerViewAdapter
-import com.spreadyourmusic.spreadyourmusic.helpers.obtainNewsSongs
-import com.spreadyourmusic.spreadyourmusic.helpers.obtainPopularSongs
-import com.spreadyourmusic.spreadyourmusic.helpers.obtainRecommendations
+import com.spreadyourmusic.spreadyourmusic.controller.obtainNewsSongs
+import com.spreadyourmusic.spreadyourmusic.controller.obtainPopularSongs
+import com.spreadyourmusic.spreadyourmusic.controller.obtainRecommendations
+import com.spreadyourmusic.spreadyourmusic.models.Playlist
+import com.spreadyourmusic.spreadyourmusic.models.Song
+import com.spreadyourmusic.spreadyourmusic.models.User
 
 class HomeFragment : Fragment() {
-
+    private var mSongSelectedListener: (Song) -> Unit = {}
+    private var mUserSelectedListener: (User) -> Unit = {}
+    private var mPlaylistSelectedListener: (Playlist) -> Unit = {}
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val inflaterD = inflater.inflate(R.layout.content_home, container, false)
-        val listaRecomendaciones = inflaterD.findViewById<RecyclerView>(R.id.recommendationsRecyclerView)
-        val recomendacionesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
+        val view = inflater.inflate(R.layout.content_home, container, false)
+        val listaRecomendaciones = view.findViewById<RecyclerView>(R.id.recommendationsRecyclerView)
+        val recomendacionesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
-        val listaNovedades = inflaterD.findViewById<RecyclerView>(R.id.newsRecyclerView)
-        val novedadesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
+        val listaNovedades = view.findViewById<RecyclerView>(R.id.newsRecyclerView)
+        val novedadesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
-        val listaPopulares = inflaterD.findViewById<RecyclerView>(R.id.popularRecyclerView)
-        val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter()
+        val listaPopulares = view.findViewById<RecyclerView>(R.id.popularRecyclerView)
+        val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
         listaRecomendaciones.adapter = recomendacionesRecyclerViewAdapter
         listaRecomendaciones.setHasFixedSize(true)
@@ -54,33 +56,48 @@ class HomeFragment : Fragment() {
         listaPopulares.itemAnimator = DefaultItemAnimator()
 
         recomendacionesRecyclerViewAdapter.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
-            startActivity(intent)
+            when (it) {
+                is Song -> mSongSelectedListener(it)
+                is User -> mUserSelectedListener(it)
+                is Playlist -> mPlaylistSelectedListener(it)
+            }
         }
 
-        recomendacionesRecyclerViewAdapter.changeData(obtainRecommendations(activity!!.applicationContext))
+        recomendacionesRecyclerViewAdapter.changeData(obtainRecommendations())
 
         popularesRecyclerViewAdapter.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
-            startActivity(intent)
+            when (it) {
+                is Song -> mSongSelectedListener(it)
+                is User -> mUserSelectedListener(it)
+                is Playlist -> mPlaylistSelectedListener(it)
+            }
         }
 
-        popularesRecyclerViewAdapter.changeData(obtainPopularSongs(activity!!.applicationContext))
+        popularesRecyclerViewAdapter.changeData(obtainPopularSongs())
 
         novedadesRecyclerViewAdapter.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
-            startActivity(intent)
+            when (it) {
+                is Song -> mSongSelectedListener(it)
+                is User -> mUserSelectedListener(it)
+                is Playlist -> mPlaylistSelectedListener(it)
+            }
         }
 
-        novedadesRecyclerViewAdapter.changeData(obtainNewsSongs(activity!!.applicationContext))
+        novedadesRecyclerViewAdapter.changeData(obtainNewsSongs())
 
         // Inflate the layout for this fragment
-        return inflaterD
+        return view
     }
 
     companion object {
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
+        fun newInstance(mmSongSelectedListener: (Song) -> Unit, mmUserSelectedListener: (User) -> Unit,
+                        mmPlaylistSelectedListener: (Playlist) -> Unit): HomeFragment {
+
+            val fragment = HomeFragment()
+            fragment.mSongSelectedListener = mmSongSelectedListener
+            fragment.mUserSelectedListener = mmUserSelectedListener
+            fragment.mPlaylistSelectedListener = mmPlaylistSelectedListener
+            return fragment
         }
     }
 }// Required empty public constructor

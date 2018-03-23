@@ -59,7 +59,7 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:progress_color="@color/colorPrimaryDark"
+        app:progress_color="@android:color/white"
      />
 
     <TextView
@@ -139,22 +139,21 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
-        android:background="@drawable/circle_play"
+        android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toStartOf="@+id/nextSong"
         app:layout_constraintStart_toEndOf="@+id/previousSong"
         app:layout_constraintTop_toBottomOf="@+id/songAuthor"
         app:layout_constraintVertical_bias="0.3"
-        app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
+        app:srcCompat="@drawable/ic_play_circle_filled_white_24dp"
+        />
 
     <ImageButton
         android:id="@+id/nextSong"
         android:layout_width="40dp"
-
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
-
         android:layout_marginEnd="56dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
@@ -177,10 +176,11 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="0.5"
         app:srcCompat="@drawable/ic_shuffle_white_24dp" />
 
     <ImageButton
-        android:id="@+id/downloadSong"
+        android:id="@+id/downloadOrDeleteSong"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginBottom="8dp"
