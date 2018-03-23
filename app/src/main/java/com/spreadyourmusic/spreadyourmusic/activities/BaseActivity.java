@@ -41,8 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
     @Override
     protected void onStart() {
         super.onStart();
-        mControlsFragment = (PlayerControlsFragment) getFragmentManager()
-                .findFragmentById(R.id.fragment_player_controls);
+        mControlsFragment = (PlayerControlsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_player_controls);
 
         hidePlaybackControls();
 
@@ -92,7 +91,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
 
     protected void showPlaybackControls() {
         if (NetworkHelper.isOnline(this)) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(
                             R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom,
                             R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom)
@@ -102,7 +101,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
     }
 
     protected void hidePlaybackControls() {
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .hide(mControlsFragment)
                 .commit();
     }

@@ -362,22 +362,6 @@ public class MediaNotificationManager extends BroadcastReceiver {
         builder.setOngoing(mPlaybackState.getState() == PlaybackStateCompat.STATE_PLAYING);
     }
 
-   /* private void fetchBitmapFromURLAsync(final String bitmapUrl,
-                                         final NotificationCompat.Builder builder) {
-        AlbumArtCache.getInstance().fetch(bitmapUrl, new AlbumArtCache.FetchListener() {
-            @Override
-            public void onFetched(String artUrl, Bitmap bitmap, Bitmap icon) {
-                if (mMetadata != null && mMetadata.getDescription().getIconUri() != null &&
-                        mMetadata.getDescription().getIconUri().toString().equals(artUrl)) {
-                    // If the media is still the same, update the notification:
-                    LogHelper.d(TAG, "fetchBitmapFromURLAsync: set bitmap to ", artUrl);
-                    builder.setLargeIcon(bitmap);
-                    addActions(builder);
-                    mNotificationManager.notify(NOTIFICATION_ID, builder.build());
-                }
-            }
-        });
-    }*/
 
     /**
      * Creates Notification Channel. This is required in Android O+ to display notifications.

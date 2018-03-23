@@ -198,7 +198,7 @@ public final class LocalPlayback implements Playback {
             releaseResources(false); // release everything except the player
             MediaMetadataCompat track = mMusicQueueManager.getCurrentMusicMetadata();
 
-            String source = track.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
+            String source = track.getString(MusicProviderSource.Companion.getCUSTOM_METADATA_TRACK_SOURCE());
             if (source != null) {
                 source = source.replaceAll(" ", "%20"); // Escape spaces for URLs
             }
