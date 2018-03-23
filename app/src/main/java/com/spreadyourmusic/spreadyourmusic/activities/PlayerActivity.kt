@@ -15,6 +15,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.format.DateUtils
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 
@@ -24,6 +25,7 @@ import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import info.abdolahi.CircularMusicProgressBar
 import info.abdolahi.OnCircularSeekBarChangeListener
 import kotlinx.android.synthetic.main.app_bar_home.*
@@ -283,15 +285,12 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        /*nextSongImageButton.visibility = if (MusicQueueManager.getInstance().currentQueueSize == 1)
+        nextSongImageButton.visibility = if (MusicQueueManager.getInstance().currentQueueSize == 1)
             View.INVISIBLE
         else
-            View.VISIBLE*/
+            View.VISIBLE
 
-       /* previousSongImageButton.visibility = if (MusicQueueManager.getInstance().currentQueueSize == 1)
-            View.INVISIBLE
-        else
-            View.VISIBLE*/
+        previousSongImageButton.visibility = nextSongImageButton.visibility
     }
 
     private var lastProgress = 0
