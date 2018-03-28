@@ -17,8 +17,17 @@
     <string name="recommendations">Recomendaciones</string>
     <string name="news">Novedades</string>
     <string name="populars">Populares</string>
-
     <string name="follow">Follow</string>
+    <string name="trends">Tendencias</string>
+
+    <!-- Recomendaciones -->
+    <string name="playlist_updates">Playlists actualizadas</string>
+    <string name="new_songs">Canciones nuevas</string>
+
+    <!-- Novedades -->
+    <string name="popular_now">Populares ahora</string>
+    <string name="popular_in_my_country">Populares en mi país</string>
+    <string name="popular_in_the_world">Populares en el mundo</string>
 
     <!-- Navigation drawer-->
     <string name="browse">Explorar</string>

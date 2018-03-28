@@ -22,8 +22,8 @@
             />
         <item
             android:icon="@android:drawable/presence_online"
-            android:title="@string/recommendations"
-            android:id="@+id/recommendations"
+            android:title="@string/trends"
+            android:id="@+id/trends"
             />
     </group>
 

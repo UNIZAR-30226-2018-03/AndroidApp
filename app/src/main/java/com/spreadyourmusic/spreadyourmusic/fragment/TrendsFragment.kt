@@ -12,14 +12,12 @@ import android.view.ViewGroup
 
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerViewAdapter
-import com.spreadyourmusic.spreadyourmusic.controller.obtainNewsSongs
-import com.spreadyourmusic.spreadyourmusic.controller.obtainPopularSongs
-import com.spreadyourmusic.spreadyourmusic.controller.obtainRecommendations
+import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 
-class HomeFragment : Fragment() {
+class TrendsFragment : Fragment() {
     private var mSongSelectedListener: (Song) -> Unit = {}
     private var mUserSelectedListener: (User) -> Unit = {}
     private var mPlaylistSelectedListener: (Playlist) -> Unit = {}
@@ -27,35 +25,35 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.content_home, container, false)
-        val listaRecomendaciones = view.findViewById<RecyclerView>(R.id.recommendationsRecyclerView)
-        val recomendacionesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val view = inflater.inflate(R.layout.content_popular, container, false)
+        val listaTrends = view.findViewById<RecyclerView>(R.id.popularNowRecyclerView)
+        val trendsRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
-        val listaNovedades = view.findViewById<RecyclerView>(R.id.newsRecyclerView)
-        val novedadesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val listaPopularInMyCountry = view.findViewById<RecyclerView>(R.id.popularInMyCountryRecyclerView)
+        val popularInMyCountryRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
-        val listaPopulares = view.findViewById<RecyclerView>(R.id.popularRecyclerView)
+        val listaPopulares = view.findViewById<RecyclerView>(R.id.popularInTheWorldRecyclerView)
         val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
 
-        listaRecomendaciones.adapter = recomendacionesRecyclerViewAdapter
-        listaRecomendaciones.setHasFixedSize(true)
+        listaTrends.adapter = trendsRecyclerViewAdapter
+        listaTrends.setHasFixedSize(true)
 
-        listaNovedades.adapter = novedadesRecyclerViewAdapter
-        listaNovedades.setHasFixedSize(true)
+        listaPopularInMyCountry.adapter = popularInMyCountryRecyclerViewAdapter
+        listaPopularInMyCountry.setHasFixedSize(true)
 
         listaPopulares.adapter = popularesRecyclerViewAdapter
         listaPopulares.setHasFixedSize(true)
 
-        listaRecomendaciones.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        listaRecomendaciones.itemAnimator = DefaultItemAnimator()
+        listaTrends.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        listaTrends.itemAnimator = DefaultItemAnimator()
 
-        listaNovedades.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        listaNovedades.itemAnimator = DefaultItemAnimator()
+        listaPopularInMyCountry.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        listaPopularInMyCountry.itemAnimator = DefaultItemAnimator()
 
         listaPopulares.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         listaPopulares.itemAnimator = DefaultItemAnimator()
 
-        recomendacionesRecyclerViewAdapter.setOnClickListener {
+        trendsRecyclerViewAdapter.setOnClickListener {
             when (it) {
                 is Song -> mSongSelectedListener(it)
                 is User -> mUserSelectedListener(it)
@@ -63,7 +61,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        recomendacionesRecyclerViewAdapter.changeData(obtainRecommendations())
+        trendsRecyclerViewAdapter.changeData(obtainTrendSongs())
 
         popularesRecyclerViewAdapter.setOnClickListener {
             when (it) {
@@ -75,7 +73,7 @@ class HomeFragment : Fragment() {
 
         popularesRecyclerViewAdapter.changeData(obtainPopularSongs())
 
-        novedadesRecyclerViewAdapter.setOnClickListener {
+        popularInMyCountryRecyclerViewAdapter.setOnClickListener {
             when (it) {
                 is Song -> mSongSelectedListener(it)
                 is User -> mUserSelectedListener(it)
@@ -83,7 +81,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        novedadesRecyclerViewAdapter.changeData(obtainNewsSongs())
+        popularInMyCountryRecyclerViewAdapter.changeData(obtainTrendInMyCountry())
 
         // Inflate the layout for this fragment
         return view
@@ -91,9 +89,9 @@ class HomeFragment : Fragment() {
 
     companion object {
         fun newInstance(mmSongSelectedListener: (Song) -> Unit, mmUserSelectedListener: (User) -> Unit,
-                        mmPlaylistSelectedListener: (Playlist) -> Unit): HomeFragment {
+                        mmPlaylistSelectedListener: (Playlist) -> Unit): TrendsFragment {
 
-            val fragment = HomeFragment()
+            val fragment = TrendsFragment()
             fragment.mSongSelectedListener = mmSongSelectedListener
             fragment.mUserSelectedListener = mmUserSelectedListener
             fragment.mPlaylistSelectedListener = mmPlaylistSelectedListener

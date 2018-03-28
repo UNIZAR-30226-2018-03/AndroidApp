@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.spreadyourmusic.spreadyourmusic.services.MusicService;
-import com.spreadyourmusic.spreadyourmusic.media.MediaBrowserProvider;
 import com.spreadyourmusic.spreadyourmusic.fragment.PlayerControlsFragment;
 import com.spreadyourmusic.spreadyourmusic.helpers.media.NetworkHelper;
 import com.spreadyourmusic.spreadyourmusic.R;
@@ -22,7 +21,7 @@ import com.spreadyourmusic.spreadyourmusic.R;
 /**
  * Base activity for activities that need to show a playback control fragment when media is playing.
  */
-public abstract class BaseActivity extends AppCompatActivity implements MediaBrowserProvider {
+public abstract class BaseActivity extends AppCompatActivity {
 
     private MediaBrowserCompat mMediaBrowser;
     private PlayerControlsFragment mControlsFragment;
@@ -41,8 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
     @Override
     protected void onStart() {
         super.onStart();
-        mControlsFragment = (PlayerControlsFragment) getFragmentManager()
-                .findFragmentById(R.id.fragment_player_controls);
+        mControlsFragment = (PlayerControlsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_player_controls);
 
         hidePlaybackControls();
 
@@ -81,18 +79,13 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
         }
     }
 
-    @Override
-    public MediaBrowserCompat getMediaBrowser() {
-        return mMediaBrowser;
-    }
-
     protected void onMediaControllerConnected() {
         // empty implementation, can be overridden by clients.
     }
 
     protected void showPlaybackControls() {
         if (NetworkHelper.isOnline(this)) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(
                             R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom,
                             R.animator.slide_in_from_bottom, R.animator.slide_out_to_bottom)
@@ -102,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
     }
 
     protected void hidePlaybackControls() {
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .hide(mControlsFragment)
                 .commit();
     }
