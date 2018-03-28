@@ -92,8 +92,6 @@ fun obtainUpdatedPlaylists(): List<Playlist> {
     val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3")
     val cancion2 = Song(album = album2, id = 2, name = "The Messenger", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3")
 
-    val cancion3 = Song(album = album2, id = 2, name = "Malabar", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 710000L, locationUri = "http://155.210.13.105:7480/TEST/malabar.mp3")
-
     val listaCanciones = ArrayList<Song>()
     listaCanciones.add(cancion1)
     listaCanciones.add(cancion2)
@@ -102,4 +100,8 @@ fun obtainUpdatedPlaylists(): List<Playlist> {
 
     devolver.add(playlist)
     return devolver
+}
+
+fun obtainResultFromQuery(query: String): List<Recommendation> {
+    return obtainRecommendations()
 }
