@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment"
     android:background="@android:color/white"
-    >
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <TextView
-
         android:id="@+id/playlistUpdatesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/recommendations"
+        android:text="@string/playlist_updates"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recommendationsRecyclerView"
+        android:id="@+id/playlistUpdatesRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -33,19 +29,19 @@
         app:layout_constraintTop_toBottomOf="@+id/playlistUpdatesTextView" />
 
     <TextView
-        android:id="@+id/newsTextView"
+        android:id="@+id/newSongsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/news"
+        android:text="@string/new_songs"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recommendationsRecyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/playlistUpdatesRecyclerView" />
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/newsRecyclerView"
+        android:id="@+id/newSongsRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -53,30 +49,6 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newsTextView" />
-
-
-    <TextView
-        android:id="@+id/popularTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/populars"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newsRecyclerView" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/popularRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popularTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/newSongsTextView" />
 
 </android.support.constraint.ConstraintLayout>

@@ -9,11 +9,11 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
-import android.widget.Toast
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.fragment.BrowseFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment
+import com.spreadyourmusic.spreadyourmusic.fragment.NewsFragment
+import com.spreadyourmusic.spreadyourmusic.fragment.TrendsFragment
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
@@ -48,10 +48,12 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         // Handle navigation view item clicks here.
         val fragmento: Fragment? = when (item.itemId) {
-            R.id.browse ->
-                BrowseFragment.newInstance()
+            R.id.trends ->
+                TrendsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
             R.id.home ->
                 HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+            R.id.news ->
+                NewsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
             else ->
                 null
         }

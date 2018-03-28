@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.spreadyourmusic.spreadyourmusic.services.MusicService;
-import com.spreadyourmusic.spreadyourmusic.media.MediaBrowserProvider;
 import com.spreadyourmusic.spreadyourmusic.fragment.PlayerControlsFragment;
 import com.spreadyourmusic.spreadyourmusic.helpers.media.NetworkHelper;
 import com.spreadyourmusic.spreadyourmusic.R;
@@ -22,7 +21,7 @@ import com.spreadyourmusic.spreadyourmusic.R;
 /**
  * Base activity for activities that need to show a playback control fragment when media is playing.
  */
-public abstract class BaseActivity extends AppCompatActivity implements MediaBrowserProvider {
+public abstract class BaseActivity extends AppCompatActivity {
 
     private MediaBrowserCompat mMediaBrowser;
     private PlayerControlsFragment mControlsFragment;
@@ -78,11 +77,6 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
             // Lastly, it will rely on the system behavior for back
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public MediaBrowserCompat getMediaBrowser() {
-        return mMediaBrowser;
     }
 
     protected void onMediaControllerConnected() {
