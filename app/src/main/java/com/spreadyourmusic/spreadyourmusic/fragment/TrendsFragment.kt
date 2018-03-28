@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerViewAdapter
+import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHorizontalRecyclerViewAdapter
 import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
@@ -25,15 +25,15 @@ class TrendsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.content_popular, container, false)
+        val view = inflater.inflate(R.layout.content_trends, container, false)
         val listaTrends = view.findViewById<RecyclerView>(R.id.popularNowRecyclerView)
-        val trendsRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val trendsRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
         val listaPopularInMyCountry = view.findViewById<RecyclerView>(R.id.popularInMyCountryRecyclerView)
-        val popularInMyCountryRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val popularInMyCountryRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
         val listaPopulares = view.findViewById<RecyclerView>(R.id.popularInTheWorldRecyclerView)
-        val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val popularesRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
         listaTrends.adapter = trendsRecyclerViewAdapter
         listaTrends.setHasFixedSize(true)
