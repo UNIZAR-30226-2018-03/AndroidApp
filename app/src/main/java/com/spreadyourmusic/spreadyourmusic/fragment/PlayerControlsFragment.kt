@@ -14,6 +14,8 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.controller.getCurrentSong
+import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 
 /**
  * Player buttons controller
@@ -23,6 +25,8 @@ class PlayerControlsFragment : Fragment() {
     private var mPlayPause: ImageButton? = null
     private var mTitle: TextView? = null
     private var mSubtitle: TextView? = null
+    private var nextSongImageButton:ImageButton? = null
+    private var previousSongImageButton: ImageButton? = null
 
     private val mCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
@@ -37,7 +41,7 @@ class PlayerControlsFragment : Fragment() {
         }
     }
 
-    private val mButtonListener = View.OnClickListener { v ->
+    private val mPlayPauseListener = View.OnClickListener { v ->
         val controller = MediaControllerCompat.getMediaController(activity!!)
         val stateObj = controller.playbackState
         val state = stateObj?.state ?: PlaybackStateCompat.STATE_NONE
@@ -54,15 +58,30 @@ class PlayerControlsFragment : Fragment() {
         }
     }
 
+    private val mNextSongListener = View.OnClickListener { _ ->
+        val controls = MediaControllerCompat.getMediaController(activity!!).transportControls
+        controls.skipToNext()
+    }
+
+    private val mPreviousSongListener = View.OnClickListener { _ ->
+        val controls = MediaControllerCompat.getMediaController(activity!!).transportControls
+        controls.skipToPrevious()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_player_controls, container, false)
         mPlayPause = rootView.findViewById(R.id.playPauseSong)
         mPlayPause!!.isEnabled = true
-        mPlayPause!!.setOnClickListener(mButtonListener)
+        mPlayPause!!.setOnClickListener(mPlayPauseListener)
 
         mTitle = rootView.findViewById(R.id.songTitle)
         mSubtitle = rootView.findViewById(R.id.songAuthor)
+
+        nextSongImageButton = rootView.findViewById(R.id.nextSong)
+        nextSongImageButton!!.setOnClickListener(mNextSongListener)
+        previousSongImageButton = rootView.findViewById(R.id.previousSong)
+        previousSongImageButton!!.setOnClickListener(mPreviousSongListener)
         return rootView
     }
 
@@ -91,8 +110,14 @@ class PlayerControlsFragment : Fragment() {
 
     private fun onMetadataChanged(metadata: MediaMetadataCompat?) {
         if (activity != null && metadata != null) {
-            mTitle!!.text = metadata.description.title
-            mSubtitle!!.text = metadata.description.subtitle
+            val currentSong = getCurrentSong()
+            mTitle!!.text = currentSong.name
+            mSubtitle!!.text = currentSong.album.creator.username
+            nextSongImageButton!!.visibility = if (MusicQueueManager.getInstance().currentQueueSize == 1)
+                View.INVISIBLE
+            else
+                View.VISIBLE
+            previousSongImageButton!!.visibility = nextSongImageButton!!.visibility
         }
     }
 

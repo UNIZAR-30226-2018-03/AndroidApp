@@ -1,5 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
+import android.app.Activity
+import android.content.Intent
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Song
 
@@ -20,16 +22,41 @@ fun changeToPreviousSong(){
     MusicQueueManager.getInstance().skipQueuePosition(-1)
 }
 
-fun setFavoriteCurrentSong(){
+fun setFavoriteCurrentSong(favorite: Boolean){
 
+}
+
+fun isCurrentSongFavorite(): Boolean{
+    // TODO: Hacer
+    return false
 }
 
 // Si es true descarga la cancion, sino la elimina
-fun downloadCurrentSong(){
+fun downloadCurrentSong(download: Boolean){
 
 }
 
-// Si es true crea reproduccion aleatoria
-fun randomReproduction(){
 
+fun isCurrentSongDownloaded(): Boolean{
+    // TODO: Hacer
+    return false
+}
+
+// Si es true crea reproduccion aleatoria
+fun randomReproduction(nextState: Boolean) {
+
+}
+
+fun isRandomReproductionEnabled():Boolean{
+    // TODO: Hacer
+    return false
+}
+
+fun shareCurrentSong(activity: Activity){
+    // TODO: Hacer
+    val sendIntent = Intent()
+    sendIntent.setAction(Intent.ACTION_SEND);
+    sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+    sendIntent.setType("text/plain");
+    activity.startActivity(sendIntent)
 }
