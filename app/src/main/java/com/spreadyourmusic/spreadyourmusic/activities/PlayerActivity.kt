@@ -25,9 +25,10 @@ import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
+import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBarChangeListener
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
-import info.abdolahi.CircularMusicProgressBar
-import info.abdolahi.OnCircularSeekBarChangeListener
+
 import kotlinx.android.synthetic.main.app_bar_home.*
 
 import java.util.concurrent.Executors
@@ -51,7 +52,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var startTimeTextView: TextView
     private lateinit var finalTimeTextView: TextView
 
-    private lateinit var albumArtCircularMusicProgressBar: info.abdolahi.CircularMusicProgressBar
+    private lateinit var albumArtCircularMusicProgressBar: CircularMusicProgressBar
     private lateinit var playerBackGroundImageView: ImageView
     private lateinit var songCreatorTextView: TextView
     private lateinit var songNameTextView: TextView
@@ -71,6 +72,10 @@ class PlayerActivity : AppCompatActivity() {
     private var mLastPlaybackState: PlaybackStateCompat? = null
 
     private var songDuration: Int = 100
+
+    // Control seek bar
+    private var onProgessChangedControl = false
+    private var onLastProgessChanged = 0
 
     private val mCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
@@ -154,19 +159,21 @@ class PlayerActivity : AppCompatActivity() {
         })
 
         albumArtCircularMusicProgressBar.setOnCircularBarChangeListener(object : OnCircularSeekBarChangeListener {
+            override fun onStartTrackingTouch(seekBar: CircularMusicProgressBar?) {
+                onProgessChangedControl = false
+            }
+
+            override fun onStopTrackingTouch(seekBar: CircularMusicProgressBar?) {
+                if(onProgessChangedControl){
+                    MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo((songDuration.toFloat() * (onLastProgessChanged.toFloat() / 100)).toLong())
+                }
+            }
+
             override fun onProgressChanged(circularBar: CircularMusicProgressBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    //Todo: Hacer que sea mas eficiente evitando tantas llamadas, intentar que solamente se llame una vez (para ello habria que modificar la clase base)
-                    MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo((songDuration.toFloat() * (progress.toFloat() / 100)).toLong());
+                    onProgessChangedControl = true
+                    onLastProgessChanged = progress
                 }
-
-
-            }
-
-            override fun onClick(circularBar: CircularMusicProgressBar?) {
-            }
-
-            override fun onLongPress(circularBar: CircularMusicProgressBar?) {
             }
         })
 
