@@ -1,5 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.fragment
 
+import android.content.Intent
 import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -14,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.activities.PlayerActivity
 import com.spreadyourmusic.spreadyourmusic.controller.getCurrentSong
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 
@@ -68,6 +70,11 @@ class PlayerControlsFragment : Fragment() {
         controls.skipToPrevious()
     }
 
+    private val mBackgroundListener = View.OnClickListener { _ ->
+        val intent = Intent(activity, PlayerActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_player_controls, container, false)
@@ -82,6 +89,12 @@ class PlayerControlsFragment : Fragment() {
         nextSongImageButton!!.setOnClickListener(mNextSongListener)
         previousSongImageButton = rootView.findViewById(R.id.previousSong)
         previousSongImageButton!!.setOnClickListener(mPreviousSongListener)
+
+        val backgroundLayout : View = rootView.findViewById(R.id.fondo)
+        backgroundLayout.setOnClickListener(mBackgroundListener)
+        mTitle!!.setOnClickListener(mBackgroundListener)
+        mSubtitle!!.setOnClickListener(mBackgroundListener)
+
         return rootView
     }
 

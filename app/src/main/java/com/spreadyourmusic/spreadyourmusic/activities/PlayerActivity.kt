@@ -220,7 +220,8 @@ class PlayerActivity : AppCompatActivity() {
             updateMediaDescription(metadata.description)
             updateDuration(metadata)
         }
-        //updateProgress()
+
+        updateProgress()
         if (state != null && (state.state == PlaybackStateCompat.STATE_PLAYING || state.state == PlaybackStateCompat.STATE_BUFFERING)) {
             scheduleSeekbarUpdate()
         }

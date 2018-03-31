@@ -114,8 +114,6 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         MusicQueueManager.getInstance().setCurrentQueue(it.name, it)
         mediaController.transportControls
                 .playFromMediaId(it.getMediaItem().mediaId, null)
-        val intent = Intent(this, PlayerActivity::class.java)
-        startActivity(intent)
     }
 
     private val onUserSelected: (User) -> Unit = {
