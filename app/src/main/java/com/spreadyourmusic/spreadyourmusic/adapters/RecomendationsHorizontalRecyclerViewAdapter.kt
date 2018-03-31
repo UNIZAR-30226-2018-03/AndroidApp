@@ -19,7 +19,7 @@ import com.spreadyourmusic.spreadyourmusic.models.User
  * Created by abel
  * On 8/03/18.
  */
-class RecomendationsHomeRecyclerViewAdapter(val context: Context?) : RecyclerView.Adapter<GeneralRecyclerViewViewHolder>() {
+class RecomendationsHorizontalRecyclerViewAdapter(val context: Context?) : RecyclerView.Adapter<GeneralRecyclerViewViewHolder>() {
     private val VIEW_TYPE_SONG = 0
     private val VIEW_TYPE_USER = 1
     private val VIEW_TYPE_PLAYLIST = 2
@@ -43,16 +43,16 @@ class RecomendationsHomeRecyclerViewAdapter(val context: Context?) : RecyclerVie
                                     viewType: Int): GeneralRecyclerViewViewHolder {
         val itemView = when (viewType) {
             VIEW_TYPE_SONG ->
-                LayoutInflater.from(parent.context).inflate(R.layout.listitem_song_home, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.listitem_song_vertical, parent, false)
 
             VIEW_TYPE_USER ->
-                LayoutInflater.from(parent.context).inflate(R.layout.listitem_user_home, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.listitem_user_vertical, parent, false)
 
             VIEW_TYPE_PLAYLIST ->
-                LayoutInflater.from(parent.context).inflate(R.layout.listitem_playlist_home, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.listitem_playlist_vertical, parent, false)
 
             else ->
-                LayoutInflater.from(parent.context).inflate(R.layout.listitem_song_home, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.listitem_song_vertical, parent, false)
         }
 
         return when (viewType) { VIEW_TYPE_SONG ->

@@ -11,10 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerViewAdapter
+import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHorizontalRecyclerViewAdapter
 import com.spreadyourmusic.spreadyourmusic.controller.obtainNewsSongs
-import com.spreadyourmusic.spreadyourmusic.controller.obtainPopularSongs
-import com.spreadyourmusic.spreadyourmusic.controller.obtainRecommendations
 import com.spreadyourmusic.spreadyourmusic.controller.obtainUpdatedPlaylists
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
@@ -30,10 +28,10 @@ class NewsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.content_novedades, container, false)
         val listaPlaylistUpdatesRecomendaciones = view.findViewById<RecyclerView>(R.id.playlistUpdatesRecyclerView)
-        val playlistUpdatesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val playlistUpdatesRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
         val listaNewSongsNovedades = view.findViewById<RecyclerView>(R.id.newSongsRecyclerView)
-        val newSongsRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val newSongsRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
 
         listaPlaylistUpdatesRecomendaciones.adapter = playlistUpdatesRecyclerViewAdapter

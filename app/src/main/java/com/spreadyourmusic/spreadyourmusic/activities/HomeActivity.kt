@@ -8,9 +8,13 @@ import android.support.v4.media.session.MediaControllerCompat
 
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.SearchView
+import android.view.Menu
 import android.view.MenuItem
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.controller.obtainResultFromQuery
+import com.spreadyourmusic.spreadyourmusic.fragment.BrowserFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.NewsFragment
 import com.spreadyourmusic.spreadyourmusic.fragment.TrendsFragment
@@ -34,6 +38,35 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         nav_view.setNavigationItemSelectedListener(this)
 
         changeActualFragment(HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val mInflater = menuInflater
+        mInflater.inflate(R.menu.menu_home, menu)
+
+        if (menu != null) {
+            val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query != null) {
+                        val queryResults = obtainResultFromQuery(query)
+                        val fragmento: Fragment? = BrowserFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected, queryResults)
+
+                        if (fragmento != null) {
+                            // Todo: Comprobar si el fragmento expandido no es el actual
+                            // Insert the fragment by replacing any existing fragment
+                            changeActualFragment(fragmento)
+                        }
+                    }
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return true
+                }
+            })
+        }
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onBackPressed() {
@@ -81,8 +114,6 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         MusicQueueManager.getInstance().setCurrentQueue(it.name, it)
         mediaController.transportControls
                 .playFromMediaId(it.getMediaItem().mediaId, null)
-        val intent = Intent(this, PlayerActivity::class.java)
-        startActivity(intent)
     }
 
     private val onUserSelected: (User) -> Unit = {

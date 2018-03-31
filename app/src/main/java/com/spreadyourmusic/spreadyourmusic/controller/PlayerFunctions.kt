@@ -1,52 +1,62 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
-import android.content.Context
-import com.spreadyourmusic.spreadyourmusic.models.Album
+import android.app.Activity
+import android.content.Intent
+import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Song
-import com.spreadyourmusic.spreadyourmusic.models.User
-import java.util.*
 
 /**
  * Created by abel
  * On 8/03/18.
  */
-/*
-fun getCurrentSong(context: Context):Song{
-    val autor1 = User("Trey Songz")
-    val album = Album("TREMAINE", context)
-    val cancion1 = Song(album = album, id = 1, name = "Animal", releaseDate = GregorianCalendar(2014,12,12), numOfLikes = 15, numOfViews = 16, creator = autor1)
-    return cancion1
+
+fun getCurrentSong():Song{
+   return MusicQueueManager.getInstance().currentSong
 }
 
-fun getCurrentSongList(context: Context):List<Song>{
-    val devolver = ArrayList<Song>()
-    val autor1 = User("Autorrrrr")
-    val album = Album("PRUEBA", context)
-    val cancion1 = Song(album = album, id = 1, name = "Cancion1", releaseDate = GregorianCalendar(2014,12,12), numOfLikes = 15, numOfViews = 16, creator = autor1)
-    val cancion2 = Song(album = album, id = 2, name = "Cancion2", releaseDate = GregorianCalendar(2017,12,12), numOfLikes = 15, numOfViews = 16, creator = autor1)
-    devolver.add(cancion1)
-    devolver.add(cancion2)
-    return devolver
-}*/
+fun changeToNextSong(){
+    MusicQueueManager.getInstance().skipQueuePosition(1)
+}
 
-fun changeToNextSong(context: Context){
+fun changeToPreviousSong(){
+    MusicQueueManager.getInstance().skipQueuePosition(-1)
+}
+
+fun setFavoriteCurrentSong(favorite: Boolean){
 
 }
 
-fun changeToPreviousSong(context: Context){
-
-}
-
-fun setFavoriteCurrentSong(context: Context, estado: Boolean){
-
+fun isCurrentSongFavorite(): Boolean{
+    // TODO: Hacer
+    return false
 }
 
 // Si es true descarga la cancion, sino la elimina
-fun downloadCurrentSong(context: Context, estado: Boolean){
+fun downloadCurrentSong(download: Boolean){
 
 }
 
-// Si es true crea reproduccion aleatoria
-fun randomReproduction(context: Context, estado: Boolean){
 
+fun isCurrentSongDownloaded(): Boolean{
+    // TODO: Hacer
+    return false
+}
+
+// Si es true crea reproduccion aleatoria
+fun randomReproduction(nextState: Boolean) {
+
+}
+
+fun isRandomReproductionEnabled():Boolean{
+    // TODO: Hacer
+    return false
+}
+
+fun shareCurrentSong(activity: Activity){
+    // TODO: Hacer
+    val sendIntent = Intent()
+    sendIntent.setAction(Intent.ACTION_SEND);
+    sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+    sendIntent.setType("text/plain");
+    activity.startActivity(sendIntent)
 }

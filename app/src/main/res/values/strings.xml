@@ -19,6 +19,7 @@
     <string name="populars">Populares</string>
     <string name="follow">Follow</string>
     <string name="trends">Tendencias</string>
+    <string name="action_search">Buscar</string>
 
     <!-- Recomendaciones -->
     <string name="playlist_updates">Playlists actualizadas</string>

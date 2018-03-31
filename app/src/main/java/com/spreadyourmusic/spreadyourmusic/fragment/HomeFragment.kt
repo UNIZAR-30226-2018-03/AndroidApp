@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHomeRecyclerViewAdapter
+import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsHorizontalRecyclerViewAdapter
 import com.spreadyourmusic.spreadyourmusic.controller.obtainNewsSongs
 import com.spreadyourmusic.spreadyourmusic.controller.obtainPopularSongs
 import com.spreadyourmusic.spreadyourmusic.controller.obtainRecommendations
@@ -29,13 +29,13 @@ class HomeFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.content_home, container, false)
         val listaRecomendaciones = view.findViewById<RecyclerView>(R.id.recommendationsRecyclerView)
-        val recomendacionesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val recomendacionesRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
         val listaNovedades = view.findViewById<RecyclerView>(R.id.newsRecyclerView)
-        val novedadesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val novedadesRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
         val listaPopulares = view.findViewById<RecyclerView>(R.id.popularRecyclerView)
-        val popularesRecyclerViewAdapter = RecomendationsHomeRecyclerViewAdapter(context)
+        val popularesRecyclerViewAdapter = RecomendationsHorizontalRecyclerViewAdapter(context)
 
         listaRecomendaciones.adapter = recomendacionesRecyclerViewAdapter
         listaRecomendaciones.setHasFixedSize(true)

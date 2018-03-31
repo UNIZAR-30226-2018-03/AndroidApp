@@ -25,9 +25,11 @@ import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
+import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBarChangeListener
+import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
-import info.abdolahi.CircularMusicProgressBar
-import info.abdolahi.OnCircularSeekBarChangeListener
+
 import kotlinx.android.synthetic.main.app_bar_home.*
 
 import java.util.concurrent.Executors
@@ -51,7 +53,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var startTimeTextView: TextView
     private lateinit var finalTimeTextView: TextView
 
-    private lateinit var albumArtCircularMusicProgressBar: info.abdolahi.CircularMusicProgressBar
+    private lateinit var albumArtCircularMusicProgressBar: CircularMusicProgressBar
     private lateinit var playerBackGroundImageView: ImageView
     private lateinit var songCreatorTextView: TextView
     private lateinit var songNameTextView: TextView
@@ -71,6 +73,10 @@ class PlayerActivity : AppCompatActivity() {
     private var mLastPlaybackState: PlaybackStateCompat? = null
 
     private var songDuration: Int = 100
+
+    // Control seek bar
+    private var onProgessChangedControl = false
+    private var onLastProgessChanged = 0
 
     private val mCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
@@ -154,25 +160,46 @@ class PlayerActivity : AppCompatActivity() {
         })
 
         albumArtCircularMusicProgressBar.setOnCircularBarChangeListener(object : OnCircularSeekBarChangeListener {
-            override fun onProgressChanged(circularBar: CircularMusicProgressBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) {
-                    //Todo: Hacer que sea mas eficiente evitando tantas llamadas, intentar que solamente se llame una vez (para ello habria que modificar la clase base)
-                    MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo((songDuration.toFloat() * (progress.toFloat() / 100)).toLong());
+            override fun onStartTrackingTouch(seekBar: CircularMusicProgressBar?) {
+                onProgessChangedControl = false
+
+                // Mientras se modifica el seekbar, este no es actualizado mediante programa
+                val state = MediaControllerCompat.getMediaController(this@PlayerActivity).playbackState
+                if (state != null) {
+                    if(state.state == PlaybackStateCompat.STATE_PLAYING ||
+                            state.state == PlaybackStateCompat.STATE_BUFFERING ){
+                        stopSeekbarUpdate()
+                    }
+                }
+            }
+
+            override fun onStopTrackingTouch(seekBar: CircularMusicProgressBar?) {
+                if(onProgessChangedControl){
+                    MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo((songDuration.toFloat() * (onLastProgessChanged.toFloat() / 100)).toLong())
                 }
 
-
+                // Tras modificarse se permite que se siga actualizando
+                val state = MediaControllerCompat.getMediaController(this@PlayerActivity).playbackState
+                if (state != null) {
+                    if(state.state == PlaybackStateCompat.STATE_PLAYING ||
+                            state.state == PlaybackStateCompat.STATE_BUFFERING ){
+                        scheduleSeekbarUpdate()
+                    }
+                }
             }
 
-            override fun onClick(circularBar: CircularMusicProgressBar?) {
-            }
-
-            override fun onLongPress(circularBar: CircularMusicProgressBar?) {
+            override fun onProgressChanged(circularBar: CircularMusicProgressBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    onProgessChangedControl = true
+                    onLastProgessChanged = progress
+                    val currentPosition = (songDuration * progress).toFloat() / 100f
+                    startTimeTextView.text = DateUtils.formatElapsedTime((currentPosition / 1000f).toLong())
+                }
             }
         })
 
         mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
-
     }
 
 
@@ -193,7 +220,8 @@ class PlayerActivity : AppCompatActivity() {
             updateMediaDescription(metadata.description)
             updateDuration(metadata)
         }
-        //updateProgress()
+
+        updateProgress()
         if (state != null && (state.state == PlaybackStateCompat.STATE_PLAYING || state.state == PlaybackStateCompat.STATE_BUFFERING)) {
             scheduleSeekbarUpdate()
         }
@@ -240,12 +268,22 @@ class PlayerActivity : AppCompatActivity() {
         if (description == null) {
             return
         }
-        songNameTextView.text = description.title
-        songCreatorTextView.text = description.subtitle
+        val currentSong = getCurrentSong()
+
+        songNameTextView.text = currentSong.name
+        val songCreatorS = currentSong.album.name + " | " + currentSong.album.creator.username
+        songCreatorTextView.text = songCreatorS
 
         val artUrl = description.iconUri!!.toString()
         Glide.with(this).load(artUrl).into(playerBackGroundImageView)
         Glide.with(this).load(artUrl).into(albumArtCircularMusicProgressBar)
+
+        val randomReproductionImageButton :ImageButton = findViewById(R.id.randomReproduction)
+        randomReproductionImageButton.alpha = if(isRandomReproductionEnabled()) 1f else 0.5f
+        val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
+        favoriteSongImageButton.alpha = if(isCurrentSongFavorite()) 1f else 0.5f
+        val downloadOrDeleteSongImageButton:ImageButton = findViewById(R.id.downloadOrDeleteSong)
+        downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f
     }
 
     private fun updateDuration(metadata: MediaMetadataCompat?) {
@@ -254,7 +292,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         val duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION).toInt()
         songDuration = duration
-        finalTimeTextView.text = DateUtils.formatElapsedTime((duration / 1000).toLong())
+        finalTimeTextView.text = DateUtils.formatElapsedTime((duration / 1000f).toLong())
     }
 
     private fun updatePlaybackState(state: PlaybackStateCompat?) {
@@ -314,5 +352,31 @@ class PlayerActivity : AppCompatActivity() {
             lastProgress = progress.toInt()
             albumArtCircularMusicProgressBar.setValue(progress)
         }
+    }
+
+    // handle the share songs button's click
+    fun shareSong(v:View){
+        shareCurrentSong(this)
+    }
+
+    // handle the add song to favourite button's click
+    fun addSongToFavourite(v:View){
+        setFavoriteCurrentSong(!isCurrentSongFavorite())
+        val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
+        favoriteSongImageButton.alpha = if(isCurrentSongFavorite()) 1f else 0.5f
+    }
+
+    // handle the random download button's click
+    fun downloadSong(v:View){
+        downloadCurrentSong(!isCurrentSongDownloaded())
+        val downloadOrDeleteSongImageButton:ImageButton = findViewById(R.id.downloadOrDeleteSong)
+        downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f
+    }
+
+    // handle the random reproduction button's click
+    fun randReproduction(v:View){
+        randomReproduction(!isRandomReproductionEnabled())
+        val randomReproductionImageButton :ImageButton = findViewById(R.id.randomReproduction)
+        randomReproductionImageButton.alpha = if(isRandomReproductionEnabled()) 1f else 0.5f
     }
 }
