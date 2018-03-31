@@ -23,7 +23,7 @@ fun changeToPreviousSong(){
 }
 
 fun setFavoriteCurrentSong(favorite: Boolean){
-
+// TODO: Hacer
 }
 
 fun isCurrentSongFavorite(): Boolean{
@@ -33,7 +33,7 @@ fun isCurrentSongFavorite(): Boolean{
 
 // Si es true descarga la cancion, sino la elimina
 fun downloadCurrentSong(download: Boolean){
-
+// TODO: Hacer
 }
 
 
@@ -44,7 +44,7 @@ fun isCurrentSongDownloaded(): Boolean{
 
 // Si es true crea reproduccion aleatoria
 fun randomReproduction(nextState: Boolean) {
-
+// TODO: Hacer
 }
 
 fun isRandomReproductionEnabled():Boolean{
@@ -53,10 +53,11 @@ fun isRandomReproductionEnabled():Boolean{
 }
 
 fun shareCurrentSong(activity: Activity){
-    // TODO: Hacer
+    // TODO: Hacer  partir de la cancion actual el string a enviar
+    val stringToSend = "Esto falta de implementar :)"
     val sendIntent = Intent()
-    sendIntent.setAction(Intent.ACTION_SEND);
-    sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-    sendIntent.setType("text/plain");
+    sendIntent.action = Intent.ACTION_SEND
+    sendIntent.putExtra(Intent.EXTRA_TEXT, stringToSend)
+    sendIntent.type = "text/plain"
     activity.startActivity(sendIntent)
 }

@@ -1,6 +1,5 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -25,6 +24,20 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 
 class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+    // Controla los cambios entre fragmentos
+    private  var actualFragmentDisplayed: Int = -1
+    private  val FRAGMENT_HOME_ID: Int = 0
+    private val FRAGMENT_TREND_ID: Int = 1
+    private val FRAGMENT_NEWS_ID: Int = 2
+    private  val FRAGMENT_BROWSER_ID: Int = 3
+
+    // Almacena el ultimo fragmento antes de abrir el browser
+    private var beforeBrowserOpenID: Int = -1
+
+    // Almacena los fragmentos para evitar recalcularlos
+    private val fragmentHashMap: HashMap<Int, Fragment> = HashMap<Int, Fragment>(3)
+
+    private  var searchView : SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +50,13 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        changeActualFragment(HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected))
+        val actualFragmentToDisplay = getFragmentFromID(FRAGMENT_HOME_ID)
+
+        if(actualFragmentToDisplay != null){
+            changeActualFragment(actualFragmentToDisplay)
+            actualFragmentDisplayed = FRAGMENT_HOME_ID
+            beforeBrowserOpenID = -1
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -45,16 +64,16 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mInflater.inflate(R.menu.menu_home, menu)
 
         if (menu != null) {
-            val searchView = menu.findItem(R.id.action_search).actionView as SearchView
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            searchView= menu.findItem(R.id.action_search).actionView as SearchView
+            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query != null) {
                         val queryResults = obtainResultFromQuery(query)
                         val fragmento: Fragment? = BrowserFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected, queryResults)
 
                         if (fragmento != null) {
-                            // Todo: Comprobar si el fragmento expandido no es el actual
-                            // Insert the fragment by replacing any existing fragment
+                            beforeBrowserOpenID = actualFragmentDisplayed
+                            actualFragmentDisplayed = FRAGMENT_BROWSER_ID
                             changeActualFragment(fragmento)
                         }
                     }
@@ -70,29 +89,56 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onBackPressed() {
+        val previousFragment = getFragmentFromID(beforeBrowserOpenID)
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
+        } else if (previousFragment != null) {
+            changeActualFragment(previousFragment)
+            actualFragmentDisplayed = beforeBrowserOpenID
+            beforeBrowserOpenID = -1
+            searchView!!.setQuery("", false)
+            searchView!!.isIconified = true
+            searchView!!.clearFocus()
+        } else if(!searchView!!.isIconified){
+            searchView!!.setQuery("", false)
+            searchView!!.isIconified = true
+            searchView!!.clearFocus()
+        }else {
             super.onBackPressed()
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        if ((item.itemId == R.id.trends && actualFragmentDisplayed == FRAGMENT_TREND_ID) ||
+                (item.itemId == R.id.home && actualFragmentDisplayed == FRAGMENT_HOME_ID) ||
+                (item.itemId == R.id.news && actualFragmentDisplayed == FRAGMENT_NEWS_ID)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+            return true
+        }
 
-        // Handle navigation view item clicks here.
+        // Handle navigation view item clicks
         val fragmento: Fragment? = when (item.itemId) {
-            R.id.trends ->
-                TrendsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
-            R.id.home ->
-                HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
-            R.id.news ->
-                NewsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+            R.id.trends -> {
+                actualFragmentDisplayed = FRAGMENT_TREND_ID
+                beforeBrowserOpenID = -1
+                getFragmentFromID(actualFragmentDisplayed)
+            }
+
+            R.id.home -> {
+                actualFragmentDisplayed = FRAGMENT_HOME_ID
+                beforeBrowserOpenID = -1
+                getFragmentFromID(actualFragmentDisplayed)
+            }
+            R.id.news -> {
+                actualFragmentDisplayed = FRAGMENT_NEWS_ID
+                beforeBrowserOpenID = -1
+                getFragmentFromID(actualFragmentDisplayed)
+            }
             else ->
                 null
         }
 
         if (fragmento != null) {
-            // Todo: Comprobar si el fragmento expandido no es el actual
             // Insert the fragment by replacing any existing fragment
             changeActualFragment(fragmento)
         }
@@ -108,8 +154,29 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 .commit()
     }
 
+    private fun getFragmentFromID(id: Int): Fragment? {
+        return when (id) {
+            FRAGMENT_TREND_ID -> {
+                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = TrendsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                fragmentHashMap[id]
+            }
+
+            FRAGMENT_HOME_ID -> {
+                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                fragmentHashMap[id]
+            }
+
+            FRAGMENT_NEWS_ID -> {
+                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = NewsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                fragmentHashMap[id]
+            }
+
+            else ->
+                null
+        }
+    }
+
     private val onSongSelected: (Song) -> Unit = {
-        //TODO: Ver mejor forma de interaccionar
         val mediaController = MediaControllerCompat.getMediaController(this)
         MusicQueueManager.getInstance().setCurrentQueue(it.name, it)
         mediaController.transportControls
