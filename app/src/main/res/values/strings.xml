@@ -12,6 +12,13 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="user">User</string>
+    <string name="mail">Correo</string>
+    <string name="name">Nombre</string>
+    <string name="twitter_account">Cuenta twitter</string>
+    <string name="facebook_account">Cuenta facebook</string>
+    <string name="instagram_account">Cuenta instagram</string>
+    <string name="birth_date">Fecha nacimiento</string>
+    <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
 
     <!-- Home screen -->
     <string name="recommendations">Recomendaciones</string>
@@ -41,7 +48,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
+
 
 
     <!-- Notificaiton Channel -->
