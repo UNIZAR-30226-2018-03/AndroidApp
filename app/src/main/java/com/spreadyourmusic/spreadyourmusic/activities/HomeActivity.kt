@@ -12,9 +12,10 @@ import android.view.Menu
 import android.view.MenuItem
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.controller.obtainResultFromQuery
+import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.fragment.*
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
+import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import kotlinx.android.synthetic.main.activity_home.*
@@ -22,12 +23,12 @@ import kotlinx.android.synthetic.main.app_bar_home.*
 
 class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     // Controla los cambios entre fragmentos
-    private  var actualFragmentDisplayed: Int = -1
-    private  val FRAGMENT_HOME_ID: Int = 0
+    private var actualFragmentDisplayed: Int = -1
+    private val FRAGMENT_HOME_ID: Int = 0
     private val FRAGMENT_TREND_ID: Int = 1
     private val FRAGMENT_NEWS_ID: Int = 2
-    private  val FRAGMENT_BROWSER_ID: Int = 3
-    private  val FRAGMENT_GENRES_ID: Int = 4
+    private val FRAGMENT_BROWSER_ID: Int = 3
+    private val FRAGMENT_GENRES_ID: Int = 4
 
     // Almacena el ultimo fragmento antes de abrir el browser
     private var beforeBrowserOpenID: Int = -1
@@ -35,7 +36,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     // Almacena los fragmentos para evitar recalcularlos
     private val fragmentHashMap: HashMap<Int, Fragment> = HashMap<Int, Fragment>(3)
 
-    private  var searchView : SearchView? = null
+    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val actualFragmentToDisplay = getFragmentFromID(FRAGMENT_HOME_ID)
 
-        if(actualFragmentToDisplay != null){
+        if (actualFragmentToDisplay != null) {
             changeActualFragment(actualFragmentToDisplay)
             actualFragmentDisplayed = FRAGMENT_HOME_ID
             beforeBrowserOpenID = -1
@@ -62,12 +63,12 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mInflater.inflate(R.menu.menu_home, menu)
 
         if (menu != null) {
-            searchView= menu.findItem(R.id.action_search).actionView as SearchView
+            searchView = menu.findItem(R.id.action_search).actionView as SearchView
             searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query != null) {
                         val queryResults = obtainResultFromQuery(query)
-                        val fragmento: Fragment? = BrowserFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected, queryResults)
+                        val fragmento: Fragment? = BrowserFragment.newInstance(onRecomendationSelected, queryResults)
 
                         if (fragmento != null) {
                             beforeBrowserOpenID = actualFragmentDisplayed
@@ -97,11 +98,11 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             searchView!!.setQuery("", false)
             searchView!!.isIconified = true
             searchView!!.clearFocus()
-        } else if(!searchView!!.isIconified){
+        } else if (!searchView!!.isIconified) {
             searchView!!.setQuery("", false)
             searchView!!.isIconified = true
             searchView!!.clearFocus()
-        }else {
+        } else {
             super.onBackPressed()
         }
     }
@@ -161,22 +162,39 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun getFragmentFromID(id: Int): Fragment? {
         return when (id) {
             FRAGMENT_TREND_ID -> {
-                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = TrendsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                if (!fragmentHashMap.containsKey(id)) {
+                    val mList = ArrayList<Pair<String, List<Recommendation>>>()
+                    mList.add(Pair(resources.getString(R.string.popular_now), obtainTrendSongs()))
+                    mList.add(Pair(resources.getString(R.string.popular_in_my_country), obtainTrendInMyCountry()))
+                    mList.add(Pair(resources.getString(R.string.popular_in_the_world), obtainPopularSongs()))
+                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                }
                 fragmentHashMap[id]
             }
 
             FRAGMENT_HOME_ID -> {
-                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = HomeFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                if (!fragmentHashMap.containsKey(id)) {
+                    val mList = ArrayList<Pair<String, List<Recommendation>>>()
+                    mList.add(Pair(resources.getString(R.string.recommendations), obtainRecommendations()))
+                    mList.add(Pair(resources.getString(R.string.news), obtainNewsSongs()))
+                    mList.add(Pair(resources.getString(R.string.populars), obtainPopularSongs()))
+                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                }
                 fragmentHashMap[id]
             }
 
             FRAGMENT_NEWS_ID -> {
-                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = NewsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                if (!fragmentHashMap.containsKey(id)) {
+                    val mList = ArrayList<Pair<String, List<Recommendation>>>()
+                    mList.add(Pair(resources.getString(R.string.playlist_updates), obtainUpdatedPlaylists()))
+                    mList.add(Pair(resources.getString(R.string.new_songs), obtainNewsSongs()))
+                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                }
                 fragmentHashMap[id]
             }
 
             FRAGMENT_GENRES_ID -> {
-                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = GenresFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, obtainPopularByGenre())
                 fragmentHashMap[id]
             }
 
@@ -185,17 +203,26 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    private val onSongSelected: (Song) -> Unit = {
-        val mediaController = MediaControllerCompat.getMediaController(this)
-        MusicQueueManager.getInstance().setCurrentQueue(it.name, it)
-        mediaController.transportControls
-                .playFromMediaId(it.getMediaItem().mediaId, null)
+    private val onRecomendationSelected: (Recommendation) -> Unit = {
+        when (it) {
+            is Song -> onSongSelected(it)
+            is User -> onUserSelected(it)
+            is Playlist -> onPlaylistSelected(it)
+        }
     }
 
-    private val onUserSelected: (User) -> Unit = {
+    private fun onSongSelected(song: Song) {
+        val mediaController = MediaControllerCompat.getMediaController(this)
+        MusicQueueManager.getInstance().setCurrentQueue(song.name, song)
+        mediaController.transportControls
+                .playFromMediaId(song.getMediaItem().mediaId, null)
+    }
+
+    private fun onUserSelected(user: User) {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-    private val onPlaylistSelected: (Playlist) -> Unit = {
+
+    private fun onPlaylistSelected(playlist: Playlist) {
         /*
         No se ha de reproducir ahora la musica, este codigo se ha de copiar en el playlist
         val mediaController = MediaControllerCompat.getMediaController(this)

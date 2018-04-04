@@ -1,6 +1,5 @@
 package com.spreadyourmusic.spreadyourmusic.fragment
 
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
@@ -12,15 +11,11 @@ import android.view.ViewGroup
 
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.adapters.NamedListRecyclerViewAdapter
-import com.spreadyourmusic.spreadyourmusic.controller.*
-import com.spreadyourmusic.spreadyourmusic.models.Playlist
-import com.spreadyourmusic.spreadyourmusic.models.Song
-import com.spreadyourmusic.spreadyourmusic.models.User
+import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 
-class GenresFragment : Fragment() {
-    private var mSongSelectedListener: (Song) -> Unit = {}
-    private var mUserSelectedListener: (User) -> Unit = {}
-    private var mPlaylistSelectedListener: (Playlist) -> Unit = {}
+class HomeBaseFragment : Fragment() {
+    private var mClickListener: (Recommendation) -> Unit = {}
+    private var mValues: List<Pair<String, List<Recommendation>>>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -35,28 +30,18 @@ class GenresFragment : Fragment() {
         lista.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         lista.itemAnimator = DefaultItemAnimator()
 
-        recyclerViewAdapter.setOnClickListener {
-            when (it) {
-                is Song -> mSongSelectedListener(it)
-                is User -> mUserSelectedListener(it)
-                is Playlist -> mPlaylistSelectedListener(it)
-            }
-        }
-
-        recyclerViewAdapter.changeData(obtainPopularByGenre())
+        recyclerViewAdapter.setOnClickListener (mClickListener)
+        recyclerViewAdapter.changeData(mValues!!)
 
         // Inflate the layout for this fragment
         return view
     }
 
     companion object {
-        fun newInstance(mmSongSelectedListener: (Song) -> Unit, mmUserSelectedListener: (User) -> Unit,
-                        mmPlaylistSelectedListener: (Playlist) -> Unit): GenresFragment {
-
-            val fragment = GenresFragment()
-            fragment.mSongSelectedListener = mmSongSelectedListener
-            fragment.mUserSelectedListener = mmUserSelectedListener
-            fragment.mPlaylistSelectedListener = mmPlaylistSelectedListener
+        fun newInstance(mmClickListener: (Recommendation) -> Unit, mmValues: List<Pair<String, List<Recommendation>>>): HomeBaseFragment {
+            val fragment = HomeBaseFragment()
+            fragment.mClickListener = mmClickListener
+            fragment.mValues = mmValues
             return fragment
         }
     }

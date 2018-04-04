@@ -18,9 +18,7 @@ import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 
 class BrowserFragment : Fragment() {
-    private var mSongSelectedListener: (Song) -> Unit = {}
-    private var mUserSelectedListener: (User) -> Unit = {}
-    private var mPlaylistSelectedListener: (Playlist) -> Unit = {}
+    private var mRecomendationListener: (Recommendation) -> Unit = {}
     private var queryResults: List<Recommendation>? = null
 
 
@@ -30,24 +28,13 @@ class BrowserFragment : Fragment() {
         val listaQueryResults = view.findViewById<RecyclerView>(R.id.browserRecyclerView)
         val queryResultsRecyclerViewAdapter = RecomendationsVerticalRecyclerViewAdapter(context)
 
-
         listaQueryResults.adapter = queryResultsRecyclerViewAdapter
         listaQueryResults.setHasFixedSize(true)
-
 
         listaQueryResults.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         listaQueryResults.itemAnimator = DefaultItemAnimator()
 
-
-        queryResultsRecyclerViewAdapter.setOnClickListener {
-            when (it) {
-                is Song -> mSongSelectedListener(it)
-                is User -> mUserSelectedListener(it)
-                is Playlist -> mPlaylistSelectedListener(it)
-            }
-        }
-
-
+        queryResultsRecyclerViewAdapter.setOnClickListener(mRecomendationListener)
         queryResultsRecyclerViewAdapter.changeData(queryResults!!)
 
         // Inflate the layout for this fragment
@@ -55,13 +42,10 @@ class BrowserFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(mmSongSelectedListener: (Song) -> Unit, mmUserSelectedListener: (User) -> Unit,
-                        mmPlaylistSelectedListener: (Playlist) -> Unit, queryResults : List<Recommendation>): BrowserFragment {
+        fun newInstance(mmRecomendationListener: (Recommendation) -> Unit, queryResults : List<Recommendation>): BrowserFragment {
 
             val fragment = BrowserFragment()
-            fragment.mSongSelectedListener = mmSongSelectedListener
-            fragment.mUserSelectedListener = mmUserSelectedListener
-            fragment.mPlaylistSelectedListener = mmPlaylistSelectedListener
+            fragment.mRecomendationListener = mmRecomendationListener
             fragment.queryResults = queryResults
             return fragment
         }

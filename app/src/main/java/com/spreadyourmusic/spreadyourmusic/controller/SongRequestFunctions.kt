@@ -106,7 +106,7 @@ fun obtainResultFromQuery(query: String): List<Recommendation> {
     return obtainRecommendations()
 }
 
-// New songs from followed Artists
+// Obtain Songs to show in Popular by genre screen
 fun obtainPopularByGenre(): List<Pair<String, List<Recommendation>>> {
     val devolver = ArrayList<Pair<String, List<Recommendation>>>()
     devolver.add(Pair("Rock", obtainPopularSongs()))
