@@ -5,42 +5,42 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:icon="@android:drawable/presence_online"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/home"
             android:id="@+id/home"
             />
         <item
             android:icon="@android:drawable/presence_online"
-            android:title="@string/browse"
-            android:id="@+id/browse"
+            android:title="@string/genres"
+            android:id="@+id/genres"
             />
 
         <item
-            android:icon="@android:drawable/presence_online"
+            android:icon="@drawable/ic_fiber_new_black_24dp"
             android:title="@string/news"
             android:id="@+id/news"
             />
         <item
-            android:icon="@android:drawable/presence_online"
-            android:title="@string/recommendations"
-            android:id="@+id/recommendations"
+            android:icon="@drawable/ic_trending_up_black_24dp"
+            android:title="@string/trends"
+            android:id="@+id/trends"
             />
     </group>
 
     <item android:title="@string/my_library">
         <menu>
             <item
-                android:icon="@android:drawable/presence_online"
+                android:icon="@drawable/ic_queue_music_black_24dp"
                 android:title="@string/playlist"
                 android:id="@+id/playlist"
                 />
             <item
-                android:icon="@android:drawable/presence_online"
+                android:icon="@drawable/ic_person_black_24dp"
                 android:title="@string/artist"
                 android:id="@+id/artist"
                 />
             <item
-                android:icon="@android:drawable/presence_online"
+                android:icon="@drawable/ic_music_note_black_24dp"
                 android:title="@string/songs"
                 android:id="@+id/songs"
                 />

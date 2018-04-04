@@ -34,7 +34,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
     // https://www.uplabs.com/posts/android-circular-music-progressbar
-    implementation 'com.github.aliab:circular-music-progressbar:v1.3.0'
+    //implementation 'com.github.aliab:circular-music-progressbar:v1.3.0'
 
     // RecyclerView
     implementation 'com.android.support:recyclerview-v7:27.1.0'
@@ -47,6 +47,9 @@ dependencies {
     // Carga de imagenes de forma asincrona (Glide)
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+
+    // Google login
+    implementation 'com.google.android.gms:play-services-auth:12.0.0'
 
     // Tests
     testImplementation 'junit:junit:4.12'
