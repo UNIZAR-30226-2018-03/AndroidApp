@@ -56,4 +56,7 @@
     <string name="notification_channel">SYM_Channel_ID</string>
     <string name="notification_channel_description">Channel ID for SYM</string>
 
+
+    <!-- Pruebas -->
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ultricies nisl lacinia tortor vulputate, id tristique tellus pharetra. Nullam vitae ligula convallis tellus condimentum commodo. Phasellus commodo sapien eu augue hendrerit ornare. Morbi in metus ac tellus elementum tincidunt imperdiet eget augue. Donec quis sem scelerisque, egestas ex eu, tempus ligula. Duis bibendum orci eget lobortis condimentum. Sed hendrerit dui lectus, eleifend ullamcorper tellus congue vitae. Etiam a consequat dui, non convallis elit. Aliquam quis sem scelerisque neque luctus euismod. Aenean interdum interdum mollis. Cras feugiat luctus lectus, eu lacinia tellus. Aliquam velit leo, convallis vitae ultrices ac, convallis ut odio. Quisque eu vehicula turpis. Phasellus ac magna blandit, cursus ex sed, facilisis nulla. Pellentesque volutpat gravida tellus vitae rutrum. Integer nec sapien id lacus lacinia dictum.</string>>
 </resources>
