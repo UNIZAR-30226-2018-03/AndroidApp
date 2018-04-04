@@ -105,3 +105,13 @@ fun obtainUpdatedPlaylists(): List<Playlist> {
 fun obtainResultFromQuery(query: String): List<Recommendation> {
     return obtainRecommendations()
 }
+
+// New songs from followed Artists
+fun obtainPopularByGenre(): List<Pair<String, List<Recommendation>>> {
+    val devolver = ArrayList<Pair<String, List<Recommendation>>>()
+    devolver.add(Pair("Rock", obtainPopularSongs()))
+    devolver.add(Pair("Pop", obtainPopularSongs()))
+    devolver.add(Pair("Rap", obtainPopularSongs()))
+    devolver.add(Pair("Trap", obtainPopularSongs()))
+    return devolver
+}

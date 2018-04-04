@@ -13,10 +13,7 @@ import android.view.MenuItem
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.controller.obtainResultFromQuery
-import com.spreadyourmusic.spreadyourmusic.fragment.BrowserFragment
-import com.spreadyourmusic.spreadyourmusic.fragment.HomeFragment
-import com.spreadyourmusic.spreadyourmusic.fragment.NewsFragment
-import com.spreadyourmusic.spreadyourmusic.fragment.TrendsFragment
+import com.spreadyourmusic.spreadyourmusic.fragment.*
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
@@ -30,6 +27,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private val FRAGMENT_TREND_ID: Int = 1
     private val FRAGMENT_NEWS_ID: Int = 2
     private  val FRAGMENT_BROWSER_ID: Int = 3
+    private  val FRAGMENT_GENRES_ID: Int = 4
 
     // Almacena el ultimo fragmento antes de abrir el browser
     private var beforeBrowserOpenID: Int = -1
@@ -111,7 +109,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         if ((item.itemId == R.id.trends && actualFragmentDisplayed == FRAGMENT_TREND_ID) ||
                 (item.itemId == R.id.home && actualFragmentDisplayed == FRAGMENT_HOME_ID) ||
-                (item.itemId == R.id.news && actualFragmentDisplayed == FRAGMENT_NEWS_ID)) {
+                (item.itemId == R.id.news && actualFragmentDisplayed == FRAGMENT_NEWS_ID) ||
+                (item.itemId == R.id.genres && actualFragmentDisplayed == FRAGMENT_GENRES_ID)) {
             drawer_layout.closeDrawer(GravityCompat.START)
             return true
         }
@@ -131,6 +130,11 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.news -> {
                 actualFragmentDisplayed = FRAGMENT_NEWS_ID
+                beforeBrowserOpenID = -1
+                getFragmentFromID(actualFragmentDisplayed)
+            }
+            R.id.genres -> {
+                actualFragmentDisplayed = FRAGMENT_GENRES_ID
                 beforeBrowserOpenID = -1
                 getFragmentFromID(actualFragmentDisplayed)
             }
@@ -168,6 +172,11 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             FRAGMENT_NEWS_ID -> {
                 if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = NewsFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
+                fragmentHashMap[id]
+            }
+
+            FRAGMENT_GENRES_ID -> {
+                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = GenresFragment.newInstance(onSongSelected, onUserSelected, onPlaylistSelected)
                 fragmentHashMap[id]
             }
 
