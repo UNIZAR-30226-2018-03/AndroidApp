@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Spread Your Music</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_home">Inicio</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_artist">ArtistActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -12,13 +12,31 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="user">User</string>
+    <string name="mail">Correo</string>
+    <string name="name">Nombre</string>
+    <string name="twitter_account">Cuenta twitter</string>
+    <string name="facebook_account">Cuenta facebook</string>
+    <string name="instagram_account">Cuenta instagram</string>
+    <string name="birth_date">Fecha nacimiento</string>
+    <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
 
     <!-- Home screen -->
     <string name="recommendations">Recomendaciones</string>
     <string name="news">Novedades</string>
     <string name="populars">Populares</string>
-
     <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="trends">Tendencias</string>
+    <string name="action_search">Buscar</string>
+
+    <!-- Recomendaciones -->
+    <string name="playlist_updates">Playlists actualizadas</string>
+    <string name="new_songs">Canciones nuevas</string>
+
+    <!-- Novedades -->
+    <string name="popular_now">Populares ahora</string>
+    <string name="popular_in_my_country">Populares en mi país</string>
+    <string name="popular_in_the_world">Populares en el mundo</string>
 
     <!-- Navigation drawer-->
     <string name="browse">Explorar</string>
@@ -27,10 +45,21 @@
     <string name="artist">Artistas</string>
     <string name="songs">Canciones</string>
     <string name="home">Home</string>
+    <string name="genres">Géneros</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Notificaiton Channel -->
+    <string name="notification_channel">SYM_Channel_ID</string>
+    <string name="notification_channel_description">Channel ID for SYM</string>
 
-    <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
+    <!-- Activity comunication-->
+    <string name="user_id">UserId</string>
+    <string name="playlist_id">PlaylistId</string>
+
+    <string name="system_list_id">SystemList</string>
+
+    <string name="creator">Creador</string>
+    <string name="followers">Seguidores</string>
+
+    <string name="edit">Editar</string>
 
 </resources>

@@ -1,8 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.models
 
 /**
- * Created by abel on 7/03/18.
+ * Created by abel
+ * On 7/03/18.
  */
-class Playlist (public val nombre : String, public val  autor:User ): Recommendation {
-
-}
+class Playlist(val id: Int, val name: String, val creator: User, val artLocationUri: String, val content: List<Song>) : Recommendation

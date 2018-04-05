@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
 
     <ImageView
         android:id="@+id/player_background"
@@ -42,7 +45,7 @@
     </LinearLayout>
 
 
-    <info.abdolahi.CircularMusicProgressBar xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
         android:id="@+id/album_art"
         android:layout_width="193dp"
         android:layout_height="193dp"
@@ -51,15 +54,15 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="56dp"
         android:src="@drawable/sample_image"
-        app:border_color="@color/colorPrimary"
-        app:border_width="2dp"
-        app:centercircle_diammterer="1"
-        app:draw_anticlockwise="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:progress_color="@color/colorPrimaryDark"
+        custom:border_color="@color/colorPrimary"
+        custom:border_width="2dp"
+        custom:centercircle_diammterer="1"
+        custom:draw_anticlockwise="false"
+        custom:layout_constraintEnd_toEndOf="parent"
+        custom:layout_constraintHorizontal_bias="0.502"
+        custom:layout_constraintStart_toStartOf="parent"
+        custom:layout_constraintTop_toTopOf="parent"
+        custom:progress_color="@android:color/white"
      />
 
     <TextView
@@ -139,22 +142,21 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
-        android:background="@drawable/circle_play"
+        android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toStartOf="@+id/nextSong"
         app:layout_constraintStart_toEndOf="@+id/previousSong"
         app:layout_constraintTop_toBottomOf="@+id/songAuthor"
         app:layout_constraintVertical_bias="0.3"
-        app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
+        app:srcCompat="@drawable/ic_play_circle_filled_white_24dp"
+        />
 
     <ImageButton
         android:id="@+id/nextSong"
         android:layout_width="40dp"
-
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
-
         android:layout_marginEnd="56dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
@@ -174,13 +176,15 @@
         android:layout_marginEnd="8dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
+        android:onClick="randReproduction"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="0.5"
         app:srcCompat="@drawable/ic_shuffle_white_24dp" />
 
     <ImageButton
-        android:id="@+id/downloadSong"
+        android:id="@+id/downloadOrDeleteSong"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginBottom="8dp"
@@ -188,6 +192,7 @@
         android:adjustViewBounds="true"
         android:alpha="0.5"
         android:background="@android:color/transparent"
+        android:onClick="downloadSong"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toStartOf="@+id/randomReproduction"
@@ -202,6 +207,7 @@
         android:adjustViewBounds="true"
         android:alpha="0.5"
         android:background="@android:color/transparent"
+        android:onClick="addSongToFavourite"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintStart_toStartOf="parent"
@@ -214,8 +220,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:adjustViewBounds="true"
-        android:alpha="0.5"
         android:background="@android:color/transparent"
+        android:onClick="shareSong"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintStart_toEndOf="@+id/favoriteSong"
