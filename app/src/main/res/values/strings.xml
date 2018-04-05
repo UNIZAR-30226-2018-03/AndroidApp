@@ -58,4 +58,6 @@
     <string name="creator">Creador</string>
     <string name="followers">Seguidores</string>
 
+    <string name="edit">Editar</string>
+
 </resources>

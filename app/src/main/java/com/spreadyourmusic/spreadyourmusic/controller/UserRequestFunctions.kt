@@ -9,15 +9,20 @@ import com.spreadyourmusic.spreadyourmusic.models.User
  * On 5/04/18.
  */
 
-fun obtainUserFromID(id:String): User {
+fun obtainUserFromID(id: String): User {
+
     val autor2 = User("badbunny", "Box Bunny", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    return autor2
+    if (id.equals(obtainCurrentUser().username)) {
+        return obtainCurrentUser()
+    } else {
+        return autor2
+    }
 }
 
-fun obtainPlaylistsFromUser (user:User): List<Playlist>{
+fun obtainPlaylistsFromUser(user: User): List<Playlist> {
     return obtainUpdatedPlaylists()
 }
 
-fun obtainSongsFromUser (user:User): List<Song>{
+fun obtainSongsFromUser(user: User): List<Song> {
     return obtainNewsSongs()
 }

@@ -25,7 +25,7 @@ import android.view.MenuItem
 
 
 class UserActivity : BaseActivity() {
-    var user : User?= null
+    var user: User? = null
     var followButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,12 +67,17 @@ class UserActivity : BaseActivity() {
 
         followButton = findViewById(R.id.followButton)
 
-        followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        if (!user!!.username.equals(obtainCurrentUser().username)) {
+            followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        } else {
+            followButton!!.text = resources.getString(R.string.edit)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
-        mInflater.inflate(R.menu.menu_artist, menu)
+        if (!user!!.username.equals(obtainCurrentUser().username))
+            mInflater.inflate(R.menu.menu_artist, menu)
         return true
     }
 
@@ -82,8 +87,12 @@ class UserActivity : BaseActivity() {
     }
 
     fun onDoFollow(view: View) {
-        changeFollowState(user!!, !isFollowing(user!!))
-        followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        if (!user!!.username.equals(obtainCurrentUser().username)) {
+            changeFollowState(user!!, !isFollowing(user!!))
+            followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        } else {
+            // TODO: Abrir pantalla edicion
+        }
     }
 
     private class TabsAdapter(fm: FragmentManager, activity: Activity, user: User) : FragmentPagerAdapter(fm) {
