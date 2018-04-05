@@ -9,7 +9,7 @@ import com.spreadyourmusic.spreadyourmusic.models.User
  * On 5/04/18.
  */
 
-fun obtainUserFromID(id:Int): User {
+fun obtainUserFromID(id:String): User {
     val autor2 = User("badbunny", "Box Bunny", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
     return autor2
 }

@@ -206,8 +206,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private val onRecomendationSelected: (Recommendation) -> Unit = {
         when (it) {
             is Song -> onSongSelected(it, this)
-            is User -> onUserSelected(it)
-            is Playlist -> onPlaylistSelected(it)
+            is User -> onUserSelected(it, this)
+            is Playlist -> onPlaylistSelected(it, this)
         }
     }
 }

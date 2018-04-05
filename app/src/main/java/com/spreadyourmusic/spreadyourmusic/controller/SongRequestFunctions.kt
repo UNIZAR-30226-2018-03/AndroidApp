@@ -28,7 +28,7 @@ fun obtainRecommendations(): List<Recommendation> {
     listaCanciones.add(cancion1)
     listaCanciones.add(cancion2)
 
-    val playlist = Playlist("Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
+    val playlist = Playlist(2,"Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
     devolver.add(autor1)
     devolver.add(cancion2)
     devolver.add(cancion1)
@@ -96,7 +96,7 @@ fun obtainUpdatedPlaylists(): List<Playlist> {
     listaCanciones.add(cancion1)
     listaCanciones.add(cancion2)
 
-    val playlist = Playlist("Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
+    val playlist = Playlist(1,"Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
 
     devolver.add(playlist)
     return devolver

@@ -20,7 +20,7 @@ fun obtainPlaylistFromID(id:Int): Playlist {
     listaCanciones.add(cancion1)
     listaCanciones.add(cancion2)
 
-    val playlist = Playlist("Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
+    val playlist = Playlist(3,"Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
 
     return playlist
 }
