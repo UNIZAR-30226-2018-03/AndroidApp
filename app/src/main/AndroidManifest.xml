@@ -52,16 +52,19 @@
 
 
         <activity
-            android:name=".activities.ArtistActivity"
+            android:name=".activities.UserActivity"
             android:label="Artista"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <activity
             android:name=".activities.PlaylistActivity"
             android:label="Playlist"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
 
         <service
             android:name=".services.MusicService"

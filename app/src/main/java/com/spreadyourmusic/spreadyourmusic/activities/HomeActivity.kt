@@ -205,33 +205,9 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private val onRecomendationSelected: (Recommendation) -> Unit = {
         when (it) {
-            is Song -> onSongSelected(it)
-            is User -> onUserSelected(it)
-            is Playlist -> onPlaylistSelected(it)
+            is Song -> onSongSelected(it, this)
+            is User -> onUserSelected(it, this)
+            is Playlist -> onPlaylistSelected(it, this)
         }
-    }
-
-    private fun onSongSelected(song: Song) {
-        val mediaController = MediaControllerCompat.getMediaController(this)
-        MusicQueueManager.getInstance().setCurrentQueue(song.name, song)
-        mediaController.transportControls
-                .playFromMediaId(song.getMediaItem().mediaId, null)
-    }
-
-    private fun onUserSelected(user: User) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun onPlaylistSelected(playlist: Playlist) {
-        /*
-        No se ha de reproducir ahora la musica, este codigo se ha de copiar en el playlist
-        val mediaController = MediaControllerCompat.getMediaController(this)
-         MusicQueueManager.getInstance().setCurrentQueue(it.name,it.content)
-         mediaController.transportControls
-                 .playFromMediaId(MusicQueueManager.getInstance().currentSong.getMediaItem().mediaId, null)*/
-
-        //TODO: Abrir playlist
-        /* val intent = Intent(this, PlaylistActivity::class.java)
-         startActivity(intent)*/
     }
 }
