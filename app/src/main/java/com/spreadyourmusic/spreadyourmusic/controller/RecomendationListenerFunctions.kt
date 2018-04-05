@@ -22,7 +22,7 @@ fun onSongSelected(song: Song, activity: Activity) {
 
 fun onSongFromPlaylistSelected(song: Song,playlist: Playlist, activity: Activity) {
     val mediaController = MediaControllerCompat.getMediaController(activity)
-    MusicQueueManager.getInstance().setCurrentQueue(song.name, playlist.content)
+    MusicQueueManager.getInstance().setCurrentQueue(song.name, playlist.content,  playlist.content.indexOf(song))
     mediaController.transportControls
             .playFromMediaId(song.getMediaItem().mediaId, null)
 }
