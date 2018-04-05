@@ -23,7 +23,6 @@ import com.spreadyourmusic.spreadyourmusic.models.User
 import android.content.Intent
 import android.view.MenuItem
 
-
 class UserActivity : BaseActivity() {
     var user: User? = null
     var followButton: Button? = null
@@ -71,6 +70,8 @@ class UserActivity : BaseActivity() {
             followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
         } else {
             followButton!!.text = resources.getString(R.string.edit)
+
+            //Todo: Poner floating action button para subir canciones y playlists
         }
     }
 

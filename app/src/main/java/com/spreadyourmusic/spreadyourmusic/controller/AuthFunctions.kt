@@ -28,7 +28,7 @@ fun doGoogleLogin(user: GoogleSignInAccount): Boolean {
     // TODO: Falta implementar
     // Si el login es correcto se sobreescribe session
     // Y preferences y demas
-    Thread.sleep(3000)
+    Thread.sleep(1000)
     return false
 }
 

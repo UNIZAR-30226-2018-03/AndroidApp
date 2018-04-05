@@ -65,8 +65,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val userName = hView.findViewById<TextView>(R.id.nombre_usuario)
         userName.text = obtainCurrentUser().name
 
-        circularImageView.setOnClickListener{
-            onUserSelected(obtainCurrentUser(),this)
+        circularImageView.setOnClickListener {
+            onUserSelected(obtainCurrentUser(), this)
         }
 
         Glide.with(this).load(obtainCurrentUser().pictureLocationUri).into(circularImageView)
@@ -160,6 +160,13 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (fragmento != null) {
             // Insert the fragment by replacing any existing fragment
             changeActualFragment(fragmento)
+        } else {
+            when (item.itemId) {
+                R.id.playlist -> onSystemListSelected(0, this)
+                R.id.artist -> onSystemListSelected(1, this)
+                R.id.songs -> onSystemListSelected(2, this)
+
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

@@ -28,9 +28,10 @@ class PlaylistActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlist)
+        val playlistId = intent.getIntExtra(resources.getString(R.string.playlist_id), 0)
 
-        val playlistId = intent.getIntExtra(resources.getString(R.string.playlist_id),0)
         playlist = obtainPlaylistFromID(playlistId)
+
 
         //App bar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -59,24 +60,31 @@ class PlaylistActivity : BaseActivity() {
 
         val creatorName = findViewById<TextView>(R.id.creatorUsername)
 
+        val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
+
+        followButton = findViewById(R.id.followButton)
+
+        // Lista de reproducción creada por usuario
         val sCreatorName = resources.getString(R.string.creator) + ":@" + playlist!!.creator.username
 
         creatorName.text = sCreatorName
-
-        val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
 
         val sNumFollowers = obtainNumberOfFollowers(playlist!!).toString() + " " + resources.getString(R.string.followers)
 
         followers.text = sNumFollowers
 
-        followButton = findViewById(R.id.followButton)
-
-        followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        if (!playlist!!.creator.username.equals(obtainCurrentUser().username)) {
+            followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        } else {
+            followButton!!.text = resources.getString(R.string.edit)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
+
         mInflater.inflate(R.menu.menu_playlist, menu)
+
         return true
     }
 
@@ -94,8 +102,12 @@ class PlaylistActivity : BaseActivity() {
     }
 
     fun onDoFollow(view: View) {
-        changeFollowState(playlist!!, !isFollowing(playlist!!))
-        followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        if (!playlist!!.creator.username.equals(obtainCurrentUser().username)) {
+            changeFollowState(playlist!!, !isFollowing(playlist!!))
+            followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+        } else {
+            // TODO: Hacer
+        }
     }
 
 }

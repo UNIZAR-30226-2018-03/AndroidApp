@@ -7,6 +7,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.activities.PlayerActivity
 import com.spreadyourmusic.spreadyourmusic.activities.PlaylistActivity
+import com.spreadyourmusic.spreadyourmusic.activities.SystemlistActivity
 import com.spreadyourmusic.spreadyourmusic.activities.UserActivity
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
@@ -36,5 +37,11 @@ fun onUserSelected(user: User, activity: Activity) {
 fun onPlaylistSelected(playlist: Playlist, activity: Activity) {
     val intent = Intent(activity, PlaylistActivity::class.java)
     intent.putExtra(activity.resources.getString(R.string.playlist_id), playlist.id)
+    activity.startActivity(intent)
+}
+
+fun onSystemListSelected(id: Int, activity: Activity){
+    val intent = Intent(activity, SystemlistActivity::class.java)
+    intent.putExtra(activity.resources.getString(R.string.system_list_id), id)
     activity.startActivity(intent)
 }
