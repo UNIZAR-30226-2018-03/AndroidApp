@@ -55,7 +55,11 @@
     <string name="user_id">UserId</string>
     <string name="playlist_id">PlaylistId</string>
 
+    <string name="system_list_id">SystemList</string>
+
     <string name="creator">Creador</string>
     <string name="followers">Seguidores</string>
+
+    <string name="edit">Editar</string>
 
 </resources>

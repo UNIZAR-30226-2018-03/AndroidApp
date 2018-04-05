@@ -10,6 +10,8 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.controller.*
@@ -56,6 +58,18 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             actualFragmentDisplayed = FRAGMENT_HOME_ID
             beforeBrowserOpenID = -1
         }
+
+        val hView = nav_view.getHeaderView(0)
+
+        val circularImageView = hView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.foto_perfil)
+        val userName = hView.findViewById<TextView>(R.id.nombre_usuario)
+        userName.text = obtainCurrentUser().name
+
+        circularImageView.setOnClickListener {
+            onUserSelected(obtainCurrentUser(), this)
+        }
+
+        Glide.with(this).load(obtainCurrentUser().pictureLocationUri).into(circularImageView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -146,6 +160,13 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (fragmento != null) {
             // Insert the fragment by replacing any existing fragment
             changeActualFragment(fragmento)
+        } else {
+            when (item.itemId) {
+                R.id.playlist -> onSystemListSelected(0, this)
+                R.id.artist -> onSystemListSelected(1, this)
+                R.id.songs -> onSystemListSelected(2, this)
+
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

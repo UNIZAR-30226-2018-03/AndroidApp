@@ -123,12 +123,13 @@ public class MusicQueueManager {
     public void setCurrentQueue(String title, Song newSong) {
         List<Song> canciones = new ArrayList<Song>();
         canciones.add(newSong);
-        setCurrentQueue(title, canciones);
+        setCurrentQueue(title, canciones, 0);
     }
 
-    public void setCurrentQueue(String title, List<Song> newSongList) {
+    public void setCurrentQueue(String title, List<Song> newSongList, Integer index) {
+
         mPlayingQueue = QueueHelper.convertToQueue(newSongList);
-        mCurrentIndex = 0;
+        mCurrentIndex = index;
         ArrayList<MediaSessionCompat.QueueItem> newQueue = new ArrayList<MediaSessionCompat.QueueItem>();
         for (Pair<Song, MediaSessionCompat.QueueItem> item : mPlayingQueue) {
             newQueue.add(item.second);
