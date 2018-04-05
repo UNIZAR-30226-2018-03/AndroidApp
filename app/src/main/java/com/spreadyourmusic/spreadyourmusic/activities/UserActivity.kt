@@ -18,10 +18,10 @@ import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 
 
-class ArtistActivity : BaseActivity() {
+class UserActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_artist)
+        setContentView(R.layout.activity_user)
 
         val user = obtainUserFromID(23)
 

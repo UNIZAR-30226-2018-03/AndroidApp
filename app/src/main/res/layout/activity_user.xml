@@ -15,7 +15,7 @@
         app:layout_collapseMode="pin"
         app:theme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Good Bunny"
-        app:titleTextColor="@android:color/white"></android.support.v7.widget.Toolbar>
+        app:titleTextColor="@android:color/white" />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
