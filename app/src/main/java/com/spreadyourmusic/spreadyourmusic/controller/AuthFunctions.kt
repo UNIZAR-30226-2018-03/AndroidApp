@@ -31,3 +31,8 @@ fun doGoogleLogin(user: GoogleSignInAccount): Boolean {
     Thread.sleep(3000)
     return false
 }
+
+fun obtainCurrentUser(): User{
+    val autor2 = User("abelcht", "Abel ChT", "Lion", "http://storage.googleapis.com/automotive-media/album_art.jpg")
+    return autor2
+}

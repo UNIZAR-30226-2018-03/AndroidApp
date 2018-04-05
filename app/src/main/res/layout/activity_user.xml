@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:layout_collapseMode="pin"
-        app:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/AppTheme.AppBarOverlay"
         app:title="Good Bunny"
         app:titleTextColor="@android:color/white" />
 
@@ -51,13 +52,16 @@
                 android:layout_height="?attr/actionBarSize"
                 app:tabIndicatorColor="?android:attr/textColorPrimaryInverse"
                 app:tabIndicatorHeight="4dp"
-                app:tabSelectedTextColor="?android:attr/textColorPrimaryInverse" />
+                app:tabSelectedTextColor="?android:attr/textColorPrimaryInverse"
+                android:background="@color/colorPrimaryDark"
+                />
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorPrimaryDark"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <android.support.v7.widget.CardView

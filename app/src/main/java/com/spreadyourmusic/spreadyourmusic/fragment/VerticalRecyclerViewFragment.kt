@@ -20,7 +20,7 @@ class VerticalRecyclerViewFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.content_recyclerview, container, false)
+        val view = inflater.inflate(R.layout.content_dark_recyclerview, container, false)
 
         val lista = view.findViewById<RecyclerView>(R.id.recyclerView)
         val recyclerViewAdapter = RecomendationsVerticalRecyclerViewAdapter(context)
@@ -32,6 +32,7 @@ class VerticalRecyclerViewFragment : Fragment() {
         lista.itemAnimator = DefaultItemAnimator()
 
         recyclerViewAdapter.setOnClickListener(mClickListener)
+
         recyclerViewAdapter.changeData(mValues!!)
 
         // Inflate the layout for this fragment
