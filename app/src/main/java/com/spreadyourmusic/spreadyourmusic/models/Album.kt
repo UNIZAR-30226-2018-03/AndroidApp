@@ -6,4 +6,5 @@ import java.util.*
  * Created by abel
  * On 8/03/18.
  */
+// TODO:
 class Album(val name: String, val creator: User, val releaseDate: Calendar, val artLocationUri : String)

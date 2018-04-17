@@ -16,6 +16,11 @@ import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 
+/**
+ * Estado: TERMINADA (17/05/18)
+ * Descripción: La siguiente clase se encarga de visualizar los artistas seguidos, las canciones añadidas
+ * a favoritos y las playlist seguidas
+ * */
 class SystemlistActivity : BaseActivity() {
     var values: Pair<String, List<Recommendation>>? = null
 

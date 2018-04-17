@@ -7,6 +7,7 @@ import java.util.*
  * Created by abel
  * On 7/03/18.
  */
+// TODO:
 class User() : Recommendation {
     var username: String? = null
     var name: String? = null

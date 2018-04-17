@@ -9,6 +9,7 @@ import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
  * Created by abel
  * On 7/03/18.
  */
+// TODO:
 class Song(val id: Long, val name: String, val locationUri: String, val duration: Long, val album: Album, val collaborators: List<User>?, val numOfViews: Long, val numOfLikes: Long) : Recommendation {
 
     private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
