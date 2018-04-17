@@ -1,5 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
+import android.app.Activity
+import android.content.Intent
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.User
 
@@ -35,4 +37,12 @@ fun obtainNumberOfFollowers(playlist :User):Int{
 
 fun obtainNumberOfFollowers(playlist :Playlist):Int{
     return 499
+}
+
+fun shareElement(url:String, activity: Activity){
+    val sendIntent = Intent()
+    sendIntent.action = Intent.ACTION_SEND
+    sendIntent.putExtra(Intent.EXTRA_TEXT, url)
+    sendIntent.type = "text/plain"
+    activity.startActivity(sendIntent)
 }

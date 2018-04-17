@@ -1,6 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import com.spreadyourmusic.spreadyourmusic.R
 import android.support.v7.widget.*
@@ -20,7 +21,6 @@ import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
-import android.content.Intent
 import android.view.MenuItem
 
 class UserActivity : BaseActivity() {
@@ -70,21 +70,55 @@ class UserActivity : BaseActivity() {
             followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
         } else {
             followButton!!.text = resources.getString(R.string.edit)
-
-            //Todo: Poner floating action button para subir canciones y playlists
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
-        if (!user!!.username.equals(obtainCurrentUser().username))
+        if (!user!!.username.equals(obtainCurrentUser().username)){
             mInflater.inflate(R.menu.menu_artist, menu)
+            menu!!.findItem(R.id.facebook_account).isVisible = user!!.getFacebookAccountURL() != null
+            menu.findItem(R.id.twitter_account).isVisible = user!!.getTwitterAccountURL() != null
+            menu.findItem(R.id.instagram_account).isVisible = user!!.getInstagramAccountURL() != null
+        }
+        else
+            mInflater.inflate(R.menu.menu_local_user, menu)
+
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        // TODO: Hacer
-        return super.onOptionsItemSelected(item)
+        return if (item != null) {
+            when (item.itemId) {
+                R.id.share -> {
+                    shareElement(user!!.getShareLink(), this)
+                    true
+                }
+                R.id.twitter_account -> {
+                    openArtistSocialMediaProfile(user!!.getTwitterAccountURL()!!,this)
+                    true
+                }
+                R.id.facebook_account -> {
+                    openArtistSocialMediaProfile(user!!.getFacebookAccountURL()!!,this)
+                    true
+                }
+                R.id.instagram_account -> {
+                    openArtistSocialMediaProfile(user!!.getInstagramAccountURL()!!,this)
+                    true
+                }
+                R.id.add_song -> {
+                    val intent = Intent(this, UploadSongActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.create_playlist -> {
+                    val intent = Intent(this, CreatePlaylistActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+        } else super.onOptionsItemSelected(item)
     }
 
     fun onDoFollow(view: View) {
@@ -92,7 +126,9 @@ class UserActivity : BaseActivity() {
             changeFollowState(user!!, !isFollowing(user!!))
             followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
         } else {
-            // TODO: Abrir pantalla edicion
+            val intent = Intent(this, SignUpActivity::class.java)
+            intent.putExtra(resources.getString(R.string.user_id), user!!.username)
+            startActivity(intent)
         }
     }
 

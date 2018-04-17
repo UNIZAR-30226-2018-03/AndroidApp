@@ -34,4 +34,23 @@ class User() : Recommendation {
         this.pictureLocationUri = pictureLocationUri
     }
 
+    fun getTwitterAccountURL() : String?{
+        return if(twitterAccount != null) "https://twitter.com/$twitterAccount"
+        else null
+    }
+
+    fun getFacebookAccountURL(): String?{
+        return if(facebookAccount != null) "https://www.facebook.com/$facebookAccount"
+        else null
+    }
+
+    fun getInstagramAccountURL(): String?{
+        return if(instagramAccount != null) "https://www.instagram.com/$instagramAccount"
+        else null
+    }
+
+    fun getShareLink(): String{
+        //TODO: El link devuelto ha de ser el que apunta al mismo usuario desde la interfaz web
+        return "https://www.google.es/"
+    }
 }

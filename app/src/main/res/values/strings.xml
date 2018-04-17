@@ -60,6 +60,9 @@
     <string name="creator">Creador</string>
     <string name="followers">Seguidores</string>
 
+    <!-- Activity User -->
     <string name="edit">Editar</string>
+    <string name="create_playlist">Crear playlist</string>
+    <string name="add_song">Añadir canción</string>
 
 </resources>

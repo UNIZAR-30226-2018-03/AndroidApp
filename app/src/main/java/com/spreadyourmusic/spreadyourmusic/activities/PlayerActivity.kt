@@ -363,11 +363,12 @@ class PlayerActivity : AppCompatActivity() {
 
     // handle the share songs button's click
     fun shareSong(v:View){
-        shareCurrentSong(this)
+        shareElement(getCurrentSong().getShareLink(),this)
     }
 
     // handle the add song to favourite button's click
     fun addSongToFavourite(v:View){
+        // TODO :CAMBIAR ICONO
         setFavoriteCurrentSong(!isCurrentSongFavorite())
         val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
         favoriteSongImageButton.alpha = if(isCurrentSongFavorite()) 1f else 0.5f
@@ -375,6 +376,7 @@ class PlayerActivity : AppCompatActivity() {
 
     // handle the random download button's click
     fun downloadSong(v:View){
+        // TODO :CAMBIAR ICONO
         downloadCurrentSong(!isCurrentSongDownloaded())
         val downloadOrDeleteSongImageButton:ImageButton = findViewById(R.id.downloadOrDeleteSong)
         downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f
@@ -382,6 +384,7 @@ class PlayerActivity : AppCompatActivity() {
 
     // handle the random reproduction button's click
     fun randReproduction(v:View){
+        // TODO :CAMBIAR ICONO
         randomReproduction(!isRandomReproductionEnabled())
         val randomReproductionImageButton :ImageButton = findViewById(R.id.randomReproduction)
         randomReproductionImageButton.alpha = if(isRandomReproductionEnabled()) 1f else 0.5f

@@ -51,4 +51,9 @@ class Song(val id: Long, val name: String, val locationUri: String, val duration
                 MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
 
     }
+
+    fun getShareLink(): String{
+        //TODO: El link devuelto ha de ser el que apunta a la misma cancion desde la interfaz web
+        return "https://www.google.es/"
+    }
 }

@@ -51,13 +51,3 @@ fun isRandomReproductionEnabled():Boolean{
     // TODO: Hacer
     return false
 }
-
-fun shareCurrentSong(activity: Activity){
-    // TODO: Hacer  partir de la cancion actual el string a enviar
-    val stringToSend = "Esto falta de implementar :)"
-    val sendIntent = Intent()
-    sendIntent.action = Intent.ACTION_SEND
-    sendIntent.putExtra(Intent.EXTRA_TEXT, stringToSend)
-    sendIntent.type = "text/plain"
-    activity.startActivity(sendIntent)
-}

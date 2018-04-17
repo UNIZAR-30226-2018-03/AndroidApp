@@ -50,7 +50,7 @@ fun obtainFavoriteSongsPlaylist(): Playlist {
     listaCanciones.add(cancion1)
     listaCanciones.add(cancion2)
 
-    val playlist = Playlist(3, "Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
+    val playlist = Playlist(1, "", obtainCurrentUser(), "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
     return playlist
 }
 

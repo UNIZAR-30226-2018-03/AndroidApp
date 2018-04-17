@@ -24,7 +24,7 @@ class SystemlistActivity : BaseActivity() {
         setContentView(R.layout.activity_system_list)
 
         val systemPlaylistId = intent.getIntExtra(resources.getString(R.string.system_list_id), 0)
-        values = obtainSystemGeneratedPlaylist(systemPlaylistId,this)
+        values = obtainSystemGeneratedPlaylist(systemPlaylistId, this)
 
         //App bar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -54,7 +54,7 @@ class SystemlistActivity : BaseActivity() {
 
     private val onRecomendationSelected: (Recommendation) -> Unit = {
         when (it) {
-            is Song -> onSongFromPlaylistSelected(it, obtainFavoriteSongsPlaylist(), this)
+            is Song -> onSongFromPlaylistSelected(it, Playlist(1, "", obtainCurrentUser(), "", values!!.second as List<Song>), this)
             is User -> onUserSelected(it, this)
             is Playlist -> onPlaylistSelected(it, this)
         }
