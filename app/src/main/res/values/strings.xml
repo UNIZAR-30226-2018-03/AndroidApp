@@ -46,6 +46,11 @@
     <string name="songs">Canciones</string>
     <string name="home">Home</string>
     <string name="genres">Géneros</string>
+    <string name="downloaded">Descargadas</string>
+    <string name="profile">Perfil</string>
+    <string name="open_profile">Ver perfil</string>
+    <string name="close_session">Cerrar sesión</string>
+
 
     <!-- Notificaiton Channel -->
     <string name="notification_channel">SYM_Channel_ID</string>

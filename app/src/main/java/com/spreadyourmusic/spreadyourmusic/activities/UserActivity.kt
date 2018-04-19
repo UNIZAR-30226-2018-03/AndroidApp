@@ -116,6 +116,7 @@ class UserActivity : BaseActivity() {
                     startActivity(intent)
                     true
                 }
+                //TODO : Añadir eliminar cuenta
                 else -> super.onOptionsItemSelected(item)
             }
         } else super.onOptionsItemSelected(item)

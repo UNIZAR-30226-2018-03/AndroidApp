@@ -153,6 +153,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 beforeBrowserOpenID = -1
                 getFragmentFromID(actualFragmentDisplayed)
             }
+            // TODO: Nuevas funcionalidades
             else ->
                 null
         }

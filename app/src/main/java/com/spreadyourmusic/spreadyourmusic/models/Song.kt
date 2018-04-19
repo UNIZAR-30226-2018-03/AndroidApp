@@ -1,5 +1,8 @@
 package com.spreadyourmusic.spreadyourmusic.models
 
+import android.content.Context
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource

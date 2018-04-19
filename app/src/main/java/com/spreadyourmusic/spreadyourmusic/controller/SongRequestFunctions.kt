@@ -1,6 +1,10 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.os.Environment
 import com.spreadyourmusic.spreadyourmusic.models.*
+import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -22,7 +26,8 @@ fun obtainRecommendations(): List<Recommendation> {
     val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3")
     val cancion2 = Song(album = album2, id = 2, name = "The Messenger", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3")
 
-    val cancion3 = Song(album = album2, id = 2, name = "Malabar", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 710000L, locationUri = "http://155.210.13.105:7480/TEST/malabar.mp3")
+    val cancion3 = Song(album = album2, id = 3, name = "Malabar", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 710000L, locationUri = "http://155.210.13.105:7480/TEST/malabar.mp3")
+    val cancion4 = Song(album = album2, id = 4, name = "KidKudi", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 313000L, locationUri =  Environment.getExternalStorageDirectory().getPath()+ "/Music/Prueba/Prueba.mp3")
 
     val listaCanciones = ArrayList<Song>()
     listaCanciones.add(cancion1)
@@ -35,6 +40,7 @@ fun obtainRecommendations(): List<Recommendation> {
     devolver.add(playlist)
     devolver.add(autor2)
     devolver.add(cancion3)
+    devolver.add(cancion4)
     return devolver
 }
 
@@ -114,4 +120,63 @@ fun obtainPopularByGenre(): List<Pair<String, List<Recommendation>>> {
     devolver.add(Pair("Rap", obtainPopularSongs()))
     devolver.add(Pair("Trap", obtainPopularSongs()))
     return devolver
+}
+
+// Datos hacer con room
+/*
+// TODO:
+fun saveSongInternalStorage(songData:, songId:Int, context: Context){
+    val filename = "song_" + songId.toString()
+    val file = File(context.filesDir, filename)
+    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+        it.write(songData.toByteArray())
+    }
+}
+ try {
+        URL url = new URL("url of your .mp3 file");
+        URLConnection conexion = url.openConnection();
+        conexion.connect();
+        // this will be useful so that you can show a tipical 0-100% progress bar
+        int lenghtOfFile = conexion.getContentLength();
+
+        // downlod the file
+        InputStream input = new BufferedInputStream(url.openStream());
+        OutputStream output = new FileOutputStream("/sdcard/somewhere/nameofthefile.mp3");
+
+        byte data[] = new byte[1024];
+
+        long total = 0;
+
+        while ((count = input.read(data)) != -1) {
+            total += count;
+            // publishing the progress....
+            publishProgress((int)(total*100/lenghtOfFile));
+            output.write(data, 0, count);
+        }
+
+        output.flush();
+        output.close();
+        input.close();
+    } catch (Exception e) {}
+*/
+
+fun saveAlbumArtInternalStorage(albumPhoto: Bitmap, albumId:Int, context: Context){
+    val filename = "photo_" + albumId.toString()
+    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+        albumPhoto.compress(Bitmap.CompressFormat.PNG, 100, it)
+    }
+}
+
+fun deleteSongInternalStorage(path: String, context: Context){
+    val file = File(context.filesDir, path)
+    file.delete()
+}
+
+fun deleteAlbumArtInternalStorage(path: String, context: Context){
+    val file = File(context.filesDir, path)
+    file.delete()
+}
+
+fun openAlbumArtInternalStorage(){
+    //TODO:
 }

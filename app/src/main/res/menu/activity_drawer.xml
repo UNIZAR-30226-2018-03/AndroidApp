@@ -44,6 +44,26 @@
                 android:title="@string/songs"
                 android:id="@+id/songs"
                 />
+            <item
+                android:icon="@drawable/ic_file_download_black_24dp"
+                android:title="@string/downloaded"
+                android:id="@+id/downloaded"
+                />
+        </menu>
+    </item>
+
+    <item android:title="@string/profile">
+        <menu>
+            <item
+                android:icon="@drawable/ic_person_pin_black_24dp"
+                android:title="@string/open_profile"
+                android:id="@+id/open_profile"
+                />
+            <item
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="@string/close_session"
+                android:id="@+id/close_session"
+                />
         </menu>
     </item>
 

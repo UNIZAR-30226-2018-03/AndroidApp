@@ -5,5 +5,6 @@ package com.spreadyourmusic.spreadyourmusic.apis
  */
 
 fun isServerOnline(): Boolean {
+    // TODO:
     return true
 }
