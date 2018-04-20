@@ -10,7 +10,7 @@
             android:id="@+id/home"
             />
         <item
-            android:icon="@android:drawable/presence_online"
+            android:icon="@drawable/ic_view_module_black_24dp"
             android:title="@string/genres"
             android:id="@+id/genres"
             />

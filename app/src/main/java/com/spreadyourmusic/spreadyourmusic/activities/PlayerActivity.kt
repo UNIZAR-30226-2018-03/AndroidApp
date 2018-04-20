@@ -288,9 +288,13 @@ class PlayerActivity : AppCompatActivity() {
         val randomReproductionImageButton :ImageButton = findViewById(R.id.randomReproduction)
         randomReproductionImageButton.alpha = if(isRandomReproductionEnabled()) 1f else 0.5f
         val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
-        favoriteSongImageButton.alpha = if(isCurrentSongFavorite()) 1f else 0.5f
+        isCurrentSongFavorite(this,{
+            favoriteSongImageButton.alpha = if(it) 1f else 0.5f
+        })
         val downloadOrDeleteSongImageButton:ImageButton = findViewById(R.id.downloadOrDeleteSong)
-        downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f
+        isCurrentSongDownloaded(this,{
+            downloadOrDeleteSongImageButton.alpha = if(it) 1f else 0.5f
+        })
     }
 
     private fun updateDuration(metadata: MediaMetadataCompat?) {
@@ -369,17 +373,27 @@ class PlayerActivity : AppCompatActivity() {
     // handle the add song to favourite button's click
     fun addSongToFavourite(v:View){
         // TODO :CAMBIAR ICONO
-        setFavoriteCurrentSong(!isCurrentSongFavorite())
-        val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
-        favoriteSongImageButton.alpha = if(isCurrentSongFavorite()) 1f else 0.5f
+        isCurrentSongFavorite(this,{
+            val estado = it
+            setFavoriteCurrentSong(!estado,this,{
+                if(it){
+                    val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
+                    favoriteSongImageButton.alpha = if(!estado) 1f else 0.5f
+                }
+            })
+        })
     }
 
     // handle the random download button's click
     fun downloadSong(v:View){
-        // TODO :CAMBIAR ICONO
+        // TODO :CAMBIAR ICONO y hacer la interaccion mejor
+      /*  isCurrentSongDownloaded(this,{
+
+        })
+
         downloadCurrentSong(!isCurrentSongDownloaded())
         val downloadOrDeleteSongImageButton:ImageButton = findViewById(R.id.downloadOrDeleteSong)
-        downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f
+        downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f*/
     }
 
     // handle the random reproduction button's click

@@ -17,7 +17,6 @@ import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 
 /**
- * Estado: TERMINADA (17/05/18)
  * Descripción: La siguiente clase se encarga de visualizar los artistas seguidos, las canciones añadidas
  * a favoritos y las playlist seguidas
  * */
@@ -54,12 +53,15 @@ class SystemlistActivity : BaseActivity() {
 
         val image = findViewById<ImageView>(R.id.image)
 
-        Glide.with(this).load(obtainCurrentUser().pictureLocationUri).into(image)
+        obtainCurrentUserData({
+            if (it != null)
+                Glide.with(this).load(it.pictureLocationUri).into(image)
+        }, this)
     }
 
     private val onRecomendationSelected: (Recommendation) -> Unit = {
         when (it) {
-            is Song -> onSongFromPlaylistSelected(it, Playlist(1, "", obtainCurrentUser(), "", values!!.second as List<Song>), this)
+            is Song -> onSongFromPlaylistSelected(it, Playlist(1, "", User(""), "", values!!.second as List<Song>), this)
             is User -> onUserSelected(it, this)
             is Playlist -> onPlaylistSelected(it, this)
         }

@@ -28,6 +28,10 @@ class User() : Recommendation {
         this.password = password
     }
 
+    constructor(username: String): this(){
+        this.username = username
+    }
+
     constructor(username: String, name: String, email: String, pictureLocationUri: String): this(){
         this.username = username
         this.name = name

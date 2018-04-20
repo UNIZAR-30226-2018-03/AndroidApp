@@ -1,5 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -11,6 +12,7 @@ import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
@@ -63,13 +65,18 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val circularImageView = hView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.foto_perfil)
         val userName = hView.findViewById<TextView>(R.id.nombre_usuario)
-        userName.text = obtainCurrentUser().name
-
-        circularImageView.setOnClickListener {
-            onUserSelected(obtainCurrentUser(), this)
-        }
-
-        Glide.with(this).load(obtainCurrentUser().pictureLocationUri).into(circularImageView)
+        obtainCurrentUserData({
+            val mmCurrentUser = it
+            if (mmCurrentUser != null) {
+                userName.text = mmCurrentUser.name
+                circularImageView.setOnClickListener {
+                    onUserSelected(mmCurrentUser, this)
+                }
+                Glide.with(this).load(mmCurrentUser.pictureLocationUri).into(circularImageView)
+            } else {
+                Toast.makeText(this, "Error: No se han podido obtener los datos de usuario", Toast.LENGTH_SHORT).show()
+            }
+        }, this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -153,7 +160,6 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 beforeBrowserOpenID = -1
                 getFragmentFromID(actualFragmentDisplayed)
             }
-            // TODO: Nuevas funcionalidades
             else ->
                 null
         }
@@ -166,6 +172,20 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 R.id.playlist -> onSystemListSelected(0, this)
                 R.id.artist -> onSystemListSelected(1, this)
                 R.id.songs -> onSystemListSelected(2, this)
+                R.id.downloaded -> onSystemListSelected(3, this)
+                R.id.open_profile -> {
+                    obtainCurrentUserData({
+                        if (it != null)
+                            onUserSelected(it, this)
+                    }, this)
+                }
+                R.id.close_session -> {
+                    doLogout(this)
+                    val int = Intent(applicationContext, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    startActivity(int)
+                    finish()
+                }
 
             }
         }
