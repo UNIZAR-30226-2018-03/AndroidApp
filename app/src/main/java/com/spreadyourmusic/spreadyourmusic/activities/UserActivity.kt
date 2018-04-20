@@ -22,6 +22,7 @@ import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import android.view.MenuItem
+import android.widget.Toast
 
 class UserActivity : BaseActivity() {
     var user: User? = null
@@ -32,12 +33,10 @@ class UserActivity : BaseActivity() {
         setContentView(R.layout.activity_user)
 
         val userId = intent.getStringExtra(resources.getString(R.string.user_id))
-        user = obtainUserFromID(userId)
 
         //App bar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = user!!.name
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()
@@ -45,45 +44,58 @@ class UserActivity : BaseActivity() {
 
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         val viewPager = findViewById<ViewPager>(R.id.viewPager)
-
-        viewPager.adapter = TabsAdapter(supportFragmentManager, this, user!!)
-        tabLayout.setupWithViewPager(viewPager)
-
         val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
-        Glide.with(this).load(user!!.pictureLocationUri).into(profileImage)
-
         val artistUsername = findViewById<TextView>(R.id.artistUsername)
-
-        val sArtistUsername = "@" + user!!.username
-
-        artistUsername.text = sArtistUsername
-
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
-
-        val sNumFollowers = obtainNumberOfFollowers(user!!).toString() + " " + resources.getString(R.string.followers)
-
-        followers.text = sNumFollowers
-
         followButton = findViewById(R.id.followButton)
 
-        if (!user!!.username.equals(obtainCurrentUser().username)) {
-            followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
-        } else {
-            followButton!!.text = resources.getString(R.string.edit)
-        }
+        obtainUserFromID(userId,this,{
+            if(it != null){
+                user = it
+                supportActionBar!!.title = it.name
+                obtainSongsFromUser(it,this,{
+                    val songList = it
+                    obtainPlaylistsFromUser(user!!,this,{
+                        val playlistList = it
+                        viewPager.adapter = TabsAdapter(supportFragmentManager, this,songList!!,playlistList!!)
+                        tabLayout.setupWithViewPager(viewPager)
+                    })
+                })
+                Glide.with(this).load(it.pictureLocationUri).into(profileImage)
+                val sArtistUsername = "@" + it.username
+                artistUsername.text = sArtistUsername
+                obtainNumberOfFollowers(it,this,{
+                    val sNumFollowers = it.toString() + " " + resources.getString(R.string.followers)
+                    followers.text = sNumFollowers
+                })
+                obtainCurrentUserData({
+                    if (!user!!.username.equals(it!!.username)) {
+                        isFollowing(user!!,this,{
+                            followButton!!.text = if (!it) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+                        })
+                    } else {
+                        followButton!!.text = resources.getString(R.string.edit)
+                    }
+                },this)
+            }else{
+                Toast.makeText(this,"Error usuario no encontrado",Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
-        if (!user!!.username.equals(obtainCurrentUser().username)){
-            mInflater.inflate(R.menu.menu_artist, menu)
-            menu!!.findItem(R.id.facebook_account).isVisible = user!!.getFacebookAccountURL() != null
-            menu.findItem(R.id.twitter_account).isVisible = user!!.getTwitterAccountURL() != null
-            menu.findItem(R.id.instagram_account).isVisible = user!!.getInstagramAccountURL() != null
-        }
-        else
-            mInflater.inflate(R.menu.menu_local_user, menu)
-
+        obtainCurrentUserData({
+            if (!user!!.username.equals(it!!.username)){
+                mInflater.inflate(R.menu.menu_artist, menu)
+                menu!!.findItem(R.id.facebook_account).isVisible = user!!.getFacebookAccountURL() != null
+                menu.findItem(R.id.twitter_account).isVisible = user!!.getTwitterAccountURL() != null
+                menu.findItem(R.id.instagram_account).isVisible = user!!.getInstagramAccountURL() != null
+            }
+            else
+                mInflater.inflate(R.menu.menu_local_user, menu)
+        },this)
         return true
     }
 
@@ -123,19 +135,28 @@ class UserActivity : BaseActivity() {
     }
 
     fun onDoFollow(view: View) {
-        if (!user!!.username.equals(obtainCurrentUser().username)) {
-            changeFollowState(user!!, !isFollowing(user!!))
-            followButton!!.text = if (!isFollowing(user!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
-        } else {
-            val intent = Intent(this, SignUpActivity::class.java)
-            intent.putExtra(resources.getString(R.string.user_id), user!!.username)
-            startActivity(intent)
-        }
+        obtainCurrentUserData({
+            if (!user!!.username.equals(it!!.username)) {
+                isFollowing(user!!,this,{
+                    val anterior = it
+                    changeFollowState(user!!,!it,this,{
+                        if(it)
+                        followButton!!.text = if (anterior) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+                    })
+                })
+            } else {
+                val intent = Intent(this, SignUpActivity::class.java)
+                intent.putExtra(resources.getString(R.string.user_id), user!!.username)
+                startActivity(intent)
+            }
+        },this)
+
     }
 
-    private class TabsAdapter(fm: FragmentManager, activity: Activity, user: User) : FragmentPagerAdapter(fm) {
+    private class TabsAdapter(fm: FragmentManager, activity: Activity, songList: List<Recommendation>, playlistList: List<Playlist>) : FragmentPagerAdapter(fm) {
         val mActivity: Activity = activity
-        val mUser: User = user
+        val mSongList: List<Recommendation> = songList
+        val mPlaylistList: List<Playlist> = playlistList
         val onRecomendationSelected: (Recommendation) -> Unit = {
             when (it) {
                 is Song -> onSongSelected(it, activity)
@@ -150,8 +171,8 @@ class UserActivity : BaseActivity() {
 
         override fun getItem(i: Int): Fragment {
             return when (i) {
-                0 -> VerticalRecyclerViewFragment.newInstance(onRecomendationSelected, obtainSongsFromUser(mUser))
-                else -> VerticalRecyclerViewFragment.newInstance(onRecomendationSelected, obtainPlaylistsFromUser(mUser))
+                0 -> VerticalRecyclerViewFragment.newInstance(onRecomendationSelected, mSongList)
+                else -> VerticalRecyclerViewFragment.newInstance(onRecomendationSelected, mPlaylistList)
             }
         }
 

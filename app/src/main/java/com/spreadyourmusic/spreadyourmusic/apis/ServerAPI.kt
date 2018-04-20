@@ -1,6 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
+import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 
@@ -53,6 +54,26 @@ fun obtainUserDataServer(username: String, sessionToken: String): User? {
     }else{
         throw Exception("Error")
     }
+}
+
+fun obtainSongsFromUserServer(username: String, sessionToken: String): List<Song> {
+    val resultado = ArrayList<Song>()
+    for (i in ServerEmulator.songList){
+        if(i.value.album.creator.username == username){
+            resultado.add(i.value)
+        }
+    }
+    return resultado
+}
+
+fun obtainPlaylistsFromUserServer(username: String, sessionToken: String): List<Playlist> {
+    val resultado = ArrayList<Playlist>()
+    for (i in ServerEmulator.playlistList) {
+        if (i.value.creator.username == username) {
+            resultado.add(i.value)
+        }
+    }
+    return resultado
 }
 
 /**
