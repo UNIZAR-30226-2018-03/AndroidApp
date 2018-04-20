@@ -71,7 +71,7 @@ class PlaylistActivity : BaseActivity() {
 
 
 
-      /*  val sNumFollowers = obtainNumberOfFollowers(playlist!!).toString() + " " + resources.getString(R.string.followers)
+       val sNumFollowers = obtainNumberOfFollowers(playlist!!).toString() + " " + resources.getString(R.string.followers)
 
         followers.text = sNumFollowers
 
@@ -79,7 +79,7 @@ class PlaylistActivity : BaseActivity() {
             followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
         } else {
             followButton!!.text = resources.getString(R.string.edit)
-        }*/
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -104,12 +104,12 @@ class PlaylistActivity : BaseActivity() {
     }
 
     fun onDoFollow(view: View) {
-      /*  if (!playlist!!.creator.username.equals(obtainCurrentUser().username)) {
+        if (!playlist!!.creator.username.equals(obtainCurrentUser().username)) {
             changeFollowState(playlist!!, !isFollowing(playlist!!))
             followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
         } else {
             // TODO: Hacer
-        }*/
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
+import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
@@ -252,4 +253,95 @@ fun obtainPlaylistDataServer(id: Long, sessionToken: String): Playlist? {
     //TODO:
     return ServerEmulator.playlistList[id]
 }
+
+@Throws(Exception::class)
+fun uploadSongServer(username: String, sessionToken: String,song:Song){
+//TODO:
+}
+
+@Throws(Exception::class)
+fun obtainFavouriteSongsByUserServer(username: String, sessionToken: String):List<Song>?{
+//TODO:
+    return ServerEmulator.cancionesFavoritas[username]
+}
+
+/**
+ * Devuelve una lista de @cantidad de Artistas, Playlist y Canciones recomendadas para el usuario @username
+ */
+@Throws(Exception::class)
+fun obtainRecomendationsForUserServer(username: String, sessionToken: String, cantidad:Long):List<Recommendation>?{
+//TODO:
+    return ServerEmulator.recomendaciones[username]
+}
+
+/**
+ * Devuelve las canciones populares (plazo de una semana o un mes)
+ */
+@Throws(Exception::class)
+fun obtainPopularSongsServer(sessionToken: String, cantidad:Long):List<Song>?{
+//TODO:
+    return ServerEmulator.trends
+}
+
+/**
+ * Devuelve la lista de maximo @cantidad canciones nuevas de los artistas seguidos
+ */
+@Throws(Exception::class)
+fun obtainNewSongsFromFollowedArtistOfUserServer(username: String,sessionToken: String, cantidad:Long):List<Song>?{
+//TODO:
+    return ServerEmulator.trends
+}
+
+/**
+ * Devuelve las canciones populares (ultimo dia o ultimos dias)
+ */
+@Throws(Exception::class)
+fun obtainTrendSongsServer(sessionToken: String, cantidad:Long):List<Song>?{
+//TODO:
+    return ServerEmulator.trends
+}
+
+/**
+ * Devuelve las canciones populares en el pais de origen del usuario (ultimo dia o ultimos dias)
+ */
+@Throws(Exception::class)
+fun obtainTrendSongsInUserCountryServer(username: String,sessionToken: String, cantidad:Long):List<Song>?{
+//TODO:
+    return ServerEmulator.trends
+}
+
+/**
+ * Devuelve la lista de maximo @cantidad playlists seguidas que se han actualizado
+ */
+@Throws(Exception::class)
+fun obtainUpdatedPlaylistsFollowedByUserServer(username: String,sessionToken: String, cantidad:Long):List<Playlist>?{
+//TODO:
+    return ServerEmulator.playlistSeguidos[username]
+}
+
+/**
+ * Devuelve la lista de maximo @cantidad resultados a la consulta @query
+ */
+@Throws(Exception::class)
+fun obtainResultForQueryServer(username: String,sessionToken: String, cantidad:Long, query:String):List<Recommendation>?{
+//TODO:
+    return ServerEmulator.trends
+}
+
+/**
+ * Devuelve una lista compuesta por pares nombre del genero, canciones populares. Las cacniones populares
+ * tendrán un máximo de @cantidad canciones
+ */
+@Throws(Exception::class)
+fun obtainPopularByGenreServer(username: String,sessionToken: String, cantidad:Long): List<Pair<String, List<Recommendation>>>?{
+//TODO:
+    return ServerEmulator.generos
+}
+
+
+
+
+
+
+
 

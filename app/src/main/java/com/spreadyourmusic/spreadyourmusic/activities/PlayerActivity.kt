@@ -378,7 +378,7 @@ class PlayerActivity : AppCompatActivity() {
             setFavoriteCurrentSong(!estado,this,{
                 if(it){
                     val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
-                    favoriteSongImageButton.alpha = if(!estado) 1f else 0.5f
+                    favoriteSongImageButton.alpha = if(estado) 1f else 0.5f
                 }
             })
         })
@@ -386,8 +386,8 @@ class PlayerActivity : AppCompatActivity() {
 
     // handle the random download button's click
     fun downloadSong(v:View){
-        // TODO :CAMBIAR ICONO y hacer la interaccion mejor
-      /*  isCurrentSongDownloaded(this,{
+        // TODO :CAMBIAR ICONO
+       /* isCurrentSongDownloaded(this,{
 
         })
 

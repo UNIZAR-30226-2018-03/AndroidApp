@@ -27,14 +27,9 @@ class SystemlistActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_system_list)
 
-        val systemPlaylistId = intent.getIntExtra(resources.getString(R.string.system_list_id), 0)
-        values = obtainSystemGeneratedPlaylist(systemPlaylistId, this)
-
         //App bar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = values!!.first
-
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
@@ -49,7 +44,13 @@ class SystemlistActivity : BaseActivity() {
         lista.itemAnimator = DefaultItemAnimator()
 
         recyclerViewAdapter.setOnClickListener(onRecomendationSelected)
-        recyclerViewAdapter.changeData(values!!.second)
+
+        val systemPlaylistId = intent.getIntExtra(resources.getString(R.string.system_list_id), 0)
+        obtainSystemGeneratedPlaylist(systemPlaylistId, this, {
+            values = it
+            supportActionBar!!.title = values!!.first
+            recyclerViewAdapter.changeData(values!!.second)
+        })
 
         val image = findViewById<ImageView>(R.id.image)
 

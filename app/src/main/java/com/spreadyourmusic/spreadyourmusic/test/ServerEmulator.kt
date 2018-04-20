@@ -1,9 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.test
 
-import com.spreadyourmusic.spreadyourmusic.models.Album
-import com.spreadyourmusic.spreadyourmusic.models.Playlist
-import com.spreadyourmusic.spreadyourmusic.models.Song
-import com.spreadyourmusic.spreadyourmusic.models.User
+import com.spreadyourmusic.spreadyourmusic.models.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -15,6 +12,11 @@ object ServerEmulator {
     val cancionesFavoritas = HashMap<String, ArrayList<Song>>()
     val artistasSeguidos = HashMap<String, ArrayList<User>>()
     val playlistSeguidos = HashMap<String, ArrayList<Playlist>>()
+
+    val recomendaciones = HashMap<String, ArrayList<Recommendation>>()
+    val trends = ArrayList<Song>()
+
+    val generos = ArrayList<Pair<String, List<Recommendation>>>()
 
     init {
         // TODO: HACER
@@ -62,5 +64,19 @@ object ServerEmulator {
         playlistSeguidos[autor3.username!!] = ArrayList()
         playlistSeguidos[autor3.username!!]!!.add(playlist1)
         playlistSeguidos[autor3.username!!]!!.add(playlist2)
+
+        recomendaciones[autor3.username!!] = ArrayList()
+        recomendaciones[autor3.username!!]!!.add(playlist1)
+        recomendaciones[autor3.username!!]!!.add(playlist2)
+        recomendaciones[autor3.username!!]!!.add(autor2)
+        recomendaciones[autor3.username!!]!!.add(autor1)
+        recomendaciones[autor3.username!!]!!.add(cancion1)
+        recomendaciones[autor3.username!!]!!.add(cancion2)
+
+        trends.add(cancion1)
+        trends.add(cancion2)
+        generos.add(Pair("Rock", trends))
+
+
     }
 }
