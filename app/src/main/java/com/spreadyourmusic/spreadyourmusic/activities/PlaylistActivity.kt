@@ -1,5 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 
 import com.spreadyourmusic.spreadyourmusic.R
@@ -24,20 +26,16 @@ import com.spreadyourmusic.spreadyourmusic.models.User
 class PlaylistActivity : BaseActivity() {
     var playlist: Playlist? = null
     var followButton: Button? = null
+    var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlist)
-        val playlistId = intent.getIntExtra(resources.getString(R.string.playlist_id), 0)
-
-        playlist = obtainPlaylistFromID(playlistId)
-
+        val playlistId = intent.getLongExtra(resources.getString(R.string.playlist_id), 0)
 
         //App bar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = playlist!!.name
-
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
@@ -52,11 +50,8 @@ class PlaylistActivity : BaseActivity() {
         lista.itemAnimator = DefaultItemAnimator()
 
         recyclerViewAdapter.setOnClickListener(onRecomendationSelected)
-        recyclerViewAdapter.changeData(playlist!!.content)
 
         val image = findViewById<ImageView>(R.id.image)
-
-        Glide.with(this).load(playlist!!.artLocationUri).into(image)
 
         val creatorName = findViewById<TextView>(R.id.creatorUsername)
 
@@ -64,34 +59,65 @@ class PlaylistActivity : BaseActivity() {
 
         followButton = findViewById(R.id.followButton)
 
-        // Lista de reproducción creada por usuario
-        val sCreatorName = resources.getString(R.string.creator) + ":@" + playlist!!.creator.username
+        obtainPlaylistFromID(playlistId,this,{
+            if(it!= null){
+                playlist = it
+                supportActionBar!!.title = playlist!!.name
 
-        creatorName.text = sCreatorName
+                recyclerViewAdapter.changeData(playlist!!.content)
+                Glide.with(this).load(playlist!!.artLocationUri).into(image)
 
+                // Lista de reproducción creada por usuario
+                val sCreatorName = resources.getString(R.string.creator) + ":@" + playlist!!.creator.username
 
+                creatorName.text = sCreatorName
 
-       val sNumFollowers = obtainNumberOfFollowers(playlist!!).toString() + " " + resources.getString(R.string.followers)
+                obtainNumberOfFollowers(it,this,{
+                    val sNumFollowers = it.toString() + " " + resources.getString(R.string.followers)
+                    followers.text = sNumFollowers
+                })
 
-        followers.text = sNumFollowers
+                obtainCurrentUserData({
+                    if (!playlist!!.creator.username.equals(it!!.username)) {
+                        isFollowing(it,this,{
+                            followButton!!.text = if (!it) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+                        })
+                    } else {
+                        followButton!!.text = resources.getString(R.string.edit)
+                    }
+                },this)
 
-        if (!playlist!!.creator.username.equals(obtainCurrentUser().username)) {
-            followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
-        } else {
-            followButton!!.text = resources.getString(R.string.edit)
-        }
+            }else{
+                Toast.makeText(this,"Error", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+            if(mMenu != null){
+                // Los datos del usuario no habian llegado aun cuando se creo el menu
+                onCreateOptionsMenu(mMenu)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
-
-        mInflater.inflate(R.menu.menu_playlist, menu)
-
+        obtainCurrentUserData({
+            if(playlist != null){
+                if (!playlist!!.creator.username.equals(it!!.username)) {
+                    mInflater.inflate(R.menu.menu_playlist, menu)
+                }
+            }else{
+                mMenu = menu
+            }
+        }, this)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        // TODO: Hacer
+        if(item!= null && item.itemId == R.id.share){
+            shareElement(playlist!!.getShareLink(), this)
+           return true
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -104,12 +130,21 @@ class PlaylistActivity : BaseActivity() {
     }
 
     fun onDoFollow(view: View) {
-        if (!playlist!!.creator.username.equals(obtainCurrentUser().username)) {
-            changeFollowState(playlist!!, !isFollowing(playlist!!))
-            followButton!!.text = if (!isFollowing(playlist!!)) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
-        } else {
-            // TODO: Hacer
-        }
+        obtainCurrentUserData({
+            if (!playlist!!.creator.username.equals(it!!.username)) {
+                isFollowing(playlist!!, this, {
+                    val anterior = it
+                    changeFollowState(playlist!!, !it, this, {
+                        if (it)
+                            followButton!!.text = if (anterior) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+                    })
+                })
+            } else {
+                val intent = Intent(this, CreatePlaylistActivity::class.java)
+                intent.putExtra(resources.getString(R.string.playlist_id), playlist!!.id)
+                startActivity(intent)
+            }
+        }, this)
     }
 
 }

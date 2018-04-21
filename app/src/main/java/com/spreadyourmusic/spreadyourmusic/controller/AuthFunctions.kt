@@ -2,6 +2,7 @@ package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.spreadyourmusic.spreadyourmusic.apis.doDeleteAccountServer
 import com.spreadyourmusic.spreadyourmusic.apis.doLoginServer
 import com.spreadyourmusic.spreadyourmusic.apis.doLogoutServer
 import com.spreadyourmusic.spreadyourmusic.apis.obtainUserDataServer
@@ -101,3 +102,24 @@ fun obtainCurrentUserData(listener: (User?) -> Unit, activity: Activity) {
     }
 }
 
+fun doSignUp(user:User,activity: Activity): Boolean {
+    // TODO: Falta implementar
+    return true
+}
+
+fun doDeleteAccount(activity: Activity): Boolean {
+    val mSharedPreferences = getUserSharedPreferences(activity)
+    return if(mSharedPreferences != null){
+        val user = mSharedPreferences.first
+        val sessionToken = mSharedPreferences.second
+        logoutUserSharedPreferences(activity)
+        SessionSingleton.currentUser = null
+        SessionSingleton.sessionToken = null
+        SessionSingleton.isUserDataLoaded = false
+        try {
+            doDeleteAccountServer(user, sessionToken)
+        }catch (e:Exception) {
+            false
+        }
+    }else false
+}

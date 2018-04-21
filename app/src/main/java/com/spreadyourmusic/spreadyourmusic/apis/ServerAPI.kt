@@ -34,6 +34,20 @@ fun doLoginServer(username: String, password: String): String {
     }
 }
 
+@Throws(Exception::class)
+fun doSignUpServer(user: User): String {
+    //TODO:
+    Thread.sleep(300)
+    return "dfsdfdsdf"
+}
+
+@Throws(Exception::class)
+fun doDeleteAccountServer(user: String, sessionToken: String): Boolean {
+    //TODO:
+    Thread.sleep(300)
+    return true
+}
+
 /**
  * Realiza un logout en el servidor
  * Warning: esta operación puede ser costosa en tiempo

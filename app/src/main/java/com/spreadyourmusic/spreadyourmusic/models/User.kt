@@ -12,7 +12,7 @@ class User() : Recommendation {
     var username: String? = null
     var name: String? = null
     var pictureLocationUri: String? = null
-    var bibliography: String? = null
+    var bipography: String? = null
     var email: String? = null
     var password: String? = null
     var birthDate: Date? = null

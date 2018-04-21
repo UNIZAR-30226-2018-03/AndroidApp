@@ -11,4 +11,9 @@
         app:showAsAction="never"
         android:id="@+id/create_playlist"
         />
+    <item
+        android:title="@string/delete_account"
+        app:showAsAction="never"
+        android:id="@+id/delete_account"
+        />
 </menu>

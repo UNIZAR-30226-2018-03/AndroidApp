@@ -45,6 +45,7 @@ fun isCurrentSongFavorite(activity: Activity, listener: (Boolean) -> Unit){
 // Si es true descarga la cancion, sino la elimina
 fun downloadCurrentSong(state: Boolean, activity: Activity, listener: (Boolean) -> Unit){
 // TODO: Hacer
+    listener(true)
 }
 
 

@@ -1,6 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import com.spreadyourmusic.spreadyourmusic.R
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.design.widget.TabLayout
+import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.View
 import android.widget.Button
@@ -27,6 +29,7 @@ import android.widget.Toast
 class UserActivity : BaseActivity() {
     var user: User? = null
     var followButton: Button? = null
+    var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,37 +52,42 @@ class UserActivity : BaseActivity() {
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
         followButton = findViewById(R.id.followButton)
 
-        obtainUserFromID(userId,this,{
-            if(it != null){
+        obtainUserFromID(userId, this, {
+            if (it != null) {
                 user = it
                 supportActionBar!!.title = it.name
-                obtainSongsFromUser(it,this,{
+                obtainSongsFromUser(it, this, {
                     val songList = it
-                    obtainPlaylistsFromUser(user!!,this,{
+                    obtainPlaylistsFromUser(user!!, this, {
                         val playlistList = it
-                        viewPager.adapter = TabsAdapter(supportFragmentManager, this,songList!!,playlistList!!)
+                        viewPager.adapter = TabsAdapter(supportFragmentManager, this, songList!!, playlistList!!)
                         tabLayout.setupWithViewPager(viewPager)
                     })
                 })
                 Glide.with(this).load(it.pictureLocationUri).into(profileImage)
                 val sArtistUsername = "@" + it.username
                 artistUsername.text = sArtistUsername
-                obtainNumberOfFollowers(it,this,{
+                obtainNumberOfFollowers(it, this, {
                     val sNumFollowers = it.toString() + " " + resources.getString(R.string.followers)
                     followers.text = sNumFollowers
                 })
                 obtainCurrentUserData({
                     if (!user!!.username.equals(it!!.username)) {
-                        isFollowing(user!!,this,{
+                        isFollowing(user!!, this, {
                             followButton!!.text = if (!it) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
                         })
                     } else {
                         followButton!!.text = resources.getString(R.string.edit)
                     }
-                },this)
-            }else{
-                Toast.makeText(this,"Error usuario no encontrado",Toast.LENGTH_SHORT).show()
+                }, this)
+            } else {
+                Toast.makeText(this, "Error usuario no encontrado", Toast.LENGTH_SHORT).show()
                 finish()
+            }
+
+            if(mMenu != null){
+                // Los datos del usuario no habian llegado aun cuando se creo el menu
+                onCreateOptionsMenu(mMenu)
             }
         })
     }
@@ -87,15 +95,18 @@ class UserActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
         obtainCurrentUserData({
-            if (!user!!.username.equals(it!!.username)){
-                mInflater.inflate(R.menu.menu_artist, menu)
-                menu!!.findItem(R.id.facebook_account).isVisible = user!!.getFacebookAccountURL() != null
-                menu.findItem(R.id.twitter_account).isVisible = user!!.getTwitterAccountURL() != null
-                menu.findItem(R.id.instagram_account).isVisible = user!!.getInstagramAccountURL() != null
+            if(user!=null){
+                if (!user!!.username.equals(it!!.username)) {
+                    mInflater.inflate(R.menu.menu_artist, menu)
+                    menu!!.findItem(R.id.facebook_account).isVisible = user!!.getFacebookAccountURL() != null
+                    menu.findItem(R.id.twitter_account).isVisible = user!!.getTwitterAccountURL() != null
+                    menu.findItem(R.id.instagram_account).isVisible = user!!.getInstagramAccountURL() != null
+                } else
+                    mInflater.inflate(R.menu.menu_local_user, menu)
+            }else{
+                mMenu = menu
             }
-            else
-                mInflater.inflate(R.menu.menu_local_user, menu)
-        },this)
+        }, this)
         return true
     }
 
@@ -107,15 +118,15 @@ class UserActivity : BaseActivity() {
                     true
                 }
                 R.id.twitter_account -> {
-                    openArtistSocialMediaProfile(user!!.getTwitterAccountURL()!!,this)
+                    openArtistSocialMediaProfile(user!!.getTwitterAccountURL()!!, this)
                     true
                 }
                 R.id.facebook_account -> {
-                    openArtistSocialMediaProfile(user!!.getFacebookAccountURL()!!,this)
+                    openArtistSocialMediaProfile(user!!.getFacebookAccountURL()!!, this)
                     true
                 }
                 R.id.instagram_account -> {
-                    openArtistSocialMediaProfile(user!!.getInstagramAccountURL()!!,this)
+                    openArtistSocialMediaProfile(user!!.getInstagramAccountURL()!!, this)
                     true
                 }
                 R.id.add_song -> {
@@ -128,7 +139,10 @@ class UserActivity : BaseActivity() {
                     startActivity(intent)
                     true
                 }
-                //TODO : Añadir eliminar cuenta
+                R.id.delete_account -> {
+                    onDeleteAccount()
+                    true
+                }
                 else -> super.onOptionsItemSelected(item)
             }
         } else super.onOptionsItemSelected(item)
@@ -137,11 +151,11 @@ class UserActivity : BaseActivity() {
     fun onDoFollow(view: View) {
         obtainCurrentUserData({
             if (!user!!.username.equals(it!!.username)) {
-                isFollowing(user!!,this,{
+                isFollowing(user!!, this, {
                     val anterior = it
-                    changeFollowState(user!!,!it,this,{
-                        if(it)
-                        followButton!!.text = if (anterior) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
+                    changeFollowState(user!!, !it, this, {
+                        if (it)
+                            followButton!!.text = if (anterior) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
                     })
                 })
             } else {
@@ -149,8 +163,32 @@ class UserActivity : BaseActivity() {
                 intent.putExtra(resources.getString(R.string.user_id), user!!.username)
                 startActivity(intent)
             }
-        },this)
+        }, this)
 
+    }
+
+    private fun onDeleteAccount() {
+        val builder = AlertDialog.Builder(this)
+
+        builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
+            if (doDeleteAccount(this)) {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
+            }
+        })
+        builder.setNegativeButton(R.string.cancel, { _: DialogInterface?, _: Int ->
+        })
+
+        // Set other dialog properties
+        builder.setTitle(R.string.delete_account)
+        builder.setMessage(R.string.delete_account_dialog)
+
+
+        // Create the AlertDialog
+        builder.create()
     }
 
     private class TabsAdapter(fm: FragmentManager, activity: Activity, songList: List<Recommendation>, playlistList: List<Playlist>) : FragmentPagerAdapter(fm) {
@@ -183,5 +221,6 @@ class UserActivity : BaseActivity() {
                 else -> null
             }
         }
+
     }
 }
