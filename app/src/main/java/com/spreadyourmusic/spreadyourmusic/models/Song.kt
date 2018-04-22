@@ -1,5 +1,8 @@
 package com.spreadyourmusic.spreadyourmusic.models
 
+import android.content.Context
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource
@@ -9,6 +12,7 @@ import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
  * Created by abel
  * On 7/03/18.
  */
+// TODO:
 class Song(val id: Long, val name: String, val locationUri: String, val duration: Long, val album: Album, val collaborators: List<User>?, val numOfViews: Long, val numOfLikes: Long) : Recommendation {
 
     private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
@@ -50,5 +54,10 @@ class Song(val id: Long, val name: String, val locationUri: String, val duration
         return MediaBrowserCompat.MediaItem(copy.description,
                 MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
 
+    }
+
+    fun getShareLink(): String{
+        //TODO: El link devuelto ha de ser el que apunta a la misma cancion desde la interfaz web
+        return "https://www.google.es/"
     }
 }

@@ -1,8 +1,12 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
+import android.app.Activity
+import android.content.Context
+import android.graphics.Bitmap
+import com.spreadyourmusic.spreadyourmusic.apis.*
 import com.spreadyourmusic.spreadyourmusic.models.*
-import java.util.*
-import kotlin.collections.ArrayList
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
+import java.io.File
 
 /**
  * Created by abel
@@ -10,108 +14,180 @@ import kotlin.collections.ArrayList
  */
 
 // Recomendations for me
-fun obtainRecommendations(): List<Recommendation> {
-    val devolver = ArrayList<Recommendation>()
+fun obtainRecommendations(activity: Activity, listener: (List<Recommendation>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainRecomendationsForUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
 
-    val autor1 = User("Media", "Media", "Right", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val autor2 = User("Silent", "Silent", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-
-    val album1 = Album("Jazz", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val album2 = Album("Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
-
-    val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3")
-    val cancion2 = Song(album = album2, id = 2, name = "The Messenger", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3")
-
-    val cancion3 = Song(album = album2, id = 2, name = "Malabar", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 710000L, locationUri = "http://155.210.13.105:7480/TEST/malabar.mp3")
-
-    val listaCanciones = ArrayList<Song>()
-    listaCanciones.add(cancion1)
-    listaCanciones.add(cancion2)
-
-    val playlist = Playlist(2,"Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
-    devolver.add(autor1)
-    devolver.add(cancion2)
-    devolver.add(cancion1)
-    devolver.add(playlist)
-    devolver.add(autor2)
-    devolver.add(cancion3)
-    return devolver
+    }.start()
 }
 
 
 // Popular in the word
-fun obtainPopularSongs(): List<Song> {
-    val devolver = ArrayList<Song>()
+fun obtainPopularSongs(activity: Activity, listener: ( List<Song>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainPopularSongsServer( SessionSingleton.sessionToken!!,25)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
 
-    val autor1 = User("Media", "Media", "Right", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val autor2 = User("Silent", "Silent", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-
-    val album1 = Album("Jazz", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val album2 = Album("Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
-
-    val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3")
-    val cancion2 = Song(album = album2, id = 2, name = "The Messenger", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3")
-
-    val cancion3 = Song(album = album2, id = 2, name = "Malabar", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 710000L, locationUri = "http://155.210.13.105:7480/TEST/malabar.mp3")
-
-    val listaCanciones = ArrayList<Song>()
-    listaCanciones.add(cancion1)
-    listaCanciones.add(cancion2)
-
-    devolver.add(cancion2)
-    devolver.add(cancion1)
-    devolver.add(cancion3)
-    return devolver
+    }.start()
 }
 
 // New songs from followed Artists
-fun obtainNewsSongs(): List<Song> {
-    return obtainPopularSongs()
+fun obtainNewsSongs(activity: Activity, listener: (List<Song> ?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainNewSongsFromFollowedArtistOfUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+
+    }.start()
 }
 
 // Popular Now
-fun obtainTrendSongs(): List<Song> {
-    return obtainPopularSongs()
+fun obtainTrendSongs(activity: Activity, listener: (List<Song> ?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainTrendSongsServer(SessionSingleton.sessionToken!!,25)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+
+    }.start()
 }
 
 // Popular in my country
-fun obtainTrendInMyCountry(): List<Song> {
-    return obtainPopularSongs()
+fun obtainTrendInMyCountry(activity: Activity, listener: ( List<Song>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainTrendSongsInUserCountryServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+
+    }.start()
 }
 
 // Updated playlists
-fun obtainUpdatedPlaylists(): List<Playlist> {
-    val devolver = ArrayList<Playlist>()
+fun obtainUpdatedPlaylists(activity: Activity, listener: ( List<Playlist>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainUpdatedPlaylistsFollowedByUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
 
-    val autor1 = User("Media", "Media", "Right", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val autor2 = User("Silent", "Silent", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-
-    val album1 = Album("Jazz", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val album2 = Album("Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
-
-    val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3")
-    val cancion2 = Song(album = album2, id = 2, name = "The Messenger", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3")
-
-    val listaCanciones = ArrayList<Song>()
-    listaCanciones.add(cancion1)
-    listaCanciones.add(cancion2)
-
-    val playlist = Playlist(1,"Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
-
-    devolver.add(playlist)
-    return devolver
+    }.start()
 }
 
-fun obtainResultFromQuery(query: String): List<Recommendation> {
-    return obtainRecommendations()
+fun obtainResultFromQuery(query: String,activity: Activity, listener: (List<Recommendation>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainResultForQueryServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25,query)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+
+    }.start()
 }
 
 // Obtain Songs to show in Popular by genre screen
-fun obtainPopularByGenre(): List<Pair<String, List<Recommendation>>> {
-    val devolver = ArrayList<Pair<String, List<Recommendation>>>()
-    devolver.add(Pair("Rock", obtainPopularSongs()))
-    devolver.add(Pair("Pop", obtainPopularSongs()))
-    devolver.add(Pair("Rap", obtainPopularSongs()))
-    devolver.add(Pair("Trap", obtainPopularSongs()))
-    return devolver
+fun obtainPopularByGenre(activity: Activity, listener: (List<Pair<String, List<Recommendation>>>?) -> Unit){
+    Thread {
+        val resultado = try {
+            obtainPopularByGenreServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+
+    }.start()
+}
+
+// Datos hacer con room
+/*
+// TODO:
+fun saveSongInternalStorage(songData:, songId:Int, context: Context){
+    val filename = "song_" + songId.toString()
+    val file = File(context.filesDir, filename)
+    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+        it.write(songData.toByteArray())
+    }
+}
+ try {
+        URL url = new URL("url of your .mp3 file");
+        URLConnection conexion = url.openConnection();
+        conexion.connect();
+        // this will be useful so that you can show a tipical 0-100% progress bar
+        int lenghtOfFile = conexion.getContentLength();
+
+        // downlod the file
+        InputStream input = new BufferedInputStream(url.openStream());
+        OutputStream output = new FileOutputStream("/sdcard/somewhere/nameofthefile.mp3");
+
+        byte data[] = new byte[1024];
+
+        long total = 0;
+
+        while ((count = input.read(data)) != -1) {
+            total += count;
+            // publishing the progress....
+            publishProgress((int)(total*100/lenghtOfFile));
+            output.write(data, 0, count);
+        }
+
+        output.flush();
+        output.close();
+        input.close();
+    } catch (Exception e) {}
+*/
+
+fun saveAlbumArtInternalStorage(albumPhoto: Bitmap, albumId:Int, context: Context){
+    val filename = "photo_" + albumId.toString()
+    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+        albumPhoto.compress(Bitmap.CompressFormat.PNG, 100, it)
+    }
+}
+
+fun deleteSongInternalStorage(path: String, context: Context){
+    val file = File(context.filesDir, path)
+    file.delete()
+}
+
+fun deleteAlbumArtInternalStorage(path: String, context: Context){
+    val file = File(context.filesDir, path)
+    file.delete()
+}
+
+fun openAlbumArtInternalStorage(){
+    //TODO:
 }

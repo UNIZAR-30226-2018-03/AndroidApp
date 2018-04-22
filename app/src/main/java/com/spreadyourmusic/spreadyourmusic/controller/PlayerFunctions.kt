@@ -1,45 +1,57 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
-import android.content.Intent
+import com.spreadyourmusic.spreadyourmusic.apis.*
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Song
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
 /**
  * Created by abel
  * On 8/03/18.
  */
-
 fun getCurrentSong():Song{
    return MusicQueueManager.getInstance().currentSong
 }
 
-fun changeToNextSong(){
-    MusicQueueManager.getInstance().skipQueuePosition(1)
+fun setFavoriteCurrentSong(state: Boolean, activity: Activity, listener: (Boolean) -> Unit){
+    Thread {
+        val resultado = try {
+            if (state) setSongFavoutireServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!, getCurrentSong().id)
+            else unSetSongFavoutireServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!, getCurrentSong().id)
+            true
+        } catch (e: Exception) {
+            false
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }
 
-fun changeToPreviousSong(){
-    MusicQueueManager.getInstance().skipQueuePosition(-1)
-}
-
-fun setFavoriteCurrentSong(favorite: Boolean){
-// TODO: Hacer
-}
-
-fun isCurrentSongFavorite(): Boolean{
-    // TODO: Hacer
-    return false
+fun isCurrentSongFavorite(activity: Activity, listener: (Boolean) -> Unit){
+    Thread {
+        val resultado = try {
+            isSongFavoutireByUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!, getCurrentSong().id)
+        } catch (e: Exception) {
+            false
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }
 
 // Si es true descarga la cancion, sino la elimina
-fun downloadCurrentSong(download: Boolean){
+fun downloadCurrentSong(state: Boolean, activity: Activity, listener: (Boolean) -> Unit){
 // TODO: Hacer
+    listener(true)
 }
 
 
-fun isCurrentSongDownloaded(): Boolean{
+fun isCurrentSongDownloaded(activity: Activity, listener: (Boolean) -> Unit){
     // TODO: Hacer
-    return false
+    listener(false)
 }
 
 // Si es true crea reproduccion aleatoria
@@ -50,14 +62,4 @@ fun randomReproduction(nextState: Boolean) {
 fun isRandomReproductionEnabled():Boolean{
     // TODO: Hacer
     return false
-}
-
-fun shareCurrentSong(activity: Activity){
-    // TODO: Hacer  partir de la cancion actual el string a enviar
-    val stringToSend = "Esto falta de implementar :)"
-    val sendIntent = Intent()
-    sendIntent.action = Intent.ACTION_SEND
-    sendIntent.putExtra(Intent.EXTRA_TEXT, stringToSend)
-    sendIntent.type = "text/plain"
-    activity.startActivity(sendIntent)
 }

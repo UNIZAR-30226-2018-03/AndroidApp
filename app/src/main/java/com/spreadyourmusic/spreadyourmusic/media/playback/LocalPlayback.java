@@ -118,7 +118,7 @@ public final class LocalPlayback implements Playback {
         // Create the Wifi lock (this does not acquire the lock, this just creates it)
         this.mWifiLock =
                 ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
-                        .createWifiLock(WifiManager.WIFI_MODE_FULL, "uAmp_lock");
+                        .createWifiLock(WifiManager.WIFI_MODE_FULL, "sym_lock");
 
         this.mMusicQueueManager = mmMusicQueueManager;
     }
@@ -224,7 +224,7 @@ public final class LocalPlayback implements Playback {
             // Produces DataSource instances through which media data is loaded.
             DataSource.Factory dataSourceFactory =
                     new DefaultDataSourceFactory(
-                            mContext, Util.getUserAgent(mContext, "uamp"), null);
+                            mContext, Util.getUserAgent(mContext, "sym"), null);
             // Produces Extractor instances for parsing the media data.
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
             // The MediaSource represents the media to be played.
