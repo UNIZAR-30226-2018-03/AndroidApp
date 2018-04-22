@@ -7,4 +7,4 @@ import java.util.*
  * On 8/03/18.
  */
 // TODO:
-class Album(val name: String, val creator: User, val releaseDate: Calendar, val artLocationUri : String)
+class Album(val id:Long, val name: String, val creator: User, val releaseDate: Calendar, val artLocationUri : String)

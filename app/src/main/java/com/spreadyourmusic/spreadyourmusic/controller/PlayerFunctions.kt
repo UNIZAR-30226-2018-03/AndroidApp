@@ -1,6 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
+import android.widget.Toast
 import com.spreadyourmusic.spreadyourmusic.apis.*
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Song
@@ -44,8 +45,19 @@ fun isCurrentSongFavorite(activity: Activity, listener: (Boolean) -> Unit){
 
 // Si es true descarga la cancion, sino la elimina
 fun downloadCurrentSong(state: Boolean, activity: Activity, listener: (Boolean) -> Unit){
-// TODO: Hacer
-    listener(true)
+    Thread {
+        val currentSong = getCurrentSong()
+        val resultado = saveSongInternalStorage(currentSong.locationUri,currentSong.id,activity)
+
+        activity.runOnUiThread {
+            if(resultado!=null){
+                // TODO: Añadir a ROOM
+                listener(true)
+            }else{
+                listener(false)
+            }
+        }
+    }.start()
 }
 
 
