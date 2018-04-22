@@ -1,23 +1,7 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.spreadyourmusic.spreadyourmusic.media.playback;
 
+import com.spreadyourmusic.spreadyourmusic.models.Song;
 import com.spreadyourmusic.spreadyourmusic.services.MusicService;
-
-import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
 
 /**
  * Interface representing either Local or Remote Playback. The {@link MusicService} works
@@ -40,11 +24,6 @@ public interface Playback {
     void stop(boolean notifyListeners);
 
     /**
-     * Set the latest playback state as determined by the caller.
-     */
-    void setState(int state);
-
-    /**
      * Get the current {@link android.media.session.PlaybackState#getState()}
      */
     int getState();
@@ -65,20 +44,13 @@ public interface Playback {
      */
     long getCurrentStreamPosition();
 
-    /**
-     * Queries the underlying stream and update the internal last known stream position.
-     */
-    void updateLastKnownStreamPosition();
-
-    void play(QueueItem item);
+    void play(Song item);
 
     void pause();
 
+    void replay();
+
     void seekTo(long position);
-
-    void setCurrentMediaId(String mediaId);
-
-    String getCurrentMediaId();
 
     interface Callback {
         /**
@@ -97,10 +69,6 @@ public interface Playback {
          */
         void onError(String error);
 
-        /**
-         * @param mediaId being currently played
-         */
-        void setCurrentMediaId(String mediaId);
     }
 
     void setCallback(Callback callback);

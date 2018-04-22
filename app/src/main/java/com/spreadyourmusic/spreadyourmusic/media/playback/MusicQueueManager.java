@@ -156,6 +156,10 @@ public class MusicQueueManager {
 
     }
 
+    public long musicQueueSize(){
+        return mPlayingQueue.size();
+    }
+
     public interface MetadataUpdateListener {
         void onMetadataChanged(MediaMetadataCompat metadata);
 

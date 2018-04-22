@@ -26,6 +26,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
+import com.spreadyourmusic.spreadyourmusic.models.Song;
 import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource;
 import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
@@ -62,9 +63,9 @@ public final class LocalPlayback implements Playback {
 
     // The volume we set the media player to when we lose audio focus, but are
     // allowed to reduce the volume instead of stopping playback.
-    public static final float VOLUME_DUCK = 0.2f;
+    private static final float VOLUME_DUCK = 0.2f;
     // The volume we set the media player when we have audio focus.
-    public static final float VOLUME_NORMAL = 1.0f;
+    private static final float VOLUME_NORMAL = 1.0f;
 
     // we don't have audio focus, and can't duck (play at a low volume)
     private static final int AUDIO_NO_FOCUS_NO_DUCK = 0;
@@ -78,7 +79,7 @@ public final class LocalPlayback implements Playback {
     private boolean mPlayOnFocusGain;
     private Callback mCallback;
     private boolean mAudioNoisyReceiverRegistered;
-    private String mCurrentMediaId;
+    private Long mCurrentMediaId;
 
     private MusicQueueManager mMusicQueueManager;
 
@@ -136,11 +137,6 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
-    public void setState(int state) {
-        // Nothing to do (mExoPlayer holds its own state).
-    }
-
-    @Override
     public int getState() {
         if (mExoPlayer == null) {
             return mExoPlayerNullIsStopped
@@ -179,17 +175,13 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
-    public void updateLastKnownStreamPosition() {
-        // Nothing to do. Position maintained by ExoPlayer.
-    }
-
-    @Override
-    public void play(QueueItem item) {
+    public void play(Song item) {
         mPlayOnFocusGain = true;
         tryToGetAudioFocus();
         registerAudioNoisyReceiver();
-        String mediaId = item.getDescription().getMediaId();
-        boolean mediaHasChanged = !TextUtils.equals(mediaId, mCurrentMediaId);
+        Long mediaId = item.getId();
+        boolean mediaHasChanged = mCurrentMediaId == null || mCurrentMediaId.equals(mediaId);
+
         if (mediaHasChanged) {
             mCurrentMediaId = mediaId;
         }
@@ -246,6 +238,11 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
+    public void replay() {
+       seekTo(0);
+    }
+
+    @Override
     public void pause() {
         // Pause player and cancel the 'foreground service' state.
         if (mExoPlayer != null) {
@@ -258,7 +255,6 @@ public final class LocalPlayback implements Playback {
 
     @Override
     public void seekTo(long position) {
-        LogHelper.d(TAG, "seekTo called with ", position);
         if (mExoPlayer != null) {
             registerAudioNoisyReceiver();
             mExoPlayer.seekTo(position);
@@ -268,16 +264,6 @@ public final class LocalPlayback implements Playback {
     @Override
     public void setCallback(Callback callback) {
         this.mCallback = callback;
-    }
-
-    @Override
-    public void setCurrentMediaId(String mediaId) {
-        this.mCurrentMediaId = mediaId;
-    }
-
-    @Override
-    public String getCurrentMediaId() {
-        return mCurrentMediaId;
     }
 
     private void tryToGetAudioFocus() {

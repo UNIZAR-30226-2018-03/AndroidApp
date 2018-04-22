@@ -87,8 +87,6 @@ class PlayerActivity : AppCompatActivity() {
             if (metadata != null) {
                 updateMediaDescription(metadata.description)
                 updateDuration(metadata)
-                if(onLastProgessChanged != 0)
-                MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo(0)
             }
         }
     }
