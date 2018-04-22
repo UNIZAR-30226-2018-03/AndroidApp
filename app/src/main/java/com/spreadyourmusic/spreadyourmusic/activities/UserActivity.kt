@@ -29,7 +29,7 @@ import android.widget.Toast
 class UserActivity : BaseActivity() {
     var user: User? = null
     var followButton: Button? = null
-    var mMenu: Menu? = null
+    private var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -173,8 +173,8 @@ class UserActivity : BaseActivity() {
         builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
             if (doDeleteAccount(this)) {
                 val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-                finish()
             } else {
                 Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
             }
@@ -189,6 +189,8 @@ class UserActivity : BaseActivity() {
 
         // Create the AlertDialog
         builder.create()
+
+        builder.show()
     }
 
     private class TabsAdapter(fm: FragmentManager, activity: Activity, songList: List<Recommendation>, playlistList: List<Playlist>) : FragmentPagerAdapter(fm) {
