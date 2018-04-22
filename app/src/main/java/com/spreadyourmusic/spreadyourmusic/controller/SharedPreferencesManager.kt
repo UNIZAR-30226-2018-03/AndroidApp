@@ -8,7 +8,7 @@ import android.content.Context
  * Guarda los datos del usuario en shared preferences
  */
 fun loginUserSharedPreferences(username: String, sessionToken: String, activity: Activity?) {
-    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+    val sharedPref = activity?.getSharedPreferences("sym_Preferences",Context.MODE_PRIVATE) ?: return
     with(sharedPref.edit()) {
         putString("username", username)
         putString("sessionToken", sessionToken)
@@ -21,7 +21,7 @@ fun loginUserSharedPreferences(username: String, sessionToken: String, activity:
  *  Elimina los datos almacenados en shared preferences
 */
 fun logoutUserSharedPreferences(activity: Activity?) {
-    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+    val sharedPref = activity?.getSharedPreferences("sym_Preferences",Context.MODE_PRIVATE) ?: return
     with(sharedPref.edit()) {
         putBoolean("logged", false)
         apply()
@@ -33,7 +33,7 @@ fun logoutUserSharedPreferences(activity: Activity?) {
  * Devuelve un par del tipo (usuario, token de sesión) en el caso de que exista null en caso contrario
  * */
 fun getUserSharedPreferences(activity: Activity?): Pair<String, String>? {
-    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return null
+    val sharedPref = activity?.getSharedPreferences("sym_Preferences",Context.MODE_PRIVATE) ?: return null
     val isLogged = sharedPref.getBoolean("logged", false)
     return if (!isLogged) null
     else {

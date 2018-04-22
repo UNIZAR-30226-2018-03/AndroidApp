@@ -60,6 +60,7 @@ fun doLogout(activity: Activity) {
         val sessionToken = mSharedPreferences.second
         doLogoutServer(user, sessionToken)
         logoutUserSharedPreferences(activity)
+    }else{
         SessionSingleton.currentUser = null
         SessionSingleton.sessionToken = null
         SessionSingleton.isUserDataLoaded = false
