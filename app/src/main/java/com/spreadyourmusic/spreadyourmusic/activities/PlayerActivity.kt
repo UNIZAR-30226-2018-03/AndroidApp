@@ -34,8 +34,6 @@ import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBar
 import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 
-import kotlinx.android.synthetic.main.app_bar_home.*
-
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -64,7 +62,6 @@ class PlayerActivity : AppCompatActivity() {
     private var mPauseDrawable: Drawable? = null
     private var mPlayDrawable: Drawable? = null
 
-
     private val mHandler = Handler()
     private var mMediaBrowser: MediaBrowserCompat? = null
 
@@ -90,6 +87,8 @@ class PlayerActivity : AppCompatActivity() {
             if (metadata != null) {
                 updateMediaDescription(metadata.description)
                 updateDuration(metadata)
+                if(onLastProgessChanged != 0)
+                MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo(0)
             }
         }
     }
@@ -103,7 +102,6 @@ class PlayerActivity : AppCompatActivity() {
 
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

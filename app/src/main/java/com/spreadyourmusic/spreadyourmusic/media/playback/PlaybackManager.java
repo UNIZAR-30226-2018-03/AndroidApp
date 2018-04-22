@@ -166,7 +166,6 @@ public class PlaybackManager implements Playback.Callback {
         //mMusicQueueManager.setQueueFromMusic(mediaId);
     }
 
-
     private class MediaSessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
@@ -190,7 +189,6 @@ public class PlaybackManager implements Playback.Callback {
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             LogHelper.d(TAG, "playFromMediaId mediaId:", mediaId, "  extras=", extras);
-           // mMusicQueueManager.setQueueFromMusic(mediaId);
             handlePlayRequest();
         }
 

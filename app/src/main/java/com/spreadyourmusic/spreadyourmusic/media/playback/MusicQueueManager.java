@@ -1,6 +1,5 @@
 package com.spreadyourmusic.spreadyourmusic.media.playback;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -65,13 +64,6 @@ public class MusicQueueManager {
     public boolean setCurrentQueueItem(long queueId) {
         // set the current index on queue from the queue Id:
         int index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, queueId);
-        setCurrentQueueIndex(index);
-        return index >= 0;
-    }
-
-    public boolean setCurrentQueueItem(String mediaId) {
-        // set the current index on queue from the music Id:
-        int index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, mediaId);
         setCurrentQueueIndex(index);
         return index >= 0;
     }
@@ -146,8 +138,6 @@ public class MusicQueueManager {
         }
         return list;
     }
-
-
 
     public void updateMetadata() {
         MediaSessionCompat.QueueItem currentMusic = getCurrentMusic();
