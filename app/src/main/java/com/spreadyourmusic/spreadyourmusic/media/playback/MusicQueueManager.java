@@ -25,10 +25,13 @@ public class MusicQueueManager {
 
     // "Now playing" queue:
     private List<Pair<Song, MediaSessionCompat.QueueItem>> mPlayingQueue;
+    private List<Pair<Song, MediaSessionCompat.QueueItem>> mPlayingSecondQueue;
 
     private int mCurrentIndex;
 
     private static MusicQueueManager instancia = null;
+
+    private boolean randomReproduction = false;
 
 
     private MusicQueueManager() {
@@ -122,6 +125,10 @@ public class MusicQueueManager {
 
         mPlayingQueue = QueueHelper.convertToQueue(newSongList);
         mCurrentIndex = index;
+
+        randomReproduction = false;
+        mPlayingSecondQueue = null;
+
         ArrayList<MediaSessionCompat.QueueItem> newQueue = new ArrayList<MediaSessionCompat.QueueItem>();
         for (Pair<Song, MediaSessionCompat.QueueItem> item : mPlayingQueue) {
             newQueue.add(item.second);
@@ -154,6 +161,27 @@ public class MusicQueueManager {
 
         mListener.onMetadataChanged(metadata);
 
+    }
+
+    public void setRandomReproductionEnable(boolean enable){
+        if(mPlayingQueue.size() > 0){
+            if(!randomReproduction && enable){
+                mPlayingSecondQueue = new ArrayList<>(mPlayingQueue);
+                Collections.shuffle(mPlayingQueue);
+                mCurrentIndex = mPlayingQueue.indexOf(mPlayingSecondQueue.get(mCurrentIndex));
+            }
+            else if(randomReproduction && !enable){
+                List<Pair<Song, MediaSessionCompat.QueueItem>> aux = mPlayingQueue;
+                mPlayingQueue = mPlayingSecondQueue;
+                mPlayingSecondQueue = aux;
+                mCurrentIndex = mPlayingQueue.indexOf(mPlayingSecondQueue.get(mCurrentIndex));
+            }
+        }
+        randomReproduction = enable;
+    }
+
+    public boolean isRandomReproductionEnable(){
+        return randomReproduction;
     }
 
     public long musicQueueSize(){

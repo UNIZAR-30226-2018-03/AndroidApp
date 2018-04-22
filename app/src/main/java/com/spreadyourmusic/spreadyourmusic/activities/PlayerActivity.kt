@@ -205,7 +205,7 @@ class PlayerActivity : AppCompatActivity() {
         mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
 
-        if(isRandomReproductionEnabled()){
+        if(!isRandomReproductionEnabled()){
             randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
         }else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
     }
@@ -432,7 +432,7 @@ class PlayerActivity : AppCompatActivity() {
     fun randReproduction(v: View) {
         randomReproduction(!isRandomReproductionEnabled())
         if(isRandomReproductionEnabled()){
-            randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
-        }else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
+            randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
+        }else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
     }
 }

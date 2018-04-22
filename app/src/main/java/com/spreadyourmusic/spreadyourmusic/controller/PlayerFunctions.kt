@@ -56,10 +56,9 @@ fun isCurrentSongDownloaded(activity: Activity, listener: (Boolean) -> Unit){
 
 // Si es true crea reproduccion aleatoria
 fun randomReproduction(nextState: Boolean) {
-// TODO: Hacer
+    MusicQueueManager.getInstance().setRandomReproductionEnable(nextState)
 }
 
 fun isRandomReproductionEnabled():Boolean{
-    // TODO: Hacer
-    return false
+    return  MusicQueueManager.getInstance().isRandomReproductionEnable()
 }
