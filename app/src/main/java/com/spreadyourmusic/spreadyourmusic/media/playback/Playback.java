@@ -74,6 +74,8 @@ public interface Playback {
 
     void pause();
 
+    void replay();
+
     void seekTo(long position);
 
     void setCurrentMediaId(String mediaId);

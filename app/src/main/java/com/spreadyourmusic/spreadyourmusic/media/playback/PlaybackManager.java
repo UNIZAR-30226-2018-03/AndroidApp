@@ -76,6 +76,13 @@ public class PlaybackManager implements Playback.Callback {
         updatePlaybackState(withError);
     }
 
+    /**
+     * Handle a request to play music
+     */
+    public void handleReplayRequest() {
+        mPlayback.replay();
+    }
+
 
     /**
      * Update the current media player state, optionally showing an error message.
@@ -141,7 +148,9 @@ public class PlaybackManager implements Playback.Callback {
     public void onCompletion() {
         // The media player finished playing the current song, so we go ahead
         // and start the next.
-        if (mMusicQueueManager.skipQueuePosition(1)) {
+        if (mMusicQueueManager.skipQueuePosition(1) && mMusicQueueManager.musicQueueSize() == 1) {
+            handleReplayRequest();
+        }else if (mMusicQueueManager.skipQueuePosition(1)) {
             handlePlayRequest();
             mMusicQueueManager.updateMetadata();
         } else {

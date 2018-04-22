@@ -246,6 +246,11 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
+    public void replay() {
+        seekTo(0);
+    }
+
+    @Override
     public void pause() {
         // Pause player and cancel the 'foreground service' state.
         if (mExoPlayer != null) {
