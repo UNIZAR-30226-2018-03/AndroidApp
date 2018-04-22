@@ -1,18 +1,21 @@
 package com.spreadyourmusic.spreadyourmusic.media.playback;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.spreadyourmusic.spreadyourmusic.models.Song;
+import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 
 /**
  * Manage the interactions among the container service, the queue manager and the actual playback.
  */
 public class PlaybackManager implements Playback.Callback {
 
+    private static final String TAG = LogHelper.makeLogTag(PlaybackManager.class);
     // Action to thumbs up a media item
+
     private MusicQueueManager mMusicQueueManager;
     private Playback mPlayback;
     private PlaybackServiceCallback mServiceCallback;
@@ -40,7 +43,8 @@ public class PlaybackManager implements Playback.Callback {
      * Handle a request to play music
      */
     public void handlePlayRequest() {
-        Song currentMusic = mMusicQueueManager.getCurrentSong();
+        LogHelper.d(TAG, "handlePlayRequest: mState=" + mPlayback.getState());
+        MediaSessionCompat.QueueItem currentMusic = mMusicQueueManager.getCurrentMusic();
         if (currentMusic != null) {
             mServiceCallback.onPlaybackStart();
             mPlayback.play(currentMusic);
@@ -48,19 +52,10 @@ public class PlaybackManager implements Playback.Callback {
     }
 
     /**
-     * Handle a request to play music
-     */
-    public void handleReplayRequest() {
-        Song currentMusic = mMusicQueueManager.getCurrentSong();
-        if (currentMusic != null) {
-            mPlayback.replay();
-        }
-    }
-
-    /**
      * Handle a request to pause music
      */
     public void handlePauseRequest() {
+        LogHelper.d(TAG, "handlePauseRequest: mState=" + mPlayback.getState());
         if (mPlayback.isPlaying()) {
             mPlayback.pause();
             mServiceCallback.onPlaybackStop();
@@ -75,9 +70,17 @@ public class PlaybackManager implements Playback.Callback {
      *                  MediaController clients.
      */
     public void handleStopRequest(String withError) {
+        LogHelper.d(TAG, "handleStopRequest: mState=" + mPlayback.getState() + " error=", withError);
         mPlayback.stop(true);
         mServiceCallback.onPlaybackStop();
         updatePlaybackState(withError);
+    }
+
+    /**
+     * Handle a request to play music
+     */
+    public void handleReplayRequest() {
+        mPlayback.replay();
     }
 
 
@@ -87,6 +90,7 @@ public class PlaybackManager implements Playback.Callback {
      * @param error if not null, error message to present to the user.
      */
     public void updatePlaybackState(String error) {
+        LogHelper.d(TAG, "updatePlaybackState, playback state=" + mPlayback.getState());
         long position = PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN;
         if (mPlayback != null && mPlayback.isConnected()) {
             position = mPlayback.getCurrentStreamPosition();
@@ -165,41 +169,53 @@ public class PlaybackManager implements Playback.Callback {
         updatePlaybackState(error);
     }
 
+    @Override
+    public void setCurrentMediaId(String mediaId) {
+        LogHelper.d(TAG, "setCurrentMediaId", mediaId);
+        //mMusicQueueManager.setQueueFromMusic(mediaId);
+    }
 
     private class MediaSessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
+            LogHelper.d(TAG, "play");
             handlePlayRequest();
         }
 
         @Override
         public void onSkipToQueueItem(long queueId) {
+            LogHelper.d(TAG, "OnSkipToQueueItem:" + queueId);
             mMusicQueueManager.setCurrentQueueItem(queueId);
             mMusicQueueManager.updateMetadata();
         }
 
         @Override
         public void onSeekTo(long position) {
+            LogHelper.d(TAG, "onSeekTo:", position);
             mPlayback.seekTo((int) position);
         }
 
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
+            LogHelper.d(TAG, "playFromMediaId mediaId:", mediaId, "  extras=", extras);
             handlePlayRequest();
         }
 
         @Override
         public void onPause() {
+            LogHelper.d(TAG, "pause. current state=" + mPlayback.getState());
             handlePauseRequest();
         }
 
         @Override
         public void onStop() {
+            LogHelper.d(TAG, "stop. current state=" + mPlayback.getState());
             handleStopRequest(null);
         }
 
         @Override
         public void onSkipToNext() {
+            LogHelper.d(TAG, "skipToNext");
             if (mMusicQueueManager.skipQueuePosition(1)) {
                 handlePlayRequest();
             } else {
