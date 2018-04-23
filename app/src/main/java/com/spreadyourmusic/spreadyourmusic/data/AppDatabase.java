@@ -3,6 +3,7 @@ package com.spreadyourmusic.spreadyourmusic.data;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 /**
@@ -10,7 +11,8 @@ import android.content.Context;
  * On 21/01/18.
  */
 
-@Database(entities = {AlbumVo.class, SongVo.class}, version = 1)
+@Database(entities = { SongVo.class}, version = 1)
+@TypeConverters({DataTypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
 
@@ -22,6 +24,6 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    public abstract MusicDao musicDao();
+    public abstract SongDao songDao();
 
 }

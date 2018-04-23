@@ -47,23 +47,27 @@ fun isCurrentSongFavorite(activity: Activity, listener: (Boolean) -> Unit){
 fun downloadCurrentSong(state: Boolean, activity: Activity, listener: (Boolean) -> Unit){
     Thread {
         val currentSong = getCurrentSong()
-        val resultado = saveSongInternalStorage(currentSong.locationUri,currentSong.id,activity)
-
+        val resultado = if(state){
+            saveSongLocal(currentSong,activity)
+        }else{
+            deleteSongLocal(currentSong,activity)
+        }
         activity.runOnUiThread {
-            if(resultado!=null){
-                // TODO: Añadir a ROOM
-                listener(true)
-            }else{
-                listener(false)
-            }
+            listener(resultado)
         }
     }.start()
 }
 
 
 fun isCurrentSongDownloaded(activity: Activity, listener: (Boolean) -> Unit){
-    // TODO: Hacer
-    listener(false)
+    Thread {
+        val currentSong = getCurrentSong()
+        val resultado = isSongLocal(currentSong,activity)
+
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }
 
 // Si es true crea reproduccion aleatoria

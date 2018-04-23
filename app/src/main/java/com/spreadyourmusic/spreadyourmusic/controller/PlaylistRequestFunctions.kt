@@ -106,9 +106,8 @@ fun obtainFollowedPlaylists(activity: Activity, listener: (List<Playlist>?) -> U
 }
 
 fun obtainDownloadSongsList(activity: Activity, listener: (List<Song>?) -> Unit) {
-    // TODO: HACER
     Thread {
-        val resultado = ArrayList<Song>()
+        val resultado = getDownloadedSongs(activity)
         activity.runOnUiThread {
             listener(resultado)
         }
