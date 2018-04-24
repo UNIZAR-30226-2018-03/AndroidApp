@@ -84,7 +84,7 @@ private fun listSongConversion(list : List<SongVo>) : List<Song> {
     for (i in list){
         val user = User(i.creatorName)
         val album = Album(i.sid,i.albumName,user,i.releaseDate,i.artLocationPath)
-        val song = Song(i.sid,i.name,i.songLocationUri,i.duration,album,null)
+        val song = Song(i.sid,i.name,i.songLocationUri,i.duration,album,null,null)
         song.isDownloaded = true
         devolver.add(song)
     }

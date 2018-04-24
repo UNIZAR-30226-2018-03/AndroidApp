@@ -10,7 +10,7 @@ import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
  * On 7/03/18.
  */
 // TODO:
-class Song(val id: Long, val name: String, var locationUri: String, val duration: Long, val album: Album, val lyricsPath:String?) : Recommendation {
+class Song(val id: Long, val name: String, var locationUri: String, val duration: Long, val album: Album, val genere:String?, val lyricsPath:String?) : Recommendation {
 
     var isDownloaded = false
 

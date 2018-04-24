@@ -8,6 +8,8 @@ object ServerEmulator {
     val songList = HashMap<Long, Song>()
     val userList = HashMap<String, User>()
     val playlistList = HashMap<Long, Playlist>()
+    val generesList = ArrayList<String>()
+    val albumList = ArrayList<Album>()
 
     val cancionesFavoritas = HashMap<String, ArrayList<Song>>()
     val artistasSeguidos = HashMap<String, ArrayList<User>>()
@@ -28,8 +30,8 @@ object ServerEmulator {
         val album1 = Album(1,"Jazz", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
         val album2 = Album(2,"Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
 
-        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris",duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null)
-        val cancion2 = Song(album = album2, id = 2, name = "The Messenger",  duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null)
+        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris",duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = null)
+        val cancion2 = Song(album = album2, id = 2, name = "The Messenger",  duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null, genere = null)
 
         val list1 = ArrayList<Song>()
         list1.add(cancion1)
@@ -78,6 +80,12 @@ object ServerEmulator {
         trends.add(cancion2)
         generos.add(Pair("Rock", trends))
 
+        generesList.add("Rock")
+        generesList.add("Rap")
+        generesList.add("Trap")
+
+        albumList.add(album1)
+        albumList.add(album2)
 
     }
 }
