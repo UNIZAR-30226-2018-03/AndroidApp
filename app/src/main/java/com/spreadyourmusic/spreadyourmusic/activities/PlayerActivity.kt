@@ -309,11 +309,17 @@ class PlayerActivity : AppCompatActivity() {
                 favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp))
             }else favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp))
         })
-        isCurrentSongDownloaded(this, {
-            if(!it){
-                downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
-            }else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
-        })
+
+        if(currentSong.isDownloaded){
+            downloadOrDeleteSongImageButton.visibility = View.INVISIBLE
+        }else {
+            downloadOrDeleteSongImageButton.visibility = View.VISIBLE
+            isCurrentSongDownloaded(this, {
+                if(!it){
+                    downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
+                }else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
+            })
+        }
     }
 
     private fun updateDuration(metadata: MediaMetadataCompat?) {
