@@ -28,7 +28,7 @@ fun obtainUserFromID(id: String, activity: Activity, listener: (User?) -> Unit) 
 fun obtainPlaylistsFromUser(user: User, activity: Activity, listener: (List<Playlist>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainPlaylistsFromUserServer(user.username!!, SessionSingleton.sessionToken!!)
+            obtainPlaylistsFromUserServer(user.username!!)
         } catch (e: Exception) {
             null
         }
@@ -41,7 +41,7 @@ fun obtainPlaylistsFromUser(user: User, activity: Activity, listener: (List<Play
 fun obtainSongsFromUser(user: User, activity: Activity, listener: (List<Song>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainSongsFromUserServer(user.username!!, SessionSingleton.sessionToken!!)
+            obtainSongsFromUserServer(user.username!!)
         } catch (e: Exception) {
             null
         }
