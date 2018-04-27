@@ -77,4 +77,6 @@
     <string name="delete_account">Eliminar cuenta</string>
     <string name="delete_account_dialog">Esta seguro de que desea eliminar la cuenta. Esta acción es irreversible.</string>
 
+    <string name="no_lyrics">Sin letra</string>
+
 </resources>

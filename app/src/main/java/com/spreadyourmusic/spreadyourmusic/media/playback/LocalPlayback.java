@@ -10,8 +10,19 @@ import android.net.wifi.WifiManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.MergingMediaSource;
+import com.google.android.exoplayer2.source.SingleSampleMediaSource;
+import com.google.android.exoplayer2.text.Cue;
+import com.google.android.exoplayer2.text.TextOutput;
+import com.google.android.exoplayer2.util.MimeTypes;
+import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager;
+import com.spreadyourmusic.spreadyourmusic.models.Song;
 import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -30,6 +41,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+
+import java.util.List;
 
 import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
 import static com.google.android.exoplayer2.C.CONTENT_TYPE_MUSIC;
@@ -66,6 +79,7 @@ public final class LocalPlayback implements Playback {
     private final AudioManager mAudioManager;
     private SimpleExoPlayer mExoPlayer;
     private final PlayerEventListener mEventListener = new PlayerEventListener();
+    private final TextOutputListener mTextOutputListener = new TextOutputListener();
 
     // Whether to return STATE_NONE or STATE_STOPPED when mExoPlayer is null;
     private boolean mExoPlayerNullIsStopped = false;
@@ -153,7 +167,8 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
-    public void play(QueueItem item) {
+    public void play(QueueItem item, Song song) {
+        Log.d("MisMensajes","LLamada a play");
         mPlayOnFocusGain = true;
         tryToGetAudioFocus();
         registerAudioNoisyReceiver();
@@ -177,7 +192,6 @@ public final class LocalPlayback implements Playback {
                         ExoPlayerFactory.newSimpleInstance(
                                 new DefaultRenderersFactory(mContext), new DefaultTrackSelector(), new DefaultLoadControl());
                 mExoPlayer.addListener(mEventListener);
-                //mExoPlayer.setRepeatMode(0);
             }
 
             // Set music type
@@ -195,6 +209,17 @@ public final class LocalPlayback implements Playback {
             // The MediaSource represents the media to be played
             MediaSource mediaSource =
                     new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(source));
+
+            if(song.getLyricsPath()!=null){
+                Format format = Format.createTextSampleFormat(null, MimeTypes.APPLICATION_SUBRIP, Format.NO_VALUE, "en");
+
+                Uri subtitleUri = Uri.parse(song.getLyricsPath());
+                MediaSource subtitleMediaSource = new SingleSampleMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(subtitleUri, format, C.TIME_UNSET);
+
+                mediaSource = new MergingMediaSource(mediaSource, subtitleMediaSource);
+                mExoPlayer.addTextOutput(mTextOutputListener);
+            }
 
             // Prepares media to play (happens on background thread) and triggers
             // {@code onPlayerStateChanged} callback when the stream is ready to play.
@@ -351,6 +376,18 @@ public final class LocalPlayback implements Playback {
         if (mAudioNoisyReceiverRegistered) {
             mContext.unregisterReceiver(mAudioNoisyReceiver);
             mAudioNoisyReceiverRegistered = false;
+        }
+    }
+
+    private final class TextOutputListener implements TextOutput {
+
+        @Override
+        public void onCues(List<Cue> cues) {
+            if(cues != null && cues.size() == 1){
+                String letra = cues.get(0).text.toString();
+                LyricsManager.INSTANCE.onTextChange(letra);
+            }
+
         }
     }
 

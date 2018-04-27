@@ -1,5 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.media.playback;
 
+import com.spreadyourmusic.spreadyourmusic.models.Song;
 import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 
 import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
@@ -50,7 +51,7 @@ public interface Playback {
      * Queries the underlying stream and update the internal last known stream position.
      */
 
-    void play(QueueItem item);
+    void play(QueueItem item, Song song);
 
     void pause();
 

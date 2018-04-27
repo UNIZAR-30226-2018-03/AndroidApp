@@ -39,6 +39,7 @@ import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
 import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBarChangeListener
 import com.spreadyourmusic.spreadyourmusic.controller.*
+import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 
 import java.util.concurrent.Executors
@@ -57,6 +58,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var randomReproductionImageButton: ImageButton
     private lateinit var downloadOrDeleteSongImageButton: ImageButton
     private lateinit var favoriteSongImageButton: ImageButton
+    private lateinit var lyricsImageButton: ImageButton
 
     private lateinit var startTimeTextView: TextView
     private lateinit var finalTimeTextView: TextView
@@ -65,6 +67,9 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playerBackGroundImageView: ImageView
     private lateinit var songCreatorTextView: TextView
     private lateinit var songNameTextView: TextView
+    private lateinit var lyricsTextView: TextView
+
+    private var isLyricsShowed = false
 
     private var mPauseDrawable: Drawable? = null
     private var mPlayDrawable: Drawable? = null
@@ -132,6 +137,8 @@ class PlayerActivity : AppCompatActivity() {
         randomReproductionImageButton = findViewById(R.id.randomReproduction)
         downloadOrDeleteSongImageButton = findViewById(R.id.downloadOrDeleteSong)
         favoriteSongImageButton = findViewById(R.id.favoriteSong)
+
+        lyricsImageButton = findViewById(R.id.viewLyrics)
 
         startTimeTextView = findViewById(R.id.startTime)
         finalTimeTextView = findViewById(R.id.finalTime)
@@ -209,6 +216,9 @@ class PlayerActivity : AppCompatActivity() {
             }
         })
 
+        lyricsTextView = findViewById(R.id.lyricsTextView)
+        isLyricsShowed = false
+
         mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
 
@@ -279,6 +289,7 @@ class PlayerActivity : AppCompatActivity() {
         if (mMediaBrowser != null) {
             (mMediaBrowser as MediaBrowserCompat).connect()
         }
+        LyricsManager.changeListener(lyricsListener)
     }
 
     public override fun onStop() {
@@ -288,6 +299,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         val controllerCompat = MediaControllerCompat.getMediaController(this)
         controllerCompat?.unregisterCallback(mCallback)
+        LyricsManager.changeListener(null)
     }
 
     public override fun onDestroy() {
@@ -327,6 +339,10 @@ class PlayerActivity : AppCompatActivity() {
                 }else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
             })
         }
+
+        if(currentSong.lyricsPath == null){
+            lyricsTextView.text = resources.getString(R.string.no_lyrics)
+        }else lyricsTextView.text = ""
     }
 
     private fun updateDuration(metadata: MediaMetadataCompat?) {
@@ -402,6 +418,10 @@ class PlayerActivity : AppCompatActivity() {
         shareElement(getCurrentSong().getShareLink(), this)
     }
 
+    private var lyricsListener: ((String) -> Unit) = {
+        lyricsTextView.text = it
+    }
+
     // handle the add song to favourite button's click
     fun addSongToFavourite(v: View) {
         isCurrentSongFavorite(this, {
@@ -447,5 +467,24 @@ class PlayerActivity : AppCompatActivity() {
         if(isRandomReproductionEnabled()){
             randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
         }else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
+    }
+
+    fun showLyrics(v:View){
+        if(isLyricsShowed){
+            albumArtCircularMusicProgressBar.visibility = View.VISIBLE
+            startTimeTextView.visibility = View.VISIBLE
+            finalTimeTextView.visibility = View.VISIBLE
+            lyricsTextView.visibility = View.INVISIBLE
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp))
+
+        }else{
+            albumArtCircularMusicProgressBar.visibility = View.INVISIBLE
+            startTimeTextView.visibility = View.INVISIBLE
+            finalTimeTextView.visibility = View.INVISIBLE
+            lyricsTextView.visibility = View.VISIBLE
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_white_24dp))
+
+        }
+        isLyricsShowed = !isLyricsShowed
     }
 }

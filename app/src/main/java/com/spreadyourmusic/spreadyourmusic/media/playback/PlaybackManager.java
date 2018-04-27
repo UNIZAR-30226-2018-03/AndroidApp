@@ -41,7 +41,7 @@ public class PlaybackManager implements Playback.Callback {
         MediaSessionCompat.QueueItem currentMusic = mMusicQueueManager.getCurrentMusic();
         if (currentMusic != null) {
             mServiceCallback.onPlaybackStart();
-            mPlayback.play(currentMusic);
+            mPlayback.play(currentMusic, mMusicQueueManager.getCurrentSong());
         }
     }
 
