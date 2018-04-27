@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
 fun obtainPlaylistFromID(id: Long, activity: Activity, listener: (Playlist?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainPlaylistDataServer(id, SessionSingleton.sessionToken!!)
+            obtainPlaylistDataServer(id)
         } catch (e: Exception) {
             null
         }
@@ -81,7 +81,7 @@ fun obtainFavoriteSongsList(activity: Activity, listener: (List<Song>?) -> Unit)
 fun obtainFollowedArtists(activity: Activity, listener: (List<User>?) -> Unit) {
     Thread {
         val resultado = try {
-            getFollowedUsersServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)
+            getFollowedUsersServer(SessionSingleton.currentUser!!.username!!)
         } catch (e: Exception) {
             null
         }
@@ -94,7 +94,7 @@ fun obtainFollowedArtists(activity: Activity, listener: (List<User>?) -> Unit) {
 fun obtainFollowedPlaylists(activity: Activity, listener: (List<Playlist>?) -> Unit) {
     Thread {
         val resultado = try {
-            getFollowedPlaylistsServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)
+            getFollowedPlaylistsServer(SessionSingleton.currentUser!!.username!!)
         } catch (e: Exception) {
             null
         }

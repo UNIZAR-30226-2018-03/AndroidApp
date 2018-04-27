@@ -32,10 +32,12 @@ object ServerEmulator {
 
         val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris",duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = null)
         val cancion2 = Song(album = album2, id = 2, name = "The Messenger",  duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null, genere = null)
+        val cancion3 = Song(album = album2, id = 3, name = "PostMalone",  duration = 220000L, locationUri = "/storage/emulated/0/Music/Prueba/postmalone.mp3", lyricsPath = "/storage/emulated/0/Music/Prueba/postmalone.srt", genere = null)
 
         val list1 = ArrayList<Song>()
         list1.add(cancion1)
         list1.add(cancion2)
+        list1.add(cancion3)
 
         val list2 = ArrayList<Song>()
         list2.add(cancion1)
@@ -62,6 +64,7 @@ object ServerEmulator {
         cancionesFavoritas[autor3.username!!] = ArrayList()
         cancionesFavoritas[autor3.username!!]!!.add(cancion1)
         cancionesFavoritas[autor3.username!!]!!.add(cancion2)
+        cancionesFavoritas[autor3.username!!]!!.add(cancion3)
 
 
         playlistSeguidos[autor3.username!!] = ArrayList()

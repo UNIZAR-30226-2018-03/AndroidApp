@@ -16,7 +16,7 @@ import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 fun isFollowing(playlist: Playlist, activity: Activity, listener: (Boolean) -> Unit) {
     Thread {
         val result = try {
-            isPlaylistFollowedByUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!, playlist.id)
+            isPlaylistFollowedByUserServer(SessionSingleton.currentUser!!.username!!, playlist.id)
         } catch (e: Exception) {
             false
         }
@@ -54,7 +54,7 @@ fun changeFollowState(playlist: Playlist, estado: Boolean, activity: Activity, l
 fun isFollowing(user: User, activity: Activity, listener: (Boolean) -> Unit) {
     Thread {
         val resultado = try {
-            isUserFollowedByUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!, user.username!!)
+            isUserFollowedByUserServer(SessionSingleton.currentUser!!.username!!, user.username!!)
         } catch (e: Exception) {
             false
         }
@@ -91,7 +91,7 @@ fun changeFollowState(user: User, estado: Boolean, activity: Activity, listener:
 fun obtainNumberOfFollowers(user: User, activity: Activity, listener: (Long) -> Unit) {
     Thread {
         val resultado = try {
-            getNumberOfFollowersOfUserServer(user.username!!, SessionSingleton.sessionToken!!)
+            getNumberOfFollowersOfUserServer(user.username!!)
         } catch (e: Exception) {
             0L
         }
@@ -108,7 +108,7 @@ fun obtainNumberOfFollowers(user: User, activity: Activity, listener: (Long) -> 
 fun obtainNumberOfFollowers(playlist: Playlist, activity: Activity, listener: (Long) -> Unit) {
     Thread {
         val resultado = try {
-            getNumberOfFollowersOfPlaylistServer(playlist.id, SessionSingleton.sessionToken!!)
+            getNumberOfFollowersOfPlaylistServer(playlist.id)
         } catch (e: Exception) {
             0L
         }

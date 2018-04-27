@@ -31,6 +31,9 @@ fun doLoginServer(username: String, password: String): String {
     }
 }
 
+/**
+ * Realiza una creación de usuario en el servidor y devuelve el token de sesión
+ */
 @Throws(Exception::class)
 fun doSignUpServer(user: User): String {
     //TODO:
@@ -38,6 +41,9 @@ fun doSignUpServer(user: User): String {
     return "dfsdfdsdf"
 }
 
+/**
+ * Elimina cuenta servidor
+ */
 @Throws(Exception::class)
 fun doDeleteAccountServer(user: String, sessionToken: String): Boolean {
     //TODO:
@@ -68,7 +74,7 @@ fun obtainUserDataServer(username: String, sessionToken: String): User? {
     }
 }
 
-fun obtainSongsFromUserServer(username: String, sessionToken: String): List<Song> {
+fun obtainSongsFromUserServer(username: String): List<Song> {
     val resultado = ArrayList<Song>()
     for (i in ServerEmulator.songList) {
         if (i.value.album.creator.username == username) {
@@ -78,7 +84,7 @@ fun obtainSongsFromUserServer(username: String, sessionToken: String): List<Song
     return resultado
 }
 
-fun obtainPlaylistsFromUserServer(username: String, sessionToken: String): List<Playlist> {
+fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
     val resultado = ArrayList<Playlist>()
     for (i in ServerEmulator.playlistList) {
         if (i.value.creator.username == username) {
@@ -92,7 +98,7 @@ fun obtainPlaylistsFromUserServer(username: String, sessionToken: String): List<
  * Devuelve una lista con los usuarios a los que sigue el usuario @username
  */
 @Throws(Exception::class)
-fun getFollowedUsersServer(username: String, sessionToken: String): List<User> {
+fun getFollowedUsersServer(username: String): List<User> {
     //TODO:
     if (ServerEmulator.artistasSeguidos.containsKey(username)) {
         return ServerEmulator.artistasSeguidos[username]!!
@@ -105,7 +111,7 @@ fun getFollowedUsersServer(username: String, sessionToken: String): List<User> {
  * Devuelve true si el usuario @user es seguido por el usuario @username
  */
 @Throws(Exception::class)
-fun isUserFollowedByUserServer(username: String, sessionToken: String, user: String): Boolean {
+fun isUserFollowedByUserServer(username: String, user: String): Boolean {
 //TODO:
     if (ServerEmulator.artistasSeguidos.containsKey(username)) {
         for (i in ServerEmulator.artistasSeguidos[username]!!) {
@@ -121,7 +127,7 @@ fun isUserFollowedByUserServer(username: String, sessionToken: String, user: Str
  * Devuelve una lista con los usuarios que siguen al usuario @username
  */
 @Throws(Exception::class)
-fun getFollowersOfUserServer(username: String, sessionToken: String): List<User> {
+fun getFollowersOfUserServer(username: String): List<User> {
     //TODO:
     return ArrayList()
 }
@@ -130,7 +136,7 @@ fun getFollowersOfUserServer(username: String, sessionToken: String): List<User>
  * Devuelve el numero de seguidores del usuario @username
  */
 @Throws(Exception::class)
-fun getNumberOfFollowersOfUserServer(username: String, sessionToken: String): Long {
+fun getNumberOfFollowersOfUserServer(username: String): Long {
     //TODO:
     return 4
 }
@@ -159,7 +165,7 @@ fun deleteFollowerToUserServer(username: String, sessionToken: String, followed:
  * Devuelve una lista con las playlist que sigue el usuario @username
  */
 @Throws(Exception::class)
-fun getFollowedPlaylistsServer(username: String, sessionToken: String): List<Playlist> {
+fun getFollowedPlaylistsServer(username: String): List<Playlist> {
 //TODO:
     return ServerEmulator.playlistSeguidos[username]!!
 }
@@ -168,7 +174,7 @@ fun getFollowedPlaylistsServer(username: String, sessionToken: String): List<Pla
  * Devuelve true si la playlist @playlist es seguida por el usuario @username
  */
 @Throws(Exception::class)
-fun isPlaylistFollowedByUserServer(username: String, sessionToken: String, playlist: Long): Boolean {
+fun isPlaylistFollowedByUserServer(username: String, playlist: Long): Boolean {
 //TODO:
     for (i in ServerEmulator.playlistSeguidos[username]!!) {
         if (i.id == playlist) return true
@@ -180,7 +186,7 @@ fun isPlaylistFollowedByUserServer(username: String, sessionToken: String, playl
  * Devuelve una lista con los usuarios que siguen a la playlist @playlist
  */
 @Throws(Exception::class)
-fun getFollowersOfPlaylistServer(playlist: Long, sessionToken: String): List<User> {
+fun getFollowersOfPlaylistServer(playlist: Long): List<User> {
 //TODO:
     return ArrayList()
 }
@@ -189,7 +195,7 @@ fun getFollowersOfPlaylistServer(playlist: Long, sessionToken: String): List<Use
  * Devuelve el numero de seguidores de la playlist @playlist
  */
 @Throws(Exception::class)
-fun getNumberOfFollowersOfPlaylistServer(playlist: Long, sessionToken: String): Long {
+fun getNumberOfFollowersOfPlaylistServer(playlist: Long): Long {
 //TODO:
     return 8
 }
@@ -259,7 +265,7 @@ fun isSongFavoutireByUserServer(username: String, sessionToken: String, song: Lo
  * Warning: esta operación puede ser costosa en tiempo
  */
 @Throws(Exception::class)
-fun obtainPlaylistDataServer(id: Long, sessionToken: String): Playlist? {
+fun obtainPlaylistDataServer(id: Long): Playlist? {
     //TODO:
     return ServerEmulator.playlistList[id]
 }
@@ -288,7 +294,7 @@ fun obtainRecomendationsForUserServer(username: String, sessionToken: String, ca
  * Devuelve las canciones populares (plazo de una semana o un mes)
  */
 @Throws(Exception::class)
-fun obtainPopularSongsServer(sessionToken: String, cantidad: Long): List<Song>? {
+fun obtainPopularSongsServer(cantidad: Long): List<Song>? {
 //TODO:
     return ServerEmulator.trends
 }
@@ -306,7 +312,7 @@ fun obtainNewSongsFromFollowedArtistOfUserServer(username: String, sessionToken:
  * Devuelve las canciones populares (ultimo dia o ultimos dias)
  */
 @Throws(Exception::class)
-fun obtainTrendSongsServer(sessionToken: String, cantidad: Long): List<Song>? {
+fun obtainTrendSongsServer(cantidad: Long): List<Song>? {
 //TODO:
     return ServerEmulator.trends
 }
@@ -315,7 +321,7 @@ fun obtainTrendSongsServer(sessionToken: String, cantidad: Long): List<Song>? {
  * Devuelve las canciones populares en el pais de origen del usuario (ultimo dia o ultimos dias)
  */
 @Throws(Exception::class)
-fun obtainTrendSongsInUserCountryServer(username: String, sessionToken: String, cantidad: Long): List<Song>? {
+fun obtainTrendSongsInUserCountryServer(username: String, cantidad: Long): List<Song>? {
 //TODO:
     return ServerEmulator.trends
 }
@@ -331,9 +337,11 @@ fun obtainUpdatedPlaylistsFollowedByUserServer(username: String, sessionToken: S
 
 /**
  * Devuelve la lista de maximo @cantidad resultados a la consulta @query
+ * Si tipo es null devuelve todos los resultados a la query realizada, si tipo es 1 devuelve solamente canciones, si tipo = 2
+ * devuelve solamente playlists y si tipo = 3 devuelve solamente autores
  */
 @Throws(Exception::class)
-fun obtainResultForQueryServer(username: String, sessionToken: String, cantidad: Long, query: String): List<Recommendation>? {
+fun obtainResultForQueryServer(cantidad: Long, query: String, tipo : Int?): List<Recommendation>? {
 //TODO:
     return ServerEmulator.trends
 }
@@ -343,7 +351,7 @@ fun obtainResultForQueryServer(username: String, sessionToken: String, cantidad:
  * tendrán un máximo de @cantidad canciones
  */
 @Throws(Exception::class)
-fun obtainPopularByGenreServer(username: String, sessionToken: String, cantidad: Long): List<Pair<String, List<Recommendation>>>? {
+fun obtainPopularByGenreServer(cantidad: Long): List<Pair<String, List<Recommendation>>>? {
 //TODO:
     return ServerEmulator.generos
 }

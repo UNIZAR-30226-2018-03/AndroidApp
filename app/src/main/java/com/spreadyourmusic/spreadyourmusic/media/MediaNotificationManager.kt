@@ -29,7 +29,6 @@ import android.os.Build
 import android.os.RemoteException
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.app.NotificationCompat.MediaStyle
 import android.support.v4.media.session.MediaControllerCompat
@@ -202,7 +201,7 @@ constructor(private val mService: MusicService) : BroadcastReceiver() {
         }
     }
 
-    private fun createContentIntent(description: MediaDescriptionCompat): PendingIntent {
+    private fun createContentIntent(): PendingIntent {
         val openUI = Intent(mService, HomeActivity::class.java)
         openUI.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         return PendingIntent.getActivity(mService, REQUEST_CODE, openUI,
@@ -236,7 +235,7 @@ constructor(private val mService: MusicService) : BroadcastReceiver() {
                 .setSmallIcon(R.drawable.ic_music_note_white_24dp)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setOnlyAlertOnce(true)
-                .setContentIntent(createContentIntent(description))
+                .setContentIntent(createContentIntent())
                 .setContentTitle(description.title)
                 .setContentText(description.subtitle)
         setNotificationPlaybackState(notificationBuilder)

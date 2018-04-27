@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.spreadyourmusic.spreadyourmusic.media.playback;
 
 import android.content.BroadcastReceiver;
@@ -25,20 +10,29 @@ import android.net.wifi.WifiManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.MergingMediaSource;
+import com.google.android.exoplayer2.source.SingleSampleMediaSource;
+import com.google.android.exoplayer2.text.Cue;
+import com.google.android.exoplayer2.text.TextOutput;
+import com.google.android.exoplayer2.util.MimeTypes;
+import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager;
+import com.spreadyourmusic.spreadyourmusic.models.Song;
 import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource;
-import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.audio.AudioAttributes;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -48,23 +42,22 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.List;
+
 import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
 import static com.google.android.exoplayer2.C.CONTENT_TYPE_MUSIC;
 import static com.google.android.exoplayer2.C.USAGE_MEDIA;
 
 /**
- * A class that implements local media playback using {@link
- * com.google.android.exoplayer2.ExoPlayer}
+ * This class control com.google.android.exoplayer2.ExoPlayer
  */
 public final class LocalPlayback implements Playback {
 
-    private static final String TAG = LogHelper.makeLogTag(LocalPlayback.class);
-
     // The volume we set the media player to when we lose audio focus, but are
     // allowed to reduce the volume instead of stopping playback.
-    public static final float VOLUME_DUCK = 0.2f;
+    private static final float VOLUME_DUCK = 0.2f;
     // The volume we set the media player when we have audio focus.
-    public static final float VOLUME_NORMAL = 1.0f;
+    private static final float VOLUME_NORMAL = 1.0f;
 
     // we don't have audio focus, and can't duck (play at a low volume)
     private static final int AUDIO_NO_FOCUS_NO_DUCK = 0;
@@ -85,10 +78,11 @@ public final class LocalPlayback implements Playback {
     private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
     private final AudioManager mAudioManager;
     private SimpleExoPlayer mExoPlayer;
-    private final ExoPlayerEventListener mEventListener = new ExoPlayerEventListener();
+    private final PlayerEventListener mEventListener = new PlayerEventListener();
+    private final TextOutputListener mTextOutputListener = new TextOutputListener();
 
     // Whether to return STATE_NONE or STATE_STOPPED when mExoPlayer is null;
-    private boolean mExoPlayerNullIsStopped =  false;
+    private boolean mExoPlayerNullIsStopped = false;
 
     private final IntentFilter mAudioNoisyIntentFilter =
             new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
@@ -98,7 +92,6 @@ public final class LocalPlayback implements Playback {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
-                        LogHelper.d(TAG, "Headphones disconnected.");
                         if (isPlaying()) {
                             Intent i = new Intent(context, MusicService.class);
                             i.setAction(MusicService.ACTION_CMD);
@@ -115,10 +108,10 @@ public final class LocalPlayback implements Playback {
 
         this.mAudioManager =
                 (AudioManager) applicationContext.getSystemService(Context.AUDIO_SERVICE);
+
         // Create the Wifi lock (this does not acquire the lock, this just creates it)
-        this.mWifiLock =
-                ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
-                        .createWifiLock(WifiManager.WIFI_MODE_FULL, "sym_lock");
+        this.mWifiLock = ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, "sym_lock");
 
         this.mMusicQueueManager = mmMusicQueueManager;
     }
@@ -136,11 +129,6 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
-    public void setState(int state) {
-        // Nothing to do (mExoPlayer holds its own state).
-    }
-
-    @Override
     public int getState() {
         if (mExoPlayer == null) {
             return mExoPlayerNullIsStopped
@@ -148,15 +136,15 @@ public final class LocalPlayback implements Playback {
                     : PlaybackStateCompat.STATE_NONE;
         }
         switch (mExoPlayer.getPlaybackState()) {
-            case ExoPlayer.STATE_IDLE:
+            case Player.STATE_IDLE:
                 return PlaybackStateCompat.STATE_PAUSED;
-            case ExoPlayer.STATE_BUFFERING:
+            case Player.STATE_BUFFERING:
                 return PlaybackStateCompat.STATE_BUFFERING;
-            case ExoPlayer.STATE_READY:
+            case Player.STATE_READY:
                 return mExoPlayer.getPlayWhenReady()
                         ? PlaybackStateCompat.STATE_PLAYING
                         : PlaybackStateCompat.STATE_PAUSED;
-            case ExoPlayer.STATE_ENDED:
+            case Player.STATE_ENDED:
                 return PlaybackStateCompat.STATE_PAUSED;
             default:
                 return PlaybackStateCompat.STATE_NONE;
@@ -179,12 +167,8 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
-    public void updateLastKnownStreamPosition() {
-        // Nothing to do. Position maintained by ExoPlayer.
-    }
-
-    @Override
-    public void play(QueueItem item) {
+    public void play(QueueItem item, Song song) {
+        Log.d("MisMensajes","LLamada a play");
         mPlayOnFocusGain = true;
         tryToGetAudioFocus();
         registerAudioNoisyReceiver();
@@ -206,15 +190,11 @@ public final class LocalPlayback implements Playback {
             if (mExoPlayer == null) {
                 mExoPlayer =
                         ExoPlayerFactory.newSimpleInstance(
-                                mContext, new DefaultTrackSelector(), new DefaultLoadControl());
+                                new DefaultRenderersFactory(mContext), new DefaultTrackSelector(), new DefaultLoadControl());
                 mExoPlayer.addListener(mEventListener);
             }
 
-            // Android "O" makes much greater use of AudioAttributes, especially
-            // with regards to AudioFocus. All of UAMP's tracks are music, but
-            // if your content includes spoken word such as audiobooks or podcasts
-            // then the content type should be set to CONTENT_TYPE_SPEECH for those
-            // tracks.
+            // Set music type
             final AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setContentType(CONTENT_TYPE_MUSIC)
                     .setUsage(USAGE_MEDIA)
@@ -224,13 +204,22 @@ public final class LocalPlayback implements Playback {
             // Produces DataSource instances through which media data is loaded.
             DataSource.Factory dataSourceFactory =
                     new DefaultDataSourceFactory(
-                            mContext, Util.getUserAgent(mContext, "sym"), null);
-            // Produces Extractor instances for parsing the media data.
-            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-            // The MediaSource represents the media to be played.
+                            mContext, Util.getUserAgent(mContext, "sym"));
+
+            // The MediaSource represents the media to be played
             MediaSource mediaSource =
-                    new ExtractorMediaSource(
-                            Uri.parse(source), dataSourceFactory, extractorsFactory, null, null);
+                    new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(source));
+
+            if(song.getLyricsPath()!=null){
+                Format format = Format.createTextSampleFormat(null, MimeTypes.APPLICATION_SUBRIP, Format.NO_VALUE, "en");
+
+                Uri subtitleUri = Uri.parse(song.getLyricsPath());
+                MediaSource subtitleMediaSource = new SingleSampleMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(subtitleUri, format, C.TIME_UNSET);
+
+                mediaSource = new MergingMediaSource(mediaSource, subtitleMediaSource);
+                mExoPlayer.addTextOutput(mTextOutputListener);
+            }
 
             // Prepares media to play (happens on background thread) and triggers
             // {@code onPlayerStateChanged} callback when the stream is ready to play.
@@ -263,7 +252,6 @@ public final class LocalPlayback implements Playback {
 
     @Override
     public void seekTo(long position) {
-        LogHelper.d(TAG, "seekTo called with ", position);
         if (mExoPlayer != null) {
             registerAudioNoisyReceiver();
             mExoPlayer.seekTo(position);
@@ -275,18 +263,8 @@ public final class LocalPlayback implements Playback {
         this.mCallback = callback;
     }
 
-    @Override
-    public void setCurrentMediaId(String mediaId) {
-        this.mCurrentMediaId = mediaId;
-    }
-
-    @Override
-    public String getCurrentMediaId() {
-        return mCurrentMediaId;
-    }
 
     private void tryToGetAudioFocus() {
-        LogHelper.d(TAG, "tryToGetAudioFocus");
         int result =
                 mAudioManager.requestAudioFocus(
                         mOnAudioFocusChangeListener,
@@ -300,7 +278,6 @@ public final class LocalPlayback implements Playback {
     }
 
     private void giveUpAudioFocus() {
-        LogHelper.d(TAG, "giveUpAudioFocus");
         if (mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener)
                 == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
@@ -315,7 +292,6 @@ public final class LocalPlayback implements Playback {
      * settings.
      */
     private void configurePlayerState() {
-        LogHelper.d(TAG, "configurePlayerState. mCurrentAudioFocusState=", mCurrentAudioFocusState);
         if (mCurrentAudioFocusState == AUDIO_NO_FOCUS_NO_DUCK) {
             // We don't have audio focus and can't duck, so we have to pause
             pause();
@@ -341,7 +317,6 @@ public final class LocalPlayback implements Playback {
             new AudioManager.OnAudioFocusChangeListener() {
                 @Override
                 public void onAudioFocusChange(int focusChange) {
-                    LogHelper.d(TAG, "onAudioFocusChange. focusChange=", focusChange);
                     switch (focusChange) {
                         case AudioManager.AUDIOFOCUS_GAIN:
                             mCurrentAudioFocusState = AUDIO_FOCUSED;
@@ -376,8 +351,6 @@ public final class LocalPlayback implements Playback {
      * @param releasePlayer Indicates whether the player should also be released
      */
     private void releaseResources(boolean releasePlayer) {
-        LogHelper.d(TAG, "releaseResources. releasePlayer=", releasePlayer);
-
         // Stops and releases player (if requested and available).
         if (releasePlayer && mExoPlayer != null) {
             mExoPlayer.release();
@@ -406,40 +379,59 @@ public final class LocalPlayback implements Playback {
         }
     }
 
-    private final class ExoPlayerEventListener implements ExoPlayer.EventListener {
+    private final class TextOutputListener implements TextOutput {
+
         @Override
-        public void onTimelineChanged(Timeline timeline, Object manifest) {
-            // Nothing to do.
+        public void onCues(List<Cue> cues) {
+            if(cues != null && cues.size() == 1){
+                String letra = cues.get(0).text.toString();
+                LyricsManager.INSTANCE.onTextChange(letra);
+            }
+
+        }
+    }
+
+    private final class PlayerEventListener implements Player.EventListener {
+
+        @Override
+        public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
         }
 
         @Override
-        public void onTracksChanged(
-                TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-            // Nothing to do.
+        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
         }
 
         @Override
         public void onLoadingChanged(boolean isLoading) {
-            // Nothing to do.
         }
 
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
             switch (playbackState) {
-                case ExoPlayer.STATE_IDLE:
-                case ExoPlayer.STATE_BUFFERING:
-                case ExoPlayer.STATE_READY:
+                case Player.STATE_IDLE:
+                case Player.STATE_BUFFERING:
+                case Player.STATE_READY:
                     if (mCallback != null) {
                         mCallback.onPlaybackStatusChanged(getState());
                     }
                     break;
-                case ExoPlayer.STATE_ENDED:
+                case Player.STATE_ENDED:
                     // The media player finished playing the current song.
                     if (mCallback != null) {
                         mCallback.onCompletion();
                     }
                     break;
             }
+        }
+
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+
+        }
+
+        @Override
+        public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
         }
 
         @Override
@@ -459,25 +451,24 @@ public final class LocalPlayback implements Playback {
                     what = "Unknown: " + error;
             }
 
-            LogHelper.e(TAG, "ExoPlayer error: what=" + what);
             if (mCallback != null) {
                 mCallback.onError("ExoPlayer error " + what);
             }
         }
 
         @Override
-        public void onPositionDiscontinuity() {
-            // Nothing to do.
+        public void onPositionDiscontinuity(int reason) {
+
         }
 
         @Override
         public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-            // Nothing to do.
+
         }
 
         @Override
-        public void onRepeatModeChanged(int repeatMode) {
-            // Nothing to do.
+        public void onSeekProcessed() {
+
         }
     }
 }

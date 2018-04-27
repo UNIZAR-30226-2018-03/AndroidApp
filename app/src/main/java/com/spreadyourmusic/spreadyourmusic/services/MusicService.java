@@ -15,15 +15,12 @@ import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-
 import com.spreadyourmusic.spreadyourmusic.media.MediaNotificationManager;
 import com.spreadyourmusic.spreadyourmusic.media.playback.LocalPlayback;
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager;
 import com.spreadyourmusic.spreadyourmusic.media.playback.PlaybackManager;
 
-import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 import com.spreadyourmusic.spreadyourmusic.activities.HomeActivity;
-
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -32,45 +29,10 @@ import java.util.List;
 import static com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper.MEDIA_ID_ROOT;
 
 /**
- * This class provides a MediaBrowser through a service. It exposes the media library to a browsing
- * client, through the onGetRoot and onLoadChildren methods. It also creates a MediaSession and
- * exposes it through its MediaSession.Token, which allows the client to create a MediaController
- * that connects to and send control commands to the MediaSession remotely. This is useful for
- * user interfaces that need to interact with your media session, like Android Auto. You can
- * (should) also use the same service from your app's UI, which gives a seamless playback
- * experience to the user.
- *
- * To implement a MediaBrowserService, you need to:
- *
- * <ul>
- *
- * <li> Extend {@link android.service.media.MediaBrowserService}, implementing the media browsing
- *      related methods {@link android.service.media.MediaBrowserService#onGetRoot} and
- *      {@link android.service.media.MediaBrowserService#onLoadChildren};
- * <li> In onCreate, start a new {@link android.media.session.MediaSession} and notify its parent
- *      with the session's token {@link android.service.media.MediaBrowserService#setSessionToken};
- *
- * <li> Set a callback on the
- *      {@link android.media.session.MediaSession#setCallback(android.media.session.MediaSession.Callback)}.
- *      The callback will receive all the user's actions, like play, pause, etc;
- *
- * <li> Handle all the actual music playing using any method your app prefers (for example,
- *      {@link android.media.MediaPlayer})
- *
- * <li> Update playbackState, "now playing" metadata and queue, using MediaSession proper methods
- *      {@link android.media.session.MediaSession#setPlaybackState(android.media.session.PlaybackState)}
- *      {@link android.media.session.MediaSession#setMetadata(android.media.MediaMetadata)} and
- *      {@link android.media.session.MediaSession#setQueue(java.util.List)})
- *
- * <li> Declare and export the service in AndroidManifest with an intent receiver for the action
- *      android.media.browse.MediaBrowserService
- *
- * </ul>
+ * This class provides music as service
  */
 public class MusicService extends MediaBrowserServiceCompat implements
         PlaybackManager.PlaybackServiceCallback {
-
-    private static final String TAG = LogHelper.makeLogTag(MusicService.class);
 
     // The action of the incoming Intent indicating that it contains a command
     // to be executed (see {@link #onStartCommand})
@@ -81,9 +43,6 @@ public class MusicService extends MediaBrowserServiceCompat implements
     // A value of a CMD_NAME key in the extras of the incoming Intent that
     // indicates that the music playback should be paused (see {@link #onStartCommand})
     public static final String CMD_PAUSE = "CMD_PAUSE";
-    // A value of a CMD_NAME key that indicates that the music playback should switch
-    // to local playback from cast playback.
-    public static final String CMD_STOP_CASTING = "CMD_STOP_CASTING";
     // Delay stopSelf by using a handler.
     private static final int STOP_DELAY = 30000;
 
@@ -93,19 +52,12 @@ public class MusicService extends MediaBrowserServiceCompat implements
     private MediaNotificationManager mMediaNotificationManager;
     private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
 
-    /*
-     * (non-Javadoc)
-     * @see android.app.Service#onCreate()
-     */
+
     @Override
     public void onCreate() {
         super.onCreate();
-        LogHelper.d(TAG, "onCreate");
-
         // To make the app more responsive, fetch and cache catalog information now.
         // This can help improve the response time in the method
-        // {@link #onLoadChildren(String, Result<List<MediaItem>>) onLoadChildren()}.
-
         MusicQueueManager musicQueueManager = MusicQueueManager.getInstance();
 
         musicQueueManager.setListener(
@@ -201,7 +153,6 @@ public class MusicService extends MediaBrowserServiceCompat implements
      */
     @Override
     public void onDestroy() {
-        LogHelper.d(TAG, "onDestroy");
         // Service is being killed, so make sure we release our resources
         mPlaybackManager.handleStopRequest(null);
         mMediaNotificationManager.stopNotification();
@@ -213,35 +164,13 @@ public class MusicService extends MediaBrowserServiceCompat implements
     @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid,
                                  Bundle rootHints) {
-        LogHelper.d(TAG, "OnGetRoot: clientPackageName=" + clientPackageName,
-                "; clientUid=" + clientUid + " ; rootHints=", rootHints);
-
         return new BrowserRoot(MEDIA_ID_ROOT, null);
     }
 
     @Override
     public void onLoadChildren(@NonNull final String parentMediaId,
                                @NonNull final Result<List<MediaItem>> result) {
-        LogHelper.d(TAG, "OnLoadChildren: parentMediaId=", parentMediaId);
-
         result.sendResult(MusicQueueManager.getInstance().getCurrentMediaItemList());
-
-       /* if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
-            result.sendResult(new ArrayList<MediaItem>());
-        } else if (mMusicProvider.isInitialized()) { // LLamar a queue manager is inicializated
-            // if music library is ready, return immediately
-            result.sendResult(mMusicProvider.getCurrentList());
-        } else {
-            // otherwise, only return results when the music library is retrieved
-            result.detach();
-            mMusicProvider.retrieveMediaAsync(new MusicProvider.Callback() {
-                @Override
-                public void onMusicCatalogReady(boolean success) {
-                    result.sendResult(mMusicProvider.getCurrentList());
-                }
-            });
-        }*/
-
         result.sendResult(new ArrayList<MediaItem>());
     }
 
@@ -267,6 +196,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStop() {
         mSession.setActive(false);
+
         // Reset the delayed stop handler, so after STOP_DELAY it will be executed again,
         // potentially stopping the service.
         mDelayedStopHandler.removeCallbacksAndMessages(null);
@@ -283,6 +213,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
     public void onPlaybackStateUpdated(PlaybackStateCompat newState) {
         mSession.setPlaybackState(newState);
     }
+
     /**
      * A simple handler that stops the service if playback is not active (playing)
      */
@@ -297,12 +228,9 @@ public class MusicService extends MediaBrowserServiceCompat implements
         public void handleMessage(Message msg) {
             MusicService service = mWeakReference.get();
             if (service != null && service.mPlaybackManager.getPlayback() != null) {
-                if (service.mPlaybackManager.getPlayback().isPlaying()) {
-                    LogHelper.d(TAG, "Ignoring delayed stop since the media player is in use.");
-                    return;
+                if (!service.mPlaybackManager.getPlayback().isPlaying()) {
+                    service.stopSelf();
                 }
-                LogHelper.d(TAG, "Stopping service with delay handler.");
-                service.stopSelf();
             }
         }
     }

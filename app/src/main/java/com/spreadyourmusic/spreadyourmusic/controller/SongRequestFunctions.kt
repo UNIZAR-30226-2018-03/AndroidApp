@@ -33,7 +33,7 @@ fun obtainRecommendations(activity: Activity, listener: (List<Recommendation>?) 
 fun obtainPopularSongs(activity: Activity, listener: ( List<Song>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainPopularSongsServer( SessionSingleton.sessionToken!!,25)
+            obtainPopularSongsServer(25)
         } catch (e: Exception) {
             null
         }
@@ -63,7 +63,7 @@ fun obtainNewsSongs(activity: Activity, listener: (List<Song> ?) -> Unit) {
 fun obtainTrendSongs(activity: Activity, listener: (List<Song> ?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainTrendSongsServer(SessionSingleton.sessionToken!!,25)
+            obtainTrendSongsServer(25)
         } catch (e: Exception) {
             null
         }
@@ -78,7 +78,7 @@ fun obtainTrendSongs(activity: Activity, listener: (List<Song> ?) -> Unit) {
 fun obtainTrendInMyCountry(activity: Activity, listener: ( List<Song>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainTrendSongsInUserCountryServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+            obtainTrendSongsInUserCountryServer(SessionSingleton.currentUser!!.username!!,25)
         } catch (e: Exception) {
             null
         }
@@ -107,7 +107,7 @@ fun obtainUpdatedPlaylists(activity: Activity, listener: ( List<Playlist>?) -> U
 fun obtainResultFromQuery(query: String,activity: Activity, listener: (List<Recommendation>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainResultForQueryServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25,query)
+            obtainResultForQueryServer(25,query, null)
         } catch (e: Exception) {
             null
         }
@@ -122,7 +122,7 @@ fun obtainResultFromQuery(query: String,activity: Activity, listener: (List<Reco
 fun obtainPopularByGenre(activity: Activity, listener: (List<Pair<String, List<Recommendation>>>?) -> Unit){
     Thread {
         val resultado = try {
-            obtainPopularByGenreServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+            obtainPopularByGenreServer(25)
         } catch (e: Exception) {
             null
         }
