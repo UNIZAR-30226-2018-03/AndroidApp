@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
+    tools:context=".activities.CreateAlbum">
+
+    <TextView
+        android:id="@+id/createAlbum"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:drawablePadding="5dp"
+        android:ems="10"
+        android:text="Crear album"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/albumName"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/trans_rounded_white"
+        android:drawablePadding="5dp"
+        android:ems="10"
+        android:hint="@string/new_album_name"
+        android:inputType="textPersonName"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/createAlbum"
+        />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/albumName"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:paddingStart="40dp"
+        >
+
+        <TextView
+            android:id="@+id/caratula"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/trans_rounded_white"
+            android:text="@string/caratula"
+            android:textAlignment="center" />
+
+        <Button
+            android:text="@string/seleccionar"
+            android:id="@+id/caratulaSelector"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            />
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
