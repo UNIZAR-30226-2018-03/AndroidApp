@@ -20,6 +20,9 @@
     <string name="birth_date">Fecha nacimiento</string>
     <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
 
+    <!-- Upload Song Screen -->
+    <string name="newSongName">Nombre de la canción</string>
+
     <!-- Home screen -->
     <string name="recommendations">Recomendaciones</string>
     <string name="news">Novedades</string>
@@ -61,5 +64,14 @@
     <string name="followers">Seguidores</string>
 
     <string name="edit">Editar</string>
+    <string name="continuar">Continuar</string>
+    <string name="album">Album</string>
+    <string name="letras">Letras</string>
+    <string name="seleccionar">Seleccionar</string>
+    <string name="audio">Audio</string>
+    <string name="genero">Genero</string>
+    <string name="crear_alb_m">Crear albúm</string>
+    <string name="new_album_name">New album name</string>
+    <string name="caratula">Caratula</string>
 
 </resources>
