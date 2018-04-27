@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/login_bg"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".activities.UploadSongActivity">
+
+        <EditText
+            android:id="@+id/newSongName"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/trans_rounded_white"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_music_note_black_24dp"
+            android:ems="10"
+            android:hint="@string/newSongName"
+            android:inputType="textPersonName"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+             />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/newSongName"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:paddingStart="40dp">
+
+        <TextView
+            android:id="@+id/textAlbum"
+            android:text="@string/album"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/trans_rounded_white"
+            />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/textAlbum"
+            app:layout_constraintTop_toBottomOf="@+id/newSongName" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_2"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/layout_1"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:paddingStart="40dp">
+
+        <TextView
+            android:id="@+id/genero"
+            android:text="@string/genero"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/trans_rounded_white"
+            />
+
+        <Spinner
+            android:id="@+id/spinnerGenero"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/textAlbum"
+            app:layout_constraintTop_toBottomOf="@+id/newSongName" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_3"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/layout_2"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:paddingStart="40dp">
+
+        <TextView
+            android:id="@+id/lyrics"
+            android:text="@string/letras"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/trans_rounded_white"
+            />
+
+        <Button
+            android:text="@string/seleccionar"
+            android:id="@+id/lyricsSelector"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_4"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/layout_3"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:paddingStart="40dp">
+
+        <TextView
+            android:id="@+id/audio"
+            android:text="@string/audio"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/trans_rounded_white"
+            />
+
+        <Button
+            android:text="@string/seleccionar"
+            android:id="@+id/audioSelector"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+
+        <Button
+
+            android:id="@+id/loginButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="104dp"
+            android:background="@drawable/rounded_white"
+            android:text="@string/continuar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/newSongName"
+             />
+
+</android.support.constraint.ConstraintLayout>

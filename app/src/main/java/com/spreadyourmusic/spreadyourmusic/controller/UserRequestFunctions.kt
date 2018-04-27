@@ -26,3 +26,4 @@ fun obtainPlaylistsFromUser(user: User): List<Playlist> {
 fun obtainSongsFromUser(user: User): List<Song> {
     return obtainNewsSongs()
 }
+
