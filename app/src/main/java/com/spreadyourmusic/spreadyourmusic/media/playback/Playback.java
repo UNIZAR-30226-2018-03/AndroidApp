@@ -39,10 +39,6 @@ public interface Playback {
      */
     void stop(boolean notifyListeners);
 
-    /**
-     * Set the latest playback state as determined by the caller.
-     */
-    void setState(int state);
 
     /**
      * Get the current {@link android.media.session.PlaybackState#getState()}
@@ -68,7 +64,6 @@ public interface Playback {
     /**
      * Queries the underlying stream and update the internal last known stream position.
      */
-    void updateLastKnownStreamPosition();
 
     void play(QueueItem item);
 
@@ -78,9 +73,6 @@ public interface Playback {
 
     void seekTo(long position);
 
-    void setCurrentMediaId(String mediaId);
-
-    String getCurrentMediaId();
 
     interface Callback {
         /**
@@ -98,11 +90,6 @@ public interface Playback {
          * @param error to be added to the PlaybackState
          */
         void onError(String error);
-
-        /**
-         * @param mediaId being currently played
-         */
-        void setCurrentMediaId(String mediaId);
     }
 
     void setCallback(Callback callback);
