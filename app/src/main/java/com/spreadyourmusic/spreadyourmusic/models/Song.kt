@@ -9,7 +9,10 @@ import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
  * Created by abel
  * On 7/03/18.
  */
-class Song(val id: Long, val name: String, val locationUri: String, val duration: Long, val album: Album, val collaborators: List<User>?, val numOfViews: Long, val numOfLikes: Long) : Recommendation {
+// TODO:
+class Song(val id: Long, val name: String, var locationUri: String, val duration: Long, val album: Album, val genere:String?, val lyricsPath:String?) : Recommendation {
+
+    var isDownloaded = false
 
     private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id.toString())
@@ -21,9 +24,6 @@ class Song(val id: Long, val name: String, val locationUri: String, val duration
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, name)
             .build()
 
-    fun isDownloaded(): Boolean {
-        return false
-    }
 
     fun getMediaItem(): MediaBrowserCompat.MediaItem {
         return createMediaItem(getMetadata())
@@ -50,5 +50,10 @@ class Song(val id: Long, val name: String, val locationUri: String, val duration
         return MediaBrowserCompat.MediaItem(copy.description,
                 MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
 
+    }
+
+    fun getShareLink(): String{
+        //TODO: El link devuelto ha de ser el que apunta a la misma cancion desde la interfaz web
+        return "https://www.google.es/"
     }
 }

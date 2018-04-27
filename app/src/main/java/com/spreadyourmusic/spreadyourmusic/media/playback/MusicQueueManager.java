@@ -1,6 +1,5 @@
 package com.spreadyourmusic.spreadyourmusic.media.playback;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -26,10 +25,13 @@ public class MusicQueueManager {
 
     // "Now playing" queue:
     private List<Pair<Song, MediaSessionCompat.QueueItem>> mPlayingQueue;
+    private List<Pair<Song, MediaSessionCompat.QueueItem>> mPlayingSecondQueue;
 
     private int mCurrentIndex;
 
     private static MusicQueueManager instancia = null;
+
+    private boolean randomReproduction = false;
 
 
     private MusicQueueManager() {
@@ -65,13 +67,6 @@ public class MusicQueueManager {
     public boolean setCurrentQueueItem(long queueId) {
         // set the current index on queue from the queue Id:
         int index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, queueId);
-        setCurrentQueueIndex(index);
-        return index >= 0;
-    }
-
-    public boolean setCurrentQueueItem(String mediaId) {
-        // set the current index on queue from the music Id:
-        int index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, mediaId);
         setCurrentQueueIndex(index);
         return index >= 0;
     }
@@ -121,7 +116,7 @@ public class MusicQueueManager {
     }
 
     public void setCurrentQueue(String title, Song newSong) {
-        List<Song> canciones = new ArrayList<Song>();
+        List<Song> canciones = new ArrayList<>();
         canciones.add(newSong);
         setCurrentQueue(title, canciones, 0);
     }
@@ -130,7 +125,11 @@ public class MusicQueueManager {
 
         mPlayingQueue = QueueHelper.convertToQueue(newSongList);
         mCurrentIndex = index;
-        ArrayList<MediaSessionCompat.QueueItem> newQueue = new ArrayList<MediaSessionCompat.QueueItem>();
+
+        randomReproduction = false;
+        mPlayingSecondQueue = null;
+
+        ArrayList<MediaSessionCompat.QueueItem> newQueue = new ArrayList<>();
         for (Pair<Song, MediaSessionCompat.QueueItem> item : mPlayingQueue) {
             newQueue.add(item.second);
         }
@@ -147,8 +146,6 @@ public class MusicQueueManager {
         return list;
     }
 
-
-
     public void updateMetadata() {
         MediaSessionCompat.QueueItem currentMusic = getCurrentMusic();
         if (currentMusic == null || currentMusic.getDescription() == null || currentMusic.getDescription().getMediaId() == null) {
@@ -164,6 +161,31 @@ public class MusicQueueManager {
 
         mListener.onMetadataChanged(metadata);
 
+    }
+
+    public void setRandomReproductionEnable(boolean enable){
+        if(mPlayingQueue.size() > 0){
+            if(!randomReproduction && enable){
+                mPlayingSecondQueue = new ArrayList<>(mPlayingQueue);
+                Collections.shuffle(mPlayingQueue);
+                mCurrentIndex = mPlayingQueue.indexOf(mPlayingSecondQueue.get(mCurrentIndex));
+            }
+            else if(randomReproduction && !enable){
+                List<Pair<Song, MediaSessionCompat.QueueItem>> aux = mPlayingQueue;
+                mPlayingQueue = mPlayingSecondQueue;
+                mPlayingSecondQueue = aux;
+                mCurrentIndex = mPlayingQueue.indexOf(mPlayingSecondQueue.get(mCurrentIndex));
+            }
+        }
+        randomReproduction = enable;
+    }
+
+    public boolean isRandomReproductionEnable(){
+        return randomReproduction;
+    }
+
+    public long musicQueueSize(){
+        return mPlayingQueue.size();
     }
 
     public interface MetadataUpdateListener {

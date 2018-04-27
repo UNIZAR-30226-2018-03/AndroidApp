@@ -24,15 +24,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/background_light">
 
-        <!--<android.support.design.widget.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            app:layout_anchor="@+id/viewPager"
-            app:layout_anchorGravity="right|bottom"
-            app:srcCompat="@drawable/ic_add_white_24dp" /> -->
-
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

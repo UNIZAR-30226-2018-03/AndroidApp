@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        if(isLogin()){
+        if(isLogin(this)){
             openHomeActivity()
         }
 
@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
         val pass = passwordEditText.text.toString()
         val progressDialog = showProgressDialog()
         Thread {
-            val user = doLogin(User(username, pass))
+            val user = doLogin(User(username, pass),this)
             runOnUiThread {
                 progressDialog.dismiss()
                 if(user){
@@ -127,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
             val account:GoogleSignInAccount = completedTask.getResult(ApiException::class.java)
             val progressDialog = showProgressDialog()
             Thread {
-                val user = doGoogleLogin(account)
+                val user = doGoogleLogin(account,this)
                 runOnUiThread {
                     progressDialog.dismiss()
                     if(user){

@@ -1,6 +1,6 @@
 /*
  * Fichero importado de https://github.com/AbelChT/circular-music-progressbar
- * */
+ */
 
 package com.spreadyourmusic.spreadyourmusic.circularprogressbar;
 

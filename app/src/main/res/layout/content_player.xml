@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
 
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -180,7 +181,6 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toEndOf="parent"
-        android:alpha="0.5"
         app:srcCompat="@drawable/ic_shuffle_white_24dp" />
 
     <ImageButton
@@ -188,15 +188,28 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:adjustViewBounds="true"
-        android:alpha="0.5"
         android:background="@android:color/transparent"
         android:onClick="downloadSong"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
+        app:layout_constraintStart_toEndOf="@+id/favoriteSong"
+        app:srcCompat="@drawable/ic_cloud_download_white_24dp" />
+
+    <ImageButton
+        android:id="@+id/viewLyrics"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:onClick="showLyrics"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toStartOf="@+id/randomReproduction"
-        app:srcCompat="@drawable/ic_get_app_white_24dp" />
+        app:srcCompat="@drawable/ic_visibility_white_24dp" />
 
     <ImageButton
         android:id="@+id/favoriteSong"
@@ -205,26 +218,24 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:adjustViewBounds="true"
-        android:alpha="0.5"
         android:background="@android:color/transparent"
         android:onClick="addSongToFavourite"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_favorite_white_24dp" />
+        app:srcCompat="@drawable/ic_favorite_border_white_24dp" />
 
-    <ImageButton
-        android:id="@+id/shareSong"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginBottom="8dp"
+    <TextView
+        android:id="@+id/lyricsTextView"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:onClick="shareSong"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/background"
-        app:layout_constraintStart_toEndOf="@+id/favoriteSong"
-        app:srcCompat="@drawable/ic_share_white_24dp" />
+        android:text="@string/no_lyrics"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/album_art" />
 
 </android.support.constraint.ConstraintLayout>

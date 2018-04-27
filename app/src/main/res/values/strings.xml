@@ -49,6 +49,11 @@
     <string name="songs">Canciones</string>
     <string name="home">Home</string>
     <string name="genres">Géneros</string>
+    <string name="downloaded">Descargadas</string>
+    <string name="profile">Perfil</string>
+    <string name="open_profile">Ver perfil</string>
+    <string name="close_session">Cerrar sesión</string>
+
 
     <!-- Notificaiton Channel -->
     <string name="notification_channel">SYM_Channel_ID</string>
@@ -63,7 +68,22 @@
     <string name="creator">Creador</string>
     <string name="followers">Seguidores</string>
 
+    <!-- Activity User -->
     <string name="edit">Editar</string>
+
+    <string name="create_playlist">Crear playlist</string>
+    <string name="add_song">Añadir canción</string>
+
+    <string name="share">Compartir</string>
+
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete_account">Eliminar cuenta</string>
+    <string name="delete_account_dialog">Esta seguro de que desea eliminar la cuenta. Esta acción es irreversible.</string>
+
+    <string name="no_lyrics">Sin letra</string>
+
+    <!-- Upload songs activity -->
     <string name="continuar">Continuar</string>
     <string name="album">Album</string>
     <string name="letras">Letras</string>

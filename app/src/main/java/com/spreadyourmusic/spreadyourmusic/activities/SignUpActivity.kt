@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.controller.obtainUserFromID
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -15,6 +16,12 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up_screen_1)
+
+        val userId = intent.getStringExtra(resources.getString(R.string.user_id))
+        // TODO: En el caso de que se reciba un usuario rellenar los datos porque es edición
+        if(userId != null){
+
+        }
     }
 
     fun onContinueClick(v: View){
