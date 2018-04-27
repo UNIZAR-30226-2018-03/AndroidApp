@@ -26,7 +26,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activities.SignUpActivity"
@@ -72,7 +71,7 @@
         </service>
 
         <activity android:name=".activities.CreatePlaylistActivity" />
-        <activity android:name=".activities.UploadSongActivity"></activity>
+        <activity android:name=".activities.UploadSongActivity" />
     </application>
 
 </manifest>
