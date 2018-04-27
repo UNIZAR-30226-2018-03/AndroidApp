@@ -28,6 +28,7 @@ import android.text.TextUtils;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.source.MergingMediaSource;
 import com.google.android.exoplayer2.source.SingleSampleMediaSource;
 import com.google.android.exoplayer2.util.MimeTypes;
@@ -38,6 +39,7 @@ import com.spreadyourmusic.spreadyourmusic.helpers.media.LogHelper;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -68,9 +70,9 @@ public final class LocalPlayback implements Playback {
 
     // The volume we set the media player to when we lose audio focus, but are
     // allowed to reduce the volume instead of stopping playback.
-    public static final float VOLUME_DUCK = 0.2f;
+    private static final float VOLUME_DUCK = 0.2f;
     // The volume we set the media player when we have audio focus.
-    public static final float VOLUME_NORMAL = 1.0f;
+    private static final float VOLUME_NORMAL = 1.0f;
 
     // we don't have audio focus, and can't duck (play at a low volume)
     private static final int AUDIO_NO_FOCUS_NO_DUCK = 0;
@@ -91,7 +93,7 @@ public final class LocalPlayback implements Playback {
     private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
     private final AudioManager mAudioManager;
     private SimpleExoPlayer mExoPlayer;
-    private final ExoPlayerEventListener mEventListener = new ExoPlayerEventListener();
+    private final PlayerEventListener mEventListener = new PlayerEventListener();
 
     // Whether to return STATE_NONE or STATE_STOPPED when mExoPlayer is null;
     private boolean mExoPlayerNullIsStopped =  false;
@@ -121,6 +123,7 @@ public final class LocalPlayback implements Playback {
 
         this.mAudioManager =
                 (AudioManager) applicationContext.getSystemService(Context.AUDIO_SERVICE);
+
         // Create the Wifi lock (this does not acquire the lock, this just creates it)
         this.mWifiLock =
                 ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
@@ -154,15 +157,15 @@ public final class LocalPlayback implements Playback {
                     : PlaybackStateCompat.STATE_NONE;
         }
         switch (mExoPlayer.getPlaybackState()) {
-            case ExoPlayer.STATE_IDLE:
+            case Player.STATE_IDLE:
                 return PlaybackStateCompat.STATE_PAUSED;
-            case ExoPlayer.STATE_BUFFERING:
+            case Player.STATE_BUFFERING:
                 return PlaybackStateCompat.STATE_BUFFERING;
-            case ExoPlayer.STATE_READY:
+            case Player.STATE_READY:
                 return mExoPlayer.getPlayWhenReady()
                         ? PlaybackStateCompat.STATE_PLAYING
                         : PlaybackStateCompat.STATE_PAUSED;
-            case ExoPlayer.STATE_ENDED:
+            case Player.STATE_ENDED:
                 return PlaybackStateCompat.STATE_PAUSED;
             default:
                 return PlaybackStateCompat.STATE_NONE;
@@ -212,7 +215,7 @@ public final class LocalPlayback implements Playback {
             if (mExoPlayer == null) {
                 mExoPlayer =
                         ExoPlayerFactory.newSimpleInstance(
-                                mContext, new DefaultTrackSelector(), new DefaultLoadControl());
+                                new DefaultRenderersFactory(mContext), new DefaultTrackSelector(), new DefaultLoadControl());
                 mExoPlayer.addListener(mEventListener);
             }
 
@@ -409,6 +412,91 @@ public final class LocalPlayback implements Playback {
         if (mAudioNoisyReceiverRegistered) {
             mContext.unregisterReceiver(mAudioNoisyReceiver);
             mAudioNoisyReceiverRegistered = false;
+        }
+    }
+
+    private final class PlayerEventListener implements Player.EventListener {
+
+        @Override
+        public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+        }
+
+        @Override
+        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+        }
+
+        @Override
+        public void onLoadingChanged(boolean isLoading) {
+
+        }
+
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            switch (playbackState) {
+                case Player.STATE_IDLE:
+                case Player.STATE_BUFFERING:
+                case Player.STATE_READY:
+                    if (mCallback != null) {
+                        mCallback.onPlaybackStatusChanged(getState());
+                    }
+                    break;
+                case Player.STATE_ENDED:
+                    // The media player finished playing the current song.
+                    if (mCallback != null) {
+                        mCallback.onCompletion();
+                    }
+                    break;
+            }
+        }
+
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+
+        }
+
+        @Override
+        public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+            final String what;
+            switch (error.type) {
+                case ExoPlaybackException.TYPE_SOURCE:
+                    what = error.getSourceException().getMessage();
+                    break;
+                case ExoPlaybackException.TYPE_RENDERER:
+                    what = error.getRendererException().getMessage();
+                    break;
+                case ExoPlaybackException.TYPE_UNEXPECTED:
+                    what = error.getUnexpectedException().getMessage();
+                    break;
+                default:
+                    what = "Unknown: " + error;
+            }
+
+            LogHelper.e(TAG, "ExoPlayer error: what=" + what);
+            if (mCallback != null) {
+                mCallback.onError("ExoPlayer error " + what);
+            }
+        }
+
+        @Override
+        public void onPositionDiscontinuity(int reason) {
+
+        }
+
+        @Override
+        public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+        }
+
+        @Override
+        public void onSeekProcessed() {
+
         }
     }
 
