@@ -137,6 +137,8 @@ class PlayerActivity : AppCompatActivity() {
         startTimeTextView = findViewById(R.id.startTime)
         finalTimeTextView = findViewById(R.id.finalTime)
 
+        lyricsTextView = findViewById(R.id.lyricsTextView)
+
 
         mPauseDrawable = ContextCompat.getDrawable(this, R.drawable.ic_pause_circle_filled_white_24dp)
         mPlayDrawable = ContextCompat.getDrawable(this, R.drawable.ic_play_circle_filled_white_24dp)
@@ -210,7 +212,6 @@ class PlayerActivity : AppCompatActivity() {
             }
         })
 
-        lyricsTextView = findViewById(R.id.lyricsTextView)
         isLyricsShowed = false
 
         circleSoundVisualizer = findViewById(R.id.visualizer)
@@ -218,13 +219,28 @@ class PlayerActivity : AppCompatActivity() {
         // set custom color to the line of the visualizer
         circleSoundVisualizer.setColor(Color.WHITE)
 
+        randomReproductionImageButton.setOnClickListener {
+            randReproduction()
+        }
+
+        downloadOrDeleteSongImageButton.setOnClickListener {
+            downloadSong()
+        }
+
+        favoriteSongImageButton.setOnClickListener {
+            addSongToFavourite()
+        }
+
+        lyricsImageButton.setOnClickListener {
+            showLyrics()
+        }
 
         mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
 
-        if(!isRandomReproductionEnabled()){
+        if (!isRandomReproductionEnabled()) {
             randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
-        }else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
+        } else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -269,17 +285,17 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         val commandHandler = object : ResultReceiver(
-                null){
+                null) {
             override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                 super.onReceiveResult(resultCode, resultData)
-                if(resultData!= null){
+                if (resultData != null) {
                     val ausioSessionID = resultData.getInt(MusicService.CMD_AUDIO_SESSION)
                     circleSoundVisualizer.setPlayer(ausioSessionID)
                 }
             }
         }
 
-        mediaController.sendCommand(MusicService.CMD_AUDIO_SESSION,null, commandHandler)
+        mediaController.sendCommand(MusicService.CMD_AUDIO_SESSION, null, commandHandler)
     }
 
     private fun scheduleSeekbarUpdate() {
@@ -338,25 +354,25 @@ class PlayerActivity : AppCompatActivity() {
 
         val favoriteSongImageButton: ImageButton = findViewById(R.id.favoriteSong)
         isCurrentSongFavorite(this, {
-            if(it){
+            if (it) {
                 favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp))
-            }else favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp))
+            } else favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp))
         })
 
-        if(currentSong.isDownloaded){
+        if (currentSong.isDownloaded) {
             downloadOrDeleteSongImageButton.visibility = View.INVISIBLE
-        }else {
+        } else {
             downloadOrDeleteSongImageButton.visibility = View.VISIBLE
             isCurrentSongDownloaded(this, {
-                if(!it){
+                if (!it) {
                     downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
-                }else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
+                } else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
             })
         }
 
-        if(currentSong.lyricsPath == null){
+        if (currentSong.lyricsPath == null) {
             lyricsTextView.text = resources.getString(R.string.no_lyrics)
-        }else lyricsTextView.text = ""
+        } else lyricsTextView.text = ""
     }
 
     private fun updateDuration(metadata: MediaMetadataCompat?) {
@@ -428,7 +444,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     // handle the share songs button's click
-    fun shareSong() {
+    private fun shareSong() {
         shareElement(getCurrentSong().getShareLink(), this)
     }
 
@@ -437,54 +453,54 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     // handle the add song to favourite button's click
-    fun addSongToFavourite(v: View) {
+    private fun addSongToFavourite() {
         isCurrentSongFavorite(this, {
             val estado = it
             setFavoriteCurrentSong(!estado, this, {
                 if (it) {
-                    val actualState= !estado
-                    if(actualState){
+                    val actualState = !estado
+                    if (actualState) {
                         favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp))
-                    }else favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp))
-                }else{
-                    Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show()
+                    } else favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp))
+                } else {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                 }
             })
         })
     }
 
     // handle the random download button's click
-    fun downloadSong(v: View) {
+    private fun downloadSong() {
         isCurrentSongDownloaded(this, {
             val estado = it
             downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_queue_white_24dp))
-            downloadCurrentSong(!it,this,{
-                if (it){
-                    if(estado){
+            downloadCurrentSong(!it, this, {
+                if (it) {
+                    if (estado) {
                         downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
-                    }else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
+                    } else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
 
-                }else{
-                    if(!estado){
+                } else {
+                    if (!estado) {
                         downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
-                    }else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
+                    } else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
 
-                    Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                 }
             })
         })
     }
 
     // handle the random reproduction button's click
-    fun randReproduction(v: View) {
+    private fun randReproduction() {
         randomReproduction(!isRandomReproductionEnabled())
-        if(isRandomReproductionEnabled()){
+        if (isRandomReproductionEnabled()) {
             randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
-        }else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
+        } else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
     }
 
-    fun showLyrics(v:View){
-        if(isLyricsShowed){
+    private fun showLyrics() {
+        if (isLyricsShowed) {
             albumArtCircularMusicProgressBar.visibility = View.VISIBLE
             startTimeTextView.visibility = View.VISIBLE
             finalTimeTextView.visibility = View.VISIBLE
@@ -492,7 +508,7 @@ class PlayerActivity : AppCompatActivity() {
             lyricsTextView.visibility = View.INVISIBLE
             lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp))
 
-        }else{
+        } else {
             albumArtCircularMusicProgressBar.visibility = View.INVISIBLE
             circleSoundVisualizer.visibility = View.INVISIBLE
             startTimeTextView.visibility = View.INVISIBLE
