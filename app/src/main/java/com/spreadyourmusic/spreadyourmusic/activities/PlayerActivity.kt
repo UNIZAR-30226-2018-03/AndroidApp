@@ -1,8 +1,8 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
 import android.content.ComponentName
+import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.*
 import android.support.v7.app.AppCompatActivity
 import android.support.v4.content.ContextCompat
@@ -23,12 +23,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.Format
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.MergingMediaSource
-import com.google.android.exoplayer2.source.SingleSampleMediaSource
-import com.google.android.exoplayer2.util.MimeTypes
 import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
@@ -38,6 +32,7 @@ import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBar
 import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
+import com.spreadyourmusic.spreadyourmusic.soundvisualizer.CircleSoundVisualizer
 
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -61,12 +56,12 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var finalTimeTextView: TextView
 
     private lateinit var albumArtCircularMusicProgressBar: CircularMusicProgressBar
+    private lateinit var circleSoundVisualizer: CircleSoundVisualizer
     private lateinit var playerBackGroundImageView: ImageView
     private lateinit var songCreatorTextView: TextView
     private lateinit var songNameTextView: TextView
     private lateinit var lyricsTextView: TextView
 
-   // private lateinit  var lineBarVisualizer:LineBarVisualizer
 
     private var isLyricsShowed = false
 
@@ -218,14 +213,11 @@ class PlayerActivity : AppCompatActivity() {
         lyricsTextView = findViewById(R.id.lyricsTextView)
         isLyricsShowed = false
 
-       // lineBarVisualizer = findViewById<LineBarVisualizer>(R.id.visualizer)
+        circleSoundVisualizer = findViewById(R.id.visualizer)
 
+        // set custom color to the line of the visualizer
+        circleSoundVisualizer.setColor(Color.WHITE)
 
-        // set custom color to the line.
-       // lineBarVisualizer.setColor(ContextCompat.getColor(this, R.color.colorAccent))
-
-        // define custom number of bars you want in the visualizer between (10 - 256).
-      //  lineBarVisualizer.setDensity(70f)
 
         mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
@@ -282,15 +274,12 @@ class PlayerActivity : AppCompatActivity() {
                 super.onReceiveResult(resultCode, resultData)
                 if(resultData!= null){
                     val ausioSessionID = resultData.getInt(MusicService.CMD_AUDIO_SESSION)
+                    circleSoundVisualizer.setPlayer(ausioSessionID)
                 }
             }
         }
 
         mediaController.sendCommand(MusicService.CMD_AUDIO_SESSION,null, commandHandler)
-
-
-        // Set you media player to the visualizer.
-       // lineBarVisualizer.setPlayer(mediaPlayer.getAudioSessionId())
     }
 
     private fun scheduleSeekbarUpdate() {
@@ -321,6 +310,7 @@ class PlayerActivity : AppCompatActivity() {
         if (mMediaBrowser != null) {
             mMediaBrowser!!.disconnect()
         }
+        circleSoundVisualizer.releasePlayer()
         val controllerCompat = MediaControllerCompat.getMediaController(this)
         controllerCompat?.unregisterCallback(mCallback)
         LyricsManager.changeListener(null)
@@ -498,11 +488,13 @@ class PlayerActivity : AppCompatActivity() {
             albumArtCircularMusicProgressBar.visibility = View.VISIBLE
             startTimeTextView.visibility = View.VISIBLE
             finalTimeTextView.visibility = View.VISIBLE
+            circleSoundVisualizer.visibility = View.VISIBLE
             lyricsTextView.visibility = View.INVISIBLE
             lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp))
 
         }else{
             albumArtCircularMusicProgressBar.visibility = View.INVISIBLE
+            circleSoundVisualizer.visibility = View.INVISIBLE
             startTimeTextView.visibility = View.INVISIBLE
             finalTimeTextView.visibility = View.INVISIBLE
             lyricsTextView.visibility = View.VISIBLE
