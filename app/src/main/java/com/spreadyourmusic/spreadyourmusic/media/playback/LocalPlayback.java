@@ -313,6 +313,11 @@ public final class LocalPlayback implements Playback {
         }
     }
 
+    @Override
+    public int getAudioSessionId(){
+        return mExoPlayer.getAudioSessionId();
+    }
+
     private final AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener =
             new AudioManager.OnAudioFocusChangeListener() {
                 @Override
