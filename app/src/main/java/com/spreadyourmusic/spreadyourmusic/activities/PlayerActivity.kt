@@ -3,11 +3,8 @@ package com.spreadyourmusic.spreadyourmusic.activities
 import android.content.ComponentName
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.*
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.RemoteException
-import android.os.SystemClock
 import android.support.v4.content.ContextCompat
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -68,6 +65,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var songCreatorTextView: TextView
     private lateinit var songNameTextView: TextView
     private lateinit var lyricsTextView: TextView
+
+   // private lateinit  var lineBarVisualizer:LineBarVisualizer
 
     private var isLyricsShowed = false
 
@@ -219,6 +218,15 @@ class PlayerActivity : AppCompatActivity() {
         lyricsTextView = findViewById(R.id.lyricsTextView)
         isLyricsShowed = false
 
+       // lineBarVisualizer = findViewById<LineBarVisualizer>(R.id.visualizer)
+
+
+        // set custom color to the line.
+       // lineBarVisualizer.setColor(ContextCompat.getColor(this, R.color.colorAccent))
+
+        // define custom number of bars you want in the visualizer between (10 - 256).
+      //  lineBarVisualizer.setDensity(70f)
+
         mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
 
@@ -267,6 +275,22 @@ class PlayerActivity : AppCompatActivity() {
         if (state != null && (state.state == PlaybackStateCompat.STATE_PLAYING || state.state == PlaybackStateCompat.STATE_BUFFERING)) {
             scheduleSeekbarUpdate()
         }
+
+        val commandHandler = object : ResultReceiver(
+                null){
+            override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                super.onReceiveResult(resultCode, resultData)
+                if(resultData!= null){
+                    val ausioSessionID = resultData.getInt(MusicService.CMD_AUDIO_SESSION)
+                }
+            }
+        }
+
+        mediaController.sendCommand(MusicService.CMD_AUDIO_SESSION,null, commandHandler)
+
+
+        // Set you media player to the visualizer.
+       // lineBarVisualizer.setPlayer(mediaPlayer.getAudioSessionId())
     }
 
     private fun scheduleSeekbarUpdate() {

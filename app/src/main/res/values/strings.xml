@@ -20,6 +20,9 @@
     <string name="birth_date">Fecha nacimiento</string>
     <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
 
+    <!-- Upload Song Screen -->
+    <string name="newSongName">Nombre de la canción</string>
+
     <!-- Home screen -->
     <string name="recommendations">Recomendaciones</string>
     <string name="news">Novedades</string>
@@ -67,6 +70,7 @@
 
     <!-- Activity User -->
     <string name="edit">Editar</string>
+
     <string name="create_playlist">Crear playlist</string>
     <string name="add_song">Añadir canción</string>
 
@@ -78,5 +82,16 @@
     <string name="delete_account_dialog">Esta seguro de que desea eliminar la cuenta. Esta acción es irreversible.</string>
 
     <string name="no_lyrics">Sin letra</string>
+
+    <!-- Upload songs activity -->
+    <string name="continuar">Continuar</string>
+    <string name="album">Album</string>
+    <string name="letras">Letras</string>
+    <string name="seleccionar">Seleccionar</string>
+    <string name="audio">Audio</string>
+    <string name="genero">Genero</string>
+    <string name="crear_alb_m">Crear albúm</string>
+    <string name="new_album_name">New album name</string>
+    <string name="caratula">Caratula</string>
 
 </resources>

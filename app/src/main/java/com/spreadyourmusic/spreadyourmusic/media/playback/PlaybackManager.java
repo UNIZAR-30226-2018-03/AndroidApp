@@ -1,9 +1,12 @@
 package com.spreadyourmusic.spreadyourmusic.media.playback;
 
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.os.SystemClock;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+
+import com.spreadyourmusic.spreadyourmusic.services.MusicService;
 
 /**
  * Manage the interactions among the container service, the queue manager and the actual playback.
@@ -212,6 +215,15 @@ public class PlaybackManager implements Playback.Callback {
             mMusicQueueManager.updateMetadata();
         }
 
+        @Override
+        public void onCommand(String command, Bundle extras, ResultReceiver cb) {
+            super.onCommand(command, extras, cb);
+            if(command.equals(MusicService.CMD_AUDIO_SESSION )&& cb != null){
+                Bundle dataToSend = new Bundle();
+                dataToSend.putInt(MusicService.CMD_AUDIO_SESSION , mPlayback.getAudioSessionId());
+                cb.send(0,dataToSend);
+            }
+        }
     }
 
 

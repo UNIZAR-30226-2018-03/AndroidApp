@@ -59,6 +59,7 @@ public interface Playback {
 
     void seekTo(long position);
 
+    int getAudioSessionId();
 
     interface Callback {
         /**
