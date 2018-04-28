@@ -1,3 +1,6 @@
+/**
+* Basado en https://github.com/GautamChibde/android-audio-visualizer/wiki/Circle-Bar-Visualizer
+*/
 package com.spreadyourmusic.spreadyourmusic.soundvisualizer
 
 import android.content.Context
