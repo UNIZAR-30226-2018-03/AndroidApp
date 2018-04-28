@@ -205,6 +205,14 @@ class UserActivity : BaseActivity() {
             }
         }
 
+        val onLongClickListener:(Recommendation) -> Unit = {
+            when (it) {
+                is Song -> onSongSelected(it, activity)
+                is User -> onUserSelected(it, activity)
+                is Playlist -> onPlaylistSelected(it, activity)
+            }
+        }
+
         override fun getCount(): Int {
             return 2
         }
