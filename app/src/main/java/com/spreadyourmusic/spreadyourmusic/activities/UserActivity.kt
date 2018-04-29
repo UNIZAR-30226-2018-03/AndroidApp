@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AlertDialog
+import android.view.ContextMenu
 import android.view.Menu
 import android.view.View
 import android.widget.Button
@@ -26,10 +27,15 @@ import com.spreadyourmusic.spreadyourmusic.models.User
 import android.view.MenuItem
 import android.widget.Toast
 
+
 class UserActivity : BaseActivity() {
     var user: User? = null
     var followButton: Button? = null
     private var mMenu: Menu? = null
+    private var mTabsAdapter: TabsAdapter? = null
+
+    // Esta variable almacenan si una canción o una playlist ha sido seleccionada con un long click
+    private var itemSelectedToDelete: Recommendation? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +57,9 @@ class UserActivity : BaseActivity() {
         val artistUsername = findViewById<TextView>(R.id.artistUsername)
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
         followButton = findViewById(R.id.followButton)
+        followButton!!.setOnClickListener{
+            onDoFollow()
+        }
 
         obtainUserFromID(userId, this, {
             if (it != null) {
@@ -60,7 +69,8 @@ class UserActivity : BaseActivity() {
                     val songList = it
                     obtainPlaylistsFromUser(user!!, this, {
                         val playlistList = it
-                        viewPager.adapter = TabsAdapter(supportFragmentManager, this, songList!!, playlistList!!)
+                        mTabsAdapter  = TabsAdapter(supportFragmentManager, this, songList!!, playlistList!!, onRecomendationSelectedClickListener, onLongClickListenerDeleteElement)
+                        viewPager.adapter = mTabsAdapter
                         tabLayout.setupWithViewPager(viewPager)
                     })
                 })
@@ -85,7 +95,7 @@ class UserActivity : BaseActivity() {
                 finish()
             }
 
-            if(mMenu != null){
+            if (mMenu != null) {
                 // Los datos del usuario no habian llegado aun cuando se creo el menu
                 onCreateOptionsMenu(mMenu)
             }
@@ -95,7 +105,7 @@ class UserActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
         obtainCurrentUserData({
-            if(user!=null){
+            if (user != null) {
                 if (!user!!.username.equals(it!!.username)) {
                     mInflater.inflate(R.menu.menu_artist, menu)
                     menu!!.findItem(R.id.facebook_account).isVisible = user!!.getFacebookAccountURL() != null
@@ -103,7 +113,7 @@ class UserActivity : BaseActivity() {
                     menu.findItem(R.id.instagram_account).isVisible = user!!.getInstagramAccountURL() != null
                 } else
                     mInflater.inflate(R.menu.menu_local_user, menu)
-            }else{
+            } else {
                 mMenu = menu
             }
         }, this)
@@ -148,7 +158,24 @@ class UserActivity : BaseActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
-    fun onDoFollow(view: View) {
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_context_local_user, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        return if (item != null && item.itemId == R.id.delete_item && itemSelectedToDelete != null) {
+            when (itemSelectedToDelete) {
+                is Song -> onDeleteSong(itemSelectedToDelete!! as Song)
+                is Playlist -> onDeletePlaylist(itemSelectedToDelete!! as Playlist)
+            }
+            true
+        } else
+            super.onContextItemSelected(item)
+    }
+
+    private fun onDoFollow() {
         obtainCurrentUserData({
             if (!user!!.username.equals(it!!.username)) {
                 isFollowing(user!!, this, {
@@ -189,29 +216,88 @@ class UserActivity : BaseActivity() {
 
         // Create the AlertDialog
         builder.create()
-
         builder.show()
     }
 
-    private class TabsAdapter(fm: FragmentManager, activity: Activity, songList: List<Recommendation>, playlistList: List<Playlist>) : FragmentPagerAdapter(fm) {
-        val mActivity: Activity = activity
-        val mSongList: List<Recommendation> = songList
-        val mPlaylistList: List<Playlist> = playlistList
-        val onRecomendationSelected: (Recommendation) -> Unit = {
-            when (it) {
-                is Song -> onSongSelected(it, activity)
-                is User -> onUserSelected(it, activity)
-                is Playlist -> onPlaylistSelected(it, activity)
-            }
-        }
+    private fun onDeleteSong(song: Song) {
+        val builder = AlertDialog.Builder(this)
 
-        val onLongClickListener:(Recommendation) -> Unit = {
-            when (it) {
-                is Song -> onSongSelected(it, activity)
-                is User -> onUserSelected(it, activity)
-                is Playlist -> onPlaylistSelected(it, activity)
-            }
+        builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
+            doDeleteSong(song, this, {
+                if (it) {
+                    obtainSongsFromUser(user!!, this, {
+                        mTabsAdapter!!.songsListFragment.changeData(it)
+                    })
+                } else {
+                    Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
+                }
+            })
+        })
+
+        builder.setNegativeButton(R.string.cancel, { _: DialogInterface?, _: Int ->
+        })
+
+        // Set other dialog properties
+        builder.setTitle(R.string.delete)
+        builder.setMessage(R.string.delete_song_dialog)
+
+        // Create the AlertDialog
+        builder.create()
+        builder.show()
+    }
+
+    private fun onDeletePlaylist(playlist: Playlist) {
+        val builder = AlertDialog.Builder(this)
+
+        builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
+            doDeletePlaylist(playlist, this, {
+                if (it) {
+                        obtainPlaylistsFromUser(user!!, this, {
+                            mTabsAdapter!!.playlistListFragment.changeData(it)
+                        })
+                } else {
+                    Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
+                }
+            })
+        })
+
+        builder.setNegativeButton(R.string.cancel, { _: DialogInterface?, _: Int ->
+        })
+
+        // Set other dialog properties
+        builder.setTitle(R.string.delete)
+        builder.setMessage(R.string.delete_playlist_dialog)
+
+        // Create the AlertDialog
+        builder.create()
+        builder.show()
+    }
+
+    private val onRecomendationSelectedClickListener: (Recommendation) -> Unit = {
+        when (it) {
+            is Song -> onSongSelected(it, this)
+            is User -> onUserSelected(it, this)
+            is Playlist -> onPlaylistSelected(it, this)
         }
+    }
+
+    private val onLongClickListenerDeleteElement: (Recommendation, View?) -> Unit = { recommendation: Recommendation, view: View? ->
+        obtainCurrentUserData({
+            if (!user!!.username.equals(it!!.username) && (recommendation is Song || recommendation is Playlist)) {
+                registerForContextMenu(view)
+                itemSelectedToDelete = recommendation
+                openContextMenu(view)
+                unregisterForContextMenu(view)
+            }
+        }, this)
+    }
+
+
+    private class TabsAdapter(fm: FragmentManager, activity: Activity, songList: List<Recommendation>, playlistList: List<Playlist>, clickListener: (Recommendation) -> Unit, longClickListener: (Recommendation, View?) -> Unit) : FragmentPagerAdapter(fm) {
+        val mActivity: Activity = activity
+
+        val songsListFragment = VerticalRecyclerViewFragment.newInstance(clickListener, longClickListener, songList)
+        val playlistListFragment = VerticalRecyclerViewFragment.newInstance(clickListener, longClickListener, playlistList)
 
         override fun getCount(): Int {
             return 2
@@ -219,8 +305,8 @@ class UserActivity : BaseActivity() {
 
         override fun getItem(i: Int): Fragment {
             return when (i) {
-                0 -> VerticalRecyclerViewFragment.newInstance(onRecomendationSelected, mSongList)
-                else -> VerticalRecyclerViewFragment.newInstance(onRecomendationSelected, mPlaylistList)
+                0 -> songsListFragment
+                else -> playlistListFragment
             }
         }
 

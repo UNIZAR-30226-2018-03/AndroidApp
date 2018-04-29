@@ -81,6 +81,10 @@
     <string name="delete_account">Eliminar cuenta</string>
     <string name="delete_account_dialog">Esta seguro de que desea eliminar la cuenta. Esta acción es irreversible.</string>
 
+    <string name="delete">Eliminar</string>
+    <string name="delete_song_dialog">Esta seguro de que desea eliminar la canción. Esta acción es irreversible.</string>
+    <string name="delete_playlist_dialog">Esta seguro de que desea eliminar la playlist. Esta acción es irreversible.</string>
+
     <string name="no_lyrics">Sin letra</string>
 
     <!-- Upload songs activity -->

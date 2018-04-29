@@ -271,7 +271,12 @@ fun obtainPlaylistDataServer(id: Long): Playlist? {
 }
 
 @Throws(Exception::class)
-fun uploadSongServer(username: String, sessionToken: String, song: Song) {
+fun uploadSongServer(username: String, sessionToken: String, song: Song){
+//TODO:
+}
+
+@Throws(Exception::class)
+fun deleteSongServer(username: String, sessionToken: String, song: Song){
 //TODO:
 }
 
@@ -386,7 +391,7 @@ fun createPlaylistServer(username: String, sessionToken: String, playlist: Playl
  * Elimina una lista en el servidor
  */
 @Throws(Exception::class)
-fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
 //TODO:
 }
 
@@ -394,7 +399,7 @@ fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playl
  * Actualiza una lista en el servidor
  */
 @Throws(Exception::class)
-fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
 //TODO:
 }
 

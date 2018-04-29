@@ -26,7 +26,7 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
 
     private var datos: List<Recommendation> = ArrayList()
     private var clickListener: (Recommendation) -> Unit = {}
-    private var longClickListener: (Recommendation) -> Unit = {}
+    private var longClickListener: (Recommendation, View?) -> Unit = {_,_->}
 
     /**
      * Modifica los datos del adaptador
@@ -78,7 +78,7 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
         clickListener = l
     }
 
-    fun setOnLongClickListener(l: (Recommendation) -> Unit) {
+    fun setOnLongClickListener(l: (Recommendation, View?) -> Unit) {
         longClickListener = l
     }
 
@@ -112,7 +112,7 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
         }
 
         override fun onLongClick(v: View?): Boolean {
-            longClickListener(datos[adapterPosition])
+            longClickListener(datos[adapterPosition],v)
             return true
         }
 
@@ -137,7 +137,7 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
         }
 
         override fun onLongClick(v: View?): Boolean {
-            longClickListener(datos[adapterPosition])
+            longClickListener(datos[adapterPosition],v)
             return true
         }
     }
@@ -162,7 +162,7 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
         }
 
         override fun onLongClick(v: View?): Boolean {
-            longClickListener(datos[adapterPosition])
+            longClickListener(datos[adapterPosition],v)
             return true
         }
     }
