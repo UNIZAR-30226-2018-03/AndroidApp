@@ -71,7 +71,11 @@
         </service>
 
         <activity android:name=".activities.CreatePlaylistActivity" />
-        <activity android:name=".activities.UploadSongActivity" />
-    </application>
 
+        <activity android:name=".activities.CreateAlbumActivity" />
+
+        <activity android:name=".activities.UploadSongActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+    </application>
 </manifest>

@@ -93,5 +93,6 @@
     <string name="crear_alb_m">Crear albúm</string>
     <string name="new_album_name">New album name</string>
     <string name="caratula">Caratula</string>
+    <string name="crear_album">Crear album</string>
 
 </resources>

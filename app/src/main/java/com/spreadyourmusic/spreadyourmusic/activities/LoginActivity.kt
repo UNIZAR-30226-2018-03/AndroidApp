@@ -138,7 +138,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }.start()
 
-        } catch (e: ApiException) {
+        } catch (e: Exception) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             onLoginFailure()

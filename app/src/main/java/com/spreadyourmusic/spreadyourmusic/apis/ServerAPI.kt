@@ -1,6 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
 import com.spreadyourmusic.spreadyourmusic.models.*
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 
 /**
@@ -82,6 +83,10 @@ fun obtainSongsFromUserServer(username: String): List<Song> {
         }
     }
     return resultado
+}
+
+fun addSongToUserServer(username: String,song: Song) {
+    ServerEmulator.songList.put(77L, song)
 }
 
 fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
