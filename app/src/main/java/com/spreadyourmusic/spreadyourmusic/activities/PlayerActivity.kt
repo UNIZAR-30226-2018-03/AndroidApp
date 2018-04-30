@@ -84,6 +84,8 @@ class PlayerActivity : AppCompatActivity() {
     private var onProgessChangedControl = false
     private var onLastProgessChanged = 0
 
+    private var mMediaController:MediaControllerCompat? = null
+
     private val mCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
             updatePlaybackState(state)
@@ -261,19 +263,38 @@ class PlayerActivity : AppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
+    private val commandHandler = object : ResultReceiver(
+            null) {
+        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+            super.onReceiveResult(resultCode, resultData)
+            if (resultData != null) {
+                val ausioSessionID = resultData.getInt(MusicService.CMD_AUDIO_SESSION, -1)
+                val songDurationLocal = resultData.getLong(MusicService.CMD_SONG_DURATION, -1)
+                if (ausioSessionID != -1){
+                    Toast.makeText(this@PlayerActivity, ausioSessionID.toString(), Toast.LENGTH_SHORT).show()
+                    //circleSoundVisualizer.setPlayer(ausioSessionID)
+                }
+
+                if (songDurationLocal != -1L){
+                    Toast.makeText(this@PlayerActivity, songDurationLocal.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     @Throws(RemoteException::class)
     private fun connectToSession(token: MediaSessionCompat.Token) {
-        val mediaController = MediaControllerCompat(
+        mMediaController = MediaControllerCompat(
                 this, token)
-        if (mediaController.metadata == null) {
+        if (mMediaController!!.metadata == null) {
             finish()
             return
         }
-        MediaControllerCompat.setMediaController(this, mediaController)
-        mediaController.registerCallback(mCallback)
-        val state = mediaController.playbackState
+        MediaControllerCompat.setMediaController(this, mMediaController)
+        mMediaController!!.registerCallback(mCallback)
+        val state = mMediaController!!.playbackState
         updatePlaybackState(state)
-        val metadata = mediaController.metadata
+        val metadata = mMediaController!!.metadata
         if (metadata != null) {
             updateMediaDescription(metadata.description)
             updateDuration(metadata)
@@ -284,18 +305,8 @@ class PlayerActivity : AppCompatActivity() {
             scheduleSeekbarUpdate()
         }
 
-        val commandHandler = object : ResultReceiver(
-                null) {
-            override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-                super.onReceiveResult(resultCode, resultData)
-                if (resultData != null) {
-                    val ausioSessionID = resultData.getInt(MusicService.CMD_AUDIO_SESSION)
-                    circleSoundVisualizer.setPlayer(ausioSessionID)
-                }
-            }
-        }
-
-        mediaController.sendCommand(MusicService.CMD_AUDIO_SESSION, null, commandHandler)
+        mMediaController!!.sendCommand(MusicService.CMD_AUDIO_SESSION, null, commandHandler)
+        mMediaController!!.sendCommand(MusicService.CMD_SONG_DURATION, null, commandHandler)
     }
 
     private fun scheduleSeekbarUpdate() {
@@ -373,6 +384,11 @@ class PlayerActivity : AppCompatActivity() {
         if (currentSong.lyricsPath == null) {
             lyricsTextView.text = resources.getString(R.string.no_lyrics)
         } else lyricsTextView.text = ""
+
+        if(mMediaController!=null){
+            MediaControllerCompat.getMediaController(this)!!.sendCommand(MusicService.CMD_AUDIO_SESSION, null, commandHandler)
+            MediaControllerCompat.getMediaController(this)!!.sendCommand(MusicService.CMD_SONG_DURATION, null, commandHandler)
+        }
     }
 
     private fun updateDuration(metadata: MediaMetadataCompat?) {

@@ -48,6 +48,8 @@ class CircleSoundVisualizer @JvmOverloads constructor(context: Context, attrs: A
      * Set player to visualizer
      */
     fun setPlayer(audioSessionId: Int) {
+        releasePlayer()
+
         visualizer = Visualizer(audioSessionId)
         visualizer!!.captureSize = Visualizer.getCaptureSizeRange()[1]
 

@@ -16,6 +16,8 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.audio.AudioRendererEventListener;
+import com.google.android.exoplayer2.decoder.DecoderCounters;
 import com.google.android.exoplayer2.source.MergingMediaSource;
 import com.google.android.exoplayer2.source.SingleSampleMediaSource;
 import com.google.android.exoplayer2.text.Cue;
@@ -80,9 +82,15 @@ public final class LocalPlayback implements Playback {
     private SimpleExoPlayer mExoPlayer;
     private final PlayerEventListener mEventListener = new PlayerEventListener();
     private final TextOutputListener mTextOutputListener = new TextOutputListener();
+    private final AudioSessionIdListener mAudioSessionIdListener = new AudioSessionIdListener();
 
     // Whether to return STATE_NONE or STATE_STOPPED when mExoPlayer is null;
     private boolean mExoPlayerNullIsStopped = false;
+
+    private long actualSongDuration = 0L;
+
+    private int actualSessionID = 0;
+
 
     private final IntentFilter mAudioNoisyIntentFilter =
             new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
@@ -168,7 +176,6 @@ public final class LocalPlayback implements Playback {
 
     @Override
     public void play(QueueItem item, Song song) {
-        Log.d("MisMensajes","LLamada a play");
         mPlayOnFocusGain = true;
         tryToGetAudioFocus();
         registerAudioNoisyReceiver();
@@ -192,6 +199,7 @@ public final class LocalPlayback implements Playback {
                         ExoPlayerFactory.newSimpleInstance(
                                 new DefaultRenderersFactory(mContext), new DefaultTrackSelector(), new DefaultLoadControl());
                 mExoPlayer.addListener(mEventListener);
+                mExoPlayer.addAudioDebugListener(mAudioSessionIdListener);
             }
 
             // Set music type
@@ -210,7 +218,7 @@ public final class LocalPlayback implements Playback {
             MediaSource mediaSource =
                     new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(source));
 
-            if(song.getLyricsPath()!=null){
+            if (song.getLyricsPath() != null) {
                 Format format = Format.createTextSampleFormat(null, MimeTypes.APPLICATION_SUBRIP, Format.NO_VALUE, "en");
 
                 Uri subtitleUri = Uri.parse(song.getLyricsPath());
@@ -314,8 +322,13 @@ public final class LocalPlayback implements Playback {
     }
 
     @Override
-    public int getAudioSessionId(){
-        return mExoPlayer.getAudioSessionId();
+    public int getAudioSessionId() {
+        return actualSessionID;
+    }
+
+    @Override
+    public long getDuration() {
+        return actualSongDuration;
     }
 
     private final AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener =
@@ -388,10 +401,43 @@ public final class LocalPlayback implements Playback {
 
         @Override
         public void onCues(List<Cue> cues) {
-            if(cues != null && cues.size() == 1){
+            if (cues != null && cues.size() == 1) {
                 String letra = cues.get(0).text.toString();
                 LyricsManager.INSTANCE.onTextChange(letra);
             }
+
+        }
+    }
+
+    private final class AudioSessionIdListener implements AudioRendererEventListener{
+
+        @Override
+        public void onAudioEnabled(DecoderCounters counters) {
+
+        }
+
+        @Override
+        public void onAudioSessionId(int audioSessionId) {
+            actualSessionID = audioSessionId;
+        }
+
+        @Override
+        public void onAudioDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
+
+        }
+
+        @Override
+        public void onAudioInputFormatChanged(Format format) {
+
+        }
+
+        @Override
+        public void onAudioSinkUnderrun(int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
+
+        }
+
+        @Override
+        public void onAudioDisabled(DecoderCounters counters) {
 
         }
     }
@@ -417,6 +463,7 @@ public final class LocalPlayback implements Playback {
                 case Player.STATE_BUFFERING:
                 case Player.STATE_READY:
                     if (mCallback != null) {
+                        actualSongDuration = mExoPlayer.getDuration();
                         mCallback.onPlaybackStatusChanged(getState());
                     }
                     break;

@@ -218,9 +218,14 @@ public class PlaybackManager implements Playback.Callback {
         @Override
         public void onCommand(String command, Bundle extras, ResultReceiver cb) {
             super.onCommand(command, extras, cb);
-            if(command.equals(MusicService.CMD_AUDIO_SESSION )&& cb != null){
-                Bundle dataToSend = new Bundle();
+            Bundle dataToSend = new Bundle();
+            if(command.equals(MusicService.CMD_AUDIO_SESSION )){
                 dataToSend.putInt(MusicService.CMD_AUDIO_SESSION , mPlayback.getAudioSessionId());
+            }
+            if(command.equals(MusicService.CMD_SONG_DURATION )){
+                dataToSend.putLong(MusicService.CMD_SONG_DURATION , mPlayback.getDuration());
+            }
+            if(cb != null){
                 cb.send(0,dataToSend);
             }
         }

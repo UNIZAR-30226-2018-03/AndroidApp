@@ -61,6 +61,8 @@ public interface Playback {
 
     int getAudioSessionId();
 
+    long getDuration();
+
     interface Callback {
         /**
          * On current music completed.
