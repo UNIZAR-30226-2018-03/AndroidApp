@@ -288,7 +288,7 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
         }
 
         if (mWifiLock!!.isHeld) {
-            mWifiLock!!.release()
+            mWifiLock.release()
         }
     }
 

@@ -28,8 +28,6 @@ public class SongVo {
     @ColumnInfo(name = "song_location_uri")
     private String songLocationUri;
 
-    private Long duration;
-
     private String albumName;
 
     @ColumnInfo(name = "creator_name")
@@ -41,11 +39,10 @@ public class SongVo {
     @ColumnInfo(name = "release_date")
     private Calendar releaseDate;
 
-    public SongVo(long sid, String name, String songLocationUri, Long duration, String albumName, String creatorName, String artLocationPath, Calendar releaseDate) {
+    public SongVo(long sid, String name, String songLocationUri, String albumName, String creatorName, String artLocationPath, Calendar releaseDate) {
         this.sid = sid;
         this.name = name;
         this.songLocationUri = songLocationUri;
-        this.duration = duration;
         this.albumName = albumName;
         this.creatorName = creatorName;
         this.artLocationPath = artLocationPath;
@@ -57,7 +54,6 @@ public class SongVo {
         this.sid = song.getId();
         this.name = song.getName();
         this.songLocationUri = song.getLocationUri();
-        this.duration = song.getDuration();
         this.albumName = song.getAlbum().getName();
         this.creatorName = song.getAlbum().getCreator().getName();
         this.artLocationPath = song.getAlbum().getArtLocationUri();
@@ -86,14 +82,6 @@ public class SongVo {
 
     public void setSongLocationUri(String songLocationUri) {
         this.songLocationUri = songLocationUri;
-    }
-
-    public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
     }
 
     public String getAlbumName() {

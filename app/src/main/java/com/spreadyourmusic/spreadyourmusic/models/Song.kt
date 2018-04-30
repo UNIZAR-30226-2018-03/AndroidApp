@@ -26,14 +26,14 @@ class Song(val name: String, var locationUri: String, val album: Album, val gene
         this.id = id
     }
 
-    private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
+    /*private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id.toString())
             .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, locationUri)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album.name)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, album.creator.username)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, album.artLocationUri)
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, name)
-            .build()
+            .build()*/
 
 
     fun getMediaItem(): MediaBrowserCompat.MediaItem {
@@ -41,7 +41,14 @@ class Song(val name: String, var locationUri: String, val album: Album, val gene
     }
 
     fun getMetadata(): MediaMetadataCompat {
-        return mMediaMetadataCompat
+        return MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id.toString())
+                .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, locationUri)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album.name)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, album.creator.username)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, album.artLocationUri)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, name)
+                .build()
     }
 
     private fun createMediaItem(metadata: MediaMetadataCompat): MediaBrowserCompat.MediaItem {

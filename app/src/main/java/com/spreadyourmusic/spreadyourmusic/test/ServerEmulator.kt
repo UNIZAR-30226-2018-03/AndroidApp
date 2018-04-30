@@ -30,9 +30,9 @@ object ServerEmulator {
         val album1 = Album(1,"Jazz", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
         val album2 = Album(2,"Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
 
-        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris",duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = null)
-        val cancion2 = Song(album = album2, id = 2, name = "The Messenger",  duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null, genere = null)
-        val cancion3 = Song(album = album2, id = 3, name = "PostMalone",  duration = 220000L, locationUri = "/storage/emulated/0/Music/Prueba/postmalone.mp3", lyricsPath = "/storage/emulated/0/Music/Prueba/postmalone.srt", genere = null)
+        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = null)
+        val cancion2 = Song(album = album2, id = 2, name = "The Messenger", locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null, genere = null)
+        val cancion3 = Song(album = album2, id = 3, name = "PostMalone",   locationUri = "/storage/emulated/0/Music/Prueba/postmalone.mp3", lyricsPath = "/storage/emulated/0/Music/Prueba/postmalone.srt", genere = null)
 
         val list1 = ArrayList<Song>()
         list1.add(cancion1)
