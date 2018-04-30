@@ -2,10 +2,8 @@ package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.spreadyourmusic.spreadyourmusic.apis.doDeleteAccountServer
-import com.spreadyourmusic.spreadyourmusic.apis.doLoginServer
-import com.spreadyourmusic.spreadyourmusic.apis.doLogoutServer
-import com.spreadyourmusic.spreadyourmusic.apis.obtainUserDataServer
+import com.spreadyourmusic.spreadyourmusic.apis.*
+import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
@@ -123,4 +121,21 @@ fun doDeleteAccount(activity: Activity): Boolean {
             false
         }
     }else false
+}
+
+fun isCurrentUserLoggedinOtherSession(activity: Activity, listener: (Song?) -> Unit){
+    Thread {
+        val resultado = try {
+            if(isOtherSessionOpenFromSameUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)){
+                obtainLastSongListenedServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)
+            }else{
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }

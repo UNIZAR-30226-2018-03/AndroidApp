@@ -445,7 +445,7 @@ class PlayerActivity : AppCompatActivity() {
 
     // handle the share songs button's click
     private fun shareSong() {
-        shareElement(getCurrentSong().getShareLink(), this)
+        shareElement(getCurrentSong().shareLink, this)
     }
 
     private var lyricsListener: ((String) -> Unit) = {

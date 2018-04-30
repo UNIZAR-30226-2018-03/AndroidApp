@@ -25,7 +25,7 @@ class VerticalRecyclerViewFragment : Fragment() {
         val view = inflater.inflate(R.layout.content_dark_recyclerview, container, false)
 
         val lista = view.findViewById<RecyclerView>(R.id.recyclerView)
-        val recyclerViewAdapter = RecomendationsVerticalRecyclerViewAdapter(context)
+        recyclerViewAdapter = RecomendationsVerticalRecyclerViewAdapter(context)
 
         lista.adapter = recyclerViewAdapter
         lista.setHasFixedSize(true)

@@ -385,6 +385,9 @@ fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? 
 @Throws(Exception::class)
 fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
 //TODO:
+    val position = ServerEmulator.playlistList.size + 4
+    playlist.id = position.toLong()
+    ServerEmulator.playlistList[playlist.id!!] = playlist
 }
 
 /**
@@ -393,6 +396,19 @@ fun createPlaylistServer(username: String, sessionToken: String, playlist: Playl
 @Throws(Exception::class)
 fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
 //TODO:
+    if(ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)){
+        ServerEmulator.playlistList.remove(playlist.id)
+        for (i in ServerEmulator.playlistSeguidos.values){
+            for (j in i){
+                if(j.id == playlist.id){
+                    i.remove(j)
+                    break
+                }
+            }
+        }
+    }else{
+        throw Exception("Error")
+    }
 }
 
 /**

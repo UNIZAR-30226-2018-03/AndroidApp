@@ -14,6 +14,9 @@ class Song(val id: Long, val name: String, var locationUri: String, val duration
 
     var isDownloaded = false
 
+    //TODO: El link devuelto ha de ser el que apunta a la misma playlist desde la interfaz web
+    override var shareLink: String = "http://SpreadYourMusic/playlist/"
+
     private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id.toString())
             .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, locationUri)
@@ -33,10 +36,6 @@ class Song(val id: Long, val name: String, var locationUri: String, val duration
         return mMediaMetadataCompat
     }
 
-    fun setMetadata(m: MediaMetadataCompat) {
-        mMediaMetadataCompat = m
-    }
-
     private fun createMediaItem(metadata: MediaMetadataCompat): MediaBrowserCompat.MediaItem {
         // Since mediaMetadata fields are immutable, we need to create a copy, so we
         // can set a hierarchy-aware mediaID. We will need to know the media hierarchy
@@ -50,10 +49,5 @@ class Song(val id: Long, val name: String, var locationUri: String, val duration
         return MediaBrowserCompat.MediaItem(copy.description,
                 MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
 
-    }
-
-    fun getShareLink(): String{
-        //TODO: El link devuelto ha de ser el que apunta a la misma cancion desde la interfaz web
-        return "https://www.google.es/"
     }
 }

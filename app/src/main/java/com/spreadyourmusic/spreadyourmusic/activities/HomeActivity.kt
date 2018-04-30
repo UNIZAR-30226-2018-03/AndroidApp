@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.media.session.MediaControllerCompat
 
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -14,7 +13,6 @@ import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.fragment.*
@@ -22,6 +20,7 @@ import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 
@@ -38,7 +37,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var beforeBrowserOpenID: Int = -1
 
     // Almacena los fragmentos para evitar recalcularlos
-    private val fragmentHashMap: HashMap<Int, Fragment> = HashMap<Int, Fragment>(3)
+    private val fragmentHashMap: HashMap<Int, Fragment> = HashMap(3)
 
     private var searchView: SearchView? = null
 
@@ -75,6 +74,15 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 Toast.makeText(this, "Error: No se han podido obtener los datos de usuario", Toast.LENGTH_SHORT).show()
             }
         }, this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val lastSongListened = SessionSingleton.lastSongListened
+        if(lastSongListened!=null){
+            SessionSingleton.lastSongListened = null
+            onSongSelected(lastSongListened,this)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -115,7 +115,7 @@ class PlaylistActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if(item!= null && item.itemId == R.id.share){
-            shareElement(playlist!!.getShareLink(), this)
+            shareElement(playlist!!.shareLink, this)
            return true
         }
         return super.onOptionsItemSelected(item)

@@ -42,8 +42,8 @@ object ServerEmulator {
         val list2 = ArrayList<Song>()
         list2.add(cancion1)
 
-        val playlist1 = Playlist(1, "dfsdfdsfd", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list1)
-        val playlist2 = Playlist(2, "dfsdfdsfd", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list2)
+        val playlist1 = Playlist(1, "dfsdfdsfd", autor3, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list1)
+        val playlist2 = Playlist(2, "dfsdfdsfd", autor3, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list2)
 
         userList[autor1.username!!] = autor1
         userList[autor2.username!!] = autor2
@@ -52,8 +52,8 @@ object ServerEmulator {
         songList[cancion1.id] = cancion1
         songList[cancion2.id] = cancion2
 
-        playlistList[playlist1.id] = playlist1
-        playlistList[playlist2.id] = playlist2
+        playlistList[playlist1.id!!] = playlist1
+        playlistList[playlist2.id!!] = playlist2
 
 
         artistasSeguidos[autor3.username!!] = ArrayList()

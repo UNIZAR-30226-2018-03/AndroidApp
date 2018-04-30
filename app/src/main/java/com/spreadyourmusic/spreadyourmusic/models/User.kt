@@ -23,6 +23,9 @@ class User() : Recommendation {
     var instagramAccount: String? = null
     var picture:Bitmap? = null
 
+    //TODO: El link devuelto ha de ser el que apunta a la misma playlist desde la interfaz web
+    override var shareLink: String = "http://SpreadYourMusic/playlist/"
+
     constructor(username: String, password: String): this(){
         this.username = username
         this.password = password
@@ -52,10 +55,5 @@ class User() : Recommendation {
     fun getInstagramAccountURL(): String?{
         return if(instagramAccount != null) "https://www.instagram.com/$instagramAccount"
         else null
-    }
-
-    fun getShareLink(): String{
-        //TODO: El link devuelto ha de ser el que apunta al mismo usuario desde la interfaz web
-        return "https://www.google.es/"
     }
 }

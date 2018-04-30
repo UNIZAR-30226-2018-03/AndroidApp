@@ -30,4 +30,9 @@ object SessionSingleton {
      * Almacena el QueueManager actual
      */
     val musicQueueManager: MusicQueueManager = MusicQueueManager.getInstance()
+
+    /**
+     * Almacena la última canción escuchada por el usuario en otraq sesión
+     */
+    var lastSongListened: Song? = null
 }

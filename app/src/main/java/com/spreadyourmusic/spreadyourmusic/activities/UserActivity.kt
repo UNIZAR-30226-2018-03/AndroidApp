@@ -124,7 +124,7 @@ class UserActivity : BaseActivity() {
         return if (item != null) {
             when (item.itemId) {
                 R.id.share -> {
-                    shareElement(user!!.getShareLink(), this)
+                    shareElement(user!!.shareLink, this)
                     true
                 }
                 R.id.twitter_account -> {
@@ -283,7 +283,7 @@ class UserActivity : BaseActivity() {
 
     private val onLongClickListenerDeleteElement: (Recommendation, View?) -> Unit = { recommendation: Recommendation, view: View? ->
         obtainCurrentUserData({
-            if (!user!!.username.equals(it!!.username) && (recommendation is Song || recommendation is Playlist)) {
+            if (user!!.username.equals(it!!.username) && (recommendation is Song || recommendation is Playlist)) {
                 registerForContextMenu(view)
                 itemSelectedToDelete = recommendation
                 openContextMenu(view)
