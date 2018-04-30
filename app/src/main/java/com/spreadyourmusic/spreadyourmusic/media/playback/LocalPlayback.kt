@@ -37,7 +37,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 
 import android.support.v4.media.session.MediaSessionCompat.QueueItem
-import android.util.Log
 import com.google.android.exoplayer2.C.CONTENT_TYPE_MUSIC
 import com.google.android.exoplayer2.C.USAGE_MEDIA
 
@@ -63,9 +62,12 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
     private var mExoPlayerNullIsStopped = false
 
     var songDurationListener: ((Long) -> Unit)? = null
+    var audioSessionListener: ((Int) -> Unit)? = null
 
     var songDuration = C.TIME_UNSET
     var audioSessionId = 0
+    var hasAusioSessionChange = false
+    var hasSongChange = false
 
 
     override fun getState(): Int? {
@@ -137,6 +139,7 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
     }
 
     override fun play(item: QueueItem, song: Song) {
+        hasSongChange = true
         mPlayOnFocusGain = true
         tryToGetAudioFocus()
         val mediaId = item.description.mediaId
@@ -293,7 +296,13 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
     }
 
     override fun getAudioSessionId(l: (Int) -> Unit) {
-        l(audioSessionId)
+        if(hasAusioSessionChange || !hasSongChange){
+            l(audioSessionId)
+            hasAusioSessionChange = false
+            hasSongChange = false
+        }else{
+            audioSessionListener = l
+        }
     }
 
     override fun getDuration(l: (Long) -> Unit) {
@@ -323,6 +332,14 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
 
         override fun onAudioSessionId(audioSessionId: Int) {
             this@LocalPlayback.audioSessionId = audioSessionId
+            hasAusioSessionChange = if (audioSessionListener != null) {
+                audioSessionListener!!.invoke(audioSessionId)
+                audioSessionListener = null
+                hasSongChange = false
+                false
+            } else {
+                true
+            }
         }
 
         override fun onAudioDecoderInitialized(decoderName: String, initializedTimestampMs: Long, initializationDurationMs: Long) {
