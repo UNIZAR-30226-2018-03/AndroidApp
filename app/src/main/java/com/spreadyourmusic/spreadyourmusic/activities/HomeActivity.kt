@@ -104,7 +104,6 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                     changeActualFragment(fragmento)
                                 }
                             } else Toast.makeText(this@HomeActivity, "Error", Toast.LENGTH_SHORT).show()
-
                         })
                     }
                     return true
@@ -125,6 +124,14 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             searchView!!.setQuery("", false)
             searchView!!.isIconified = true
             searchView!!.clearFocus()
+            if (beforeBrowserOpenID != -1) {
+                getFragmentFromID(beforeBrowserOpenID,{changeActualFragment(it)})
+                actualFragmentDisplayed = beforeBrowserOpenID
+                beforeBrowserOpenID = -1
+                searchView!!.setQuery("", false)
+                searchView!!.isIconified = true
+                searchView!!.clearFocus()
+            }
         } else if (beforeBrowserOpenID != -1) {
             getFragmentFromID(beforeBrowserOpenID,{changeActualFragment(it)})
             actualFragmentDisplayed = beforeBrowserOpenID
