@@ -22,10 +22,10 @@ object ServerEmulator {
 
     init {
         // TODO: HACER
-        val autor1 = User("silentpartner", "Silent Partner", "silentpartner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-        val autor2 = User("jinglepunks", "Jingle Punks", "jinglepunks", "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
-        val autor3 = User("abelcht", "Abel ChT", "abelcht", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-        val autor4 = User("postmalone", "Post Malone", "postmalone", "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
+        val autor1 = User("silentpartner", "Silent Partner","http://storage.googleapis.com/automotive-media/album_art.jpg", false)
+        val autor2 = User("jinglepunks", "Jingle Punks", "http://storage.googleapis.com/automotive-media/album_art_2.jpg",false)
+        val autor3 = User("abelcht", "Abel ChT", "http://storage.googleapis.com/automotive-media/album_art.jpg", false)
+        val autor4 = User("postmalone", "Post Malone", "http://storage.googleapis.com/automotive-media/album_art_2.jpg", true)
 
         val album1 = Album(1,"Jazz & Blues", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
         val album2 = Album(2,"Cinematic", autor1, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")

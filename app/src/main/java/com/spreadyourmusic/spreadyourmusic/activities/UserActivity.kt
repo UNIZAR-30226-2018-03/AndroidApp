@@ -83,6 +83,7 @@ class UserActivity : BaseActivity() {
                 })
                 obtainCurrentUserData({
                     if (!user!!.username.equals(it!!.username)) {
+                        if(user!!.verifiedAccount) followButton!!.background = resources.getDrawable(R.drawable.rounded_blue)
                         isFollowing(user!!, this, {
                             followButton!!.text = if (!it) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
                         })
