@@ -253,8 +253,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                 if (popularSongs == null || recommendations == null || newsSongs == null) {
                                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                                 } else {
-                                    mList.add(Pair(resources.getString(R.string.new_songs), newsSongs))
                                     mList.add(Pair(resources.getString(R.string.recommendations), recommendations))
+                                    mList.add(Pair(resources.getString(R.string.new_songs), newsSongs))
                                     mList.add(Pair(resources.getString(R.string.popular_in_the_world), popularSongs))
                                     fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
                                     listener(fragmentHashMap[id]!!)
