@@ -19,10 +19,10 @@ import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
  */
 fun doLogin(user: User, activity: Activity): Boolean {
     return try {
-        val sessionToken = doLoginServer(user.username!!, user.password!!)
+        val sessionToken = doLoginServer(user.username, user.password!!)
 
         // El login en el server ha sido correcto
-        loginUserSharedPreferences(user.username!!, sessionToken, activity)
+        loginUserSharedPreferences(user.username, sessionToken, activity)
 
         // Se actualiza el objeto de sesión
         SessionSingleton.currentUser = user
@@ -83,7 +83,7 @@ fun obtainCurrentUserData(listener: (User?) -> Unit, activity: Activity) {
     }else{
         Thread{
             val user = try {
-                obtainUserDataServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)
+                obtainUserDataServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!)
             }catch (e: Exception){
                 null
             }

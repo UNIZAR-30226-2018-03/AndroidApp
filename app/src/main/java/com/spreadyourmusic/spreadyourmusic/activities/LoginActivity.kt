@@ -79,6 +79,7 @@ class LoginActivity : AppCompatActivity() {
     private fun openHomeActivity(){
         isCurrentUserLoggedinOtherSession(this,{
             SessionSingleton.lastSongListened = it
+            SessionSingleton.isUserDataLoaded = false
             val int = Intent(applicationContext, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(int)
