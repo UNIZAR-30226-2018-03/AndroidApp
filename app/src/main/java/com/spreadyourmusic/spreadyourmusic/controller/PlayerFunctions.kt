@@ -79,3 +79,9 @@ fun randomReproduction(nextState: Boolean) {
 fun isRandomReproductionEnabled():Boolean{
     return  MusicQueueManager.getInstance().isRandomReproductionEnable()
 }
+
+fun addReproductionToSong(song: Song){
+    Thread {
+        addReproductionToSongServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,song.id)
+    }.start()
+}

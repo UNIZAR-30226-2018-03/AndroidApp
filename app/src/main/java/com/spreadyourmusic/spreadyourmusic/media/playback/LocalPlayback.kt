@@ -39,6 +39,7 @@ import com.google.android.exoplayer2.util.Util
 import android.support.v4.media.session.MediaSessionCompat.QueueItem
 import com.google.android.exoplayer2.C.CONTENT_TYPE_MUSIC
 import com.google.android.exoplayer2.C.USAGE_MEDIA
+import com.spreadyourmusic.spreadyourmusic.controller.addReproductionToSong
 
 /**
  * This class control com.google.android.exoplayer2.ExoPlayer
@@ -149,6 +150,9 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
         }
 
         if (mediaHasChanged || mExoPlayer == null) {
+            //Se añade una reproducción a la canción
+            addReproductionToSong(song)
+
             songDuration = C.TIME_UNSET
 
             releaseResources(false) // release everything except the player
