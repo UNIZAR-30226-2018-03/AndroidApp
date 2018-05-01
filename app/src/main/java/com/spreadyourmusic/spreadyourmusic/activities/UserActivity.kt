@@ -37,6 +37,8 @@ class UserActivity : BaseActivity() {
     // Esta variable almacenan si una canción o una playlist ha sido seleccionada con un long click
     private var itemSelectedToDelete: Recommendation? = null
 
+    private var editActivityOpen = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
@@ -57,7 +59,7 @@ class UserActivity : BaseActivity() {
         val artistUsername = findViewById<TextView>(R.id.artistUsername)
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
         followButton = findViewById(R.id.followButton)
-        followButton!!.setOnClickListener{
+        followButton!!.setOnClickListener {
             onDoFollow()
         }
 
@@ -69,7 +71,7 @@ class UserActivity : BaseActivity() {
                     val songList = it
                     obtainPlaylistsFromUser(user!!, this, {
                         val playlistList = it
-                        mTabsAdapter  = TabsAdapter(supportFragmentManager, this, songList!!, playlistList!!, onRecomendationSelectedClickListener, onLongClickListenerDeleteElement)
+                        mTabsAdapter = TabsAdapter(supportFragmentManager, this, songList!!, playlistList!!, onRecomendationSelectedClickListener, onLongClickListenerDeleteElement)
                         viewPager.adapter = mTabsAdapter
                         tabLayout.setupWithViewPager(viewPager)
                     })
@@ -83,7 +85,7 @@ class UserActivity : BaseActivity() {
                 })
                 obtainCurrentUserData({
                     if (!user!!.username.equals(it!!.username)) {
-                        if(user!!.verifiedAccount) followButton!!.background = resources.getDrawable(R.drawable.rounded_blue)
+                        if (user!!.verifiedAccount) followButton!!.background = resources.getDrawable(R.drawable.rounded_blue)
                         isFollowing(user!!, this, {
                             followButton!!.text = if (!it) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
                         })
@@ -101,6 +103,26 @@ class UserActivity : BaseActivity() {
                 onCreateOptionsMenu(mMenu)
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (editActivityOpen) {
+            obtainUserFromID(user!!.username, this, {
+                supportActionBar!!.title = it!!.name
+                obtainSongsFromUser(it, this, {
+                    val songList = it
+                    mTabsAdapter!!.songsListFragment.changeData(songList)
+                    obtainPlaylistsFromUser(user!!, this, {
+                        val playlistList = it
+                        mTabsAdapter!!.playlistListFragment.changeData(playlistList)
+                    })
+                })
+                val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
+                Glide.with(this).load(it.pictureLocationUri).into(profileImage)
+            })
+        }
+        editActivityOpen = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -142,11 +164,13 @@ class UserActivity : BaseActivity() {
                 }
                 R.id.add_song -> {
                     val intent = Intent(this, UploadSongActivity::class.java)
+                    editActivityOpen = true
                     startActivity(intent)
                     true
                 }
                 R.id.create_playlist -> {
                     val intent = Intent(this, CreatePlaylistActivity::class.java)
+                    editActivityOpen = true
                     startActivity(intent)
                     true
                 }
@@ -189,6 +213,7 @@ class UserActivity : BaseActivity() {
             } else {
                 val intent = Intent(this, SignUpActivity::class.java)
                 intent.putExtra(resources.getString(R.string.user_id), user!!.username)
+                editActivityOpen = true
                 startActivity(intent)
             }
         }, this)
@@ -253,9 +278,9 @@ class UserActivity : BaseActivity() {
         builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
             doDeletePlaylist(playlist, this, {
                 if (it) {
-                        obtainPlaylistsFromUser(user!!, this, {
-                            mTabsAdapter!!.playlistListFragment.changeData(it)
-                        })
+                    obtainPlaylistsFromUser(user!!, this, {
+                        mTabsAdapter!!.playlistListFragment.changeData(it)
+                    })
                 } else {
                     Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
                 }
