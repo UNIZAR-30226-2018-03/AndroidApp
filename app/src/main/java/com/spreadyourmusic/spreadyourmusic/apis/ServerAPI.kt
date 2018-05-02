@@ -271,7 +271,13 @@ fun obtainPlaylistDataServer(id: Long): Playlist? {
 }
 
 @Throws(Exception::class)
-fun uploadSongServer(username: String, sessionToken: String, song: Song) {
+fun uploadSongServer(username: String, sessionToken: String, song: Song){
+//TODO:
+}
+
+@Throws(Exception::class)
+fun deleteSongServer(username: String, sessionToken: String, song: Song){
+    ServerEmulator.songList.remove(song.id)
 //TODO:
 }
 
@@ -380,21 +386,37 @@ fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? 
 @Throws(Exception::class)
 fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
 //TODO:
+    val position = ServerEmulator.playlistList.size + 4
+    playlist.id = position.toLong()
+    ServerEmulator.playlistList[playlist.id!!] = playlist
 }
 
 /**
  * Elimina una lista en el servidor
  */
 @Throws(Exception::class)
-fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
 //TODO:
+    if(ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)){
+        ServerEmulator.playlistList.remove(playlist.id)
+        for (i in ServerEmulator.playlistSeguidos.values){
+            for (j in i){
+                if(j.id == playlist.id){
+                    i.remove(j)
+                    break
+                }
+            }
+        }
+    }else{
+        throw Exception("Error")
+    }
 }
 
 /**
  * Actualiza una lista en el servidor
  */
 @Throws(Exception::class)
-fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
 //TODO:
 }
 

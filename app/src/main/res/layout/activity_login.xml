@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_bg"
-    android:onClick="randomBackgroundColorGenerator"
     tools:context="com.spreadyourmusic.spreadyourmusic.activities.LoginActivity">
 
     <EditText
@@ -83,6 +82,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="@string/or_connect_with"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/loginGoogleButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -93,7 +93,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="60dp"
-        android:text="Logo"
+        android:text="SpreadYourMusic"
         android:textColor="@android:color/white"
         android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"

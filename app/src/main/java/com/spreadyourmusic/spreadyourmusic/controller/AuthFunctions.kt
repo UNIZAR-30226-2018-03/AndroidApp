@@ -2,10 +2,8 @@ package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.spreadyourmusic.spreadyourmusic.apis.doDeleteAccountServer
-import com.spreadyourmusic.spreadyourmusic.apis.doLoginServer
-import com.spreadyourmusic.spreadyourmusic.apis.doLogoutServer
-import com.spreadyourmusic.spreadyourmusic.apis.obtainUserDataServer
+import com.spreadyourmusic.spreadyourmusic.apis.*
+import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
@@ -21,10 +19,10 @@ import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
  */
 fun doLogin(user: User, activity: Activity): Boolean {
     return try {
-        val sessionToken = doLoginServer(user.username!!, user.password!!)
+        val sessionToken = doLoginServer(user.username, user.password!!)
 
         // El login en el server ha sido correcto
-        loginUserSharedPreferences(user.username!!, sessionToken, activity)
+        loginUserSharedPreferences(user.username, sessionToken, activity)
 
         // Se actualiza el objeto de sesión
         SessionSingleton.currentUser = user
@@ -85,7 +83,7 @@ fun obtainCurrentUserData(listener: (User?) -> Unit, activity: Activity) {
     }else{
         Thread{
             val user = try {
-                obtainUserDataServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)
+                obtainUserDataServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!)
             }catch (e: Exception){
                 null
             }
@@ -123,4 +121,21 @@ fun doDeleteAccount(activity: Activity): Boolean {
             false
         }
     }else false
+}
+
+fun isCurrentUserLoggedinOtherSession(activity: Activity, listener: (Song?) -> Unit){
+    Thread {
+        val resultado = try {
+            if(isOtherSessionOpenFromSameUserServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!)){
+                obtainLastSongListenedServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!)
+            }else{
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }

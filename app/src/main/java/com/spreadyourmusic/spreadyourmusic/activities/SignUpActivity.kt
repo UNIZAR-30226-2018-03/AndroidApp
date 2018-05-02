@@ -48,16 +48,16 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     fun onProfilePictureClick(v: View){
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        /*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePictureIntent.resolveActivity(packageManager) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-        }
+        }*/
     }
 
-    override fun onActivityResult(requestCode : Int,  resultCode : Int, data: Intent) {
+   /* override fun onActivityResult(requestCode : Int,  resultCode : Int, data: Intent) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val extras = data.extras
             //val imageBitmap = extras.get("data")
         }
-    }
+    }*/
 }

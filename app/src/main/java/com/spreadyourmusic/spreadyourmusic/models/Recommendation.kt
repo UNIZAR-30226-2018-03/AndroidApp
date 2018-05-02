@@ -1,7 +1,13 @@
-package com.spreadyourmusic.spreadyourmusic.models
-
 /**
  * Created by abel
  * On 7/03/18.
  */
-interface Recommendation
+package com.spreadyourmusic.spreadyourmusic.models
+
+interface Recommendation {
+
+    /**
+     * Almacena la dirección que apunta al mismo  elemento en el front-end
+     */
+    var shareLink: String
+}
