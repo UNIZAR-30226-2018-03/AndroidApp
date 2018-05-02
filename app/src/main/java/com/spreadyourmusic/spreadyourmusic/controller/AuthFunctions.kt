@@ -126,8 +126,8 @@ fun doDeleteAccount(activity: Activity): Boolean {
 fun isCurrentUserLoggedinOtherSession(activity: Activity, listener: (Song?) -> Unit){
     Thread {
         val resultado = try {
-            if(isOtherSessionOpenFromSameUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)){
-                obtainLastSongListenedServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)
+            if(isOtherSessionOpenFromSameUserServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!)){
+                obtainLastSongListenedServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!)
             }else{
                 null
             }

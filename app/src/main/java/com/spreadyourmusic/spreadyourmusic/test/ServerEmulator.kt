@@ -55,6 +55,8 @@ object ServerEmulator {
 
         val playlist1 = Playlist(1, "Todas", autor3, "http://storage.googleapis.com/automotive-media/album_art_3.jpg", list1)
         val playlist2 = Playlist(2, "Post Malone", autor3, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list2)
+        val playlist3 = Playlist(3, "Mix Trap", autor1, "http://storage.googleapis.com/automotive-media/album_art_1.jpg", list1)
+        val playlist4 = Playlist(4, "Flow", autor3, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list1)
 
         userList[autor1.username!!] = autor1
         userList[autor2.username!!] = autor2
@@ -71,6 +73,8 @@ object ServerEmulator {
 
         playlistList[playlist1.id!!] = playlist1
         playlistList[playlist2.id!!] = playlist2
+        playlistList[playlist3.id!!] = playlist3
+        playlistList[playlist4.id!!] = playlist4
 
 
         artistasSeguidos[autor3.username!!] = ArrayList()
@@ -103,11 +107,16 @@ object ServerEmulator {
 
         trends.add(cancion1)
         trends.add(cancion2)
-        generos.add(Pair("Rock", trends))
+        trends.add(cancion3)
+        trends.add(cancion4)
 
         generesList.add("Rock")
         generesList.add("Rap")
         generesList.add("Trap")
+
+        generos.add(Pair("Rock", trends))
+        generos.add(Pair("Rap", trends))
+        generos.add(Pair("Trap", trends))
 
         albumList.add(album1)
         albumList.add(album2)

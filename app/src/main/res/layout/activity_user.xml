@@ -51,9 +51,9 @@
                 android:id="@+id/tabs"
                 android:layout_width="fill_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:tabIndicatorColor="?android:attr/textColorPrimaryInverse"
+                app:tabIndicatorColor="@android:color/white"
                 app:tabIndicatorHeight="4dp"
-                app:tabSelectedTextColor="?android:attr/textColorPrimaryInverse"
+                app:tabSelectedTextColor="@android:color/white"
                 android:background="@color/colorPrimaryDark"
                 />
         </android.support.design.widget.AppBarLayout>
