@@ -277,6 +277,7 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song){
 
 @Throws(Exception::class)
 fun deleteSongServer(username: String, sessionToken: String, song: Song){
+    ServerEmulator.songList.remove(song.id)
 //TODO:
 }
 

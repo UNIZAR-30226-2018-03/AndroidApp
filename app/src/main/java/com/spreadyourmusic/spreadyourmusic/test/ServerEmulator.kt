@@ -32,6 +32,7 @@ object ServerEmulator {
         val album3 = Album(3,"POst", autor4, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_3.jpg")
         val album4 = Album(4,"Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
 
+        val album5 = Album(5,"Blues 2", autor3, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
 
         val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = null)
         val cancion2 = Song(album = album1, id = 2, name = "The Messenger", locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null, genere = null)
@@ -40,6 +41,18 @@ object ServerEmulator {
         val cancion5 = Song(album = album2, id = 5, name = "On the Bach", locationUri = "http://storage.googleapis.com/automotive-media/On_the_Bach.mp3", lyricsPath = null, genere = null)
         val cancion6 = Song(album = album4, id = 6, name = "The Story Unfolds", locationUri = "http://storage.googleapis.com/automotive-media/The_Story_Unfolds.mp3", lyricsPath = null, genere = null)
         val cancion7 = Song(album = album4, id = 7, name = "Drop and Roll", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+
+        val cancion8 = Song(album = album5, id = 8, name = "Drop and Roll 1", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion9 = Song(album = album5, id = 9, name = "Drop and Roll 2", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion10 = Song(album = album5, id = 10, name = "Drop and Roll 3", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion11 = Song(album = album5, id = 11, name = "Drop and Roll 4", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion12 = Song(album = album5, id = 12, name = "Drop and Roll 5", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion13 = Song(album = album5, id = 13, name = "Drop and Roll 6", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion14 = Song(album = album5, id = 14, name = "Drop and Roll 7", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion15 = Song(album = album5, id = 15, name = "Drop and Roll 8", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion16 = Song(album = album5, id = 16, name = "Drop and Roll 9", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion17 = Song(album = album5, id = 17, name = "Drop and Roll 10", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+
 
         val list1 = ArrayList<Song>()
         list1.add(cancion1)
@@ -70,6 +83,17 @@ object ServerEmulator {
         songList[cancion5.id] = cancion5
         songList[cancion6.id] = cancion6
         songList[cancion7.id] = cancion7
+
+        songList[cancion8.id] = cancion8
+        songList[cancion9.id] = cancion9
+        songList[cancion10.id] = cancion10
+        songList[cancion11.id] = cancion11
+        songList[cancion12.id] = cancion12
+        songList[cancion13.id] = cancion13
+        songList[cancion14.id] = cancion14
+        songList[cancion15.id] = cancion15
+        songList[cancion16.id] = cancion16
+        songList[cancion17.id] = cancion17
 
         playlistList[playlist1.id!!] = playlist1
         playlistList[playlist2.id!!] = playlist2
@@ -122,6 +146,7 @@ object ServerEmulator {
         albumList.add(album2)
         albumList.add(album3)
         albumList.add(album4)
+        albumList.add(album5)
 
     }
 }

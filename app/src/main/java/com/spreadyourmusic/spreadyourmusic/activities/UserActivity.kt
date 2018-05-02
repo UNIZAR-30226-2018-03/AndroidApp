@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.design.widget.TabLayout
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v7.app.AlertDialog
 import android.view.ContextMenu
 import android.view.Menu
@@ -163,12 +164,16 @@ class UserActivity : BaseActivity() {
                     true
                 }
                 R.id.add_song -> {
+                    stopSongReproduction()
+
                     val intent = Intent(this, UploadSongActivity::class.java)
                     editActivityOpen = true
                     startActivity(intent)
                     true
                 }
                 R.id.create_playlist -> {
+                    stopSongReproduction()
+
                     val intent = Intent(this, CreatePlaylistActivity::class.java)
                     editActivityOpen = true
                     startActivity(intent)
@@ -211,6 +216,8 @@ class UserActivity : BaseActivity() {
                     })
                 })
             } else {
+                stopSongReproduction()
+
                 val intent = Intent(this, SignUpActivity::class.java)
                 intent.putExtra(resources.getString(R.string.user_id), user!!.username)
                 editActivityOpen = true
@@ -225,6 +232,7 @@ class UserActivity : BaseActivity() {
 
         builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
             if (doDeleteAccount(this)) {
+                stopSongReproduction()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
@@ -251,6 +259,7 @@ class UserActivity : BaseActivity() {
         builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
             doDeleteSong(song, this, {
                 if (it) {
+                    stopSongReproduction()
                     obtainSongsFromUser(user!!, this, {
                         mTabsAdapter!!.songsListFragment.changeData(it)
                     })
@@ -278,6 +287,7 @@ class UserActivity : BaseActivity() {
         builder.setPositiveButton(R.string.confirm, { _: DialogInterface?, _: Int ->
             doDeletePlaylist(playlist, this, {
                 if (it) {
+                    stopSongReproduction()
                     obtainPlaylistsFromUser(user!!, this, {
                         mTabsAdapter!!.playlistListFragment.changeData(it)
                     })
@@ -297,6 +307,11 @@ class UserActivity : BaseActivity() {
         // Create the AlertDialog
         builder.create()
         builder.show()
+    }
+
+    private fun stopSongReproduction(){
+        val mediaController = MediaControllerCompat.getMediaController(this)
+        mediaController.transportControls.stop()
     }
 
     private val onRecomendationSelectedClickListener: (Recommendation) -> Unit = {
