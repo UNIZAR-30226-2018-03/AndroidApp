@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_upload_song.*
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class UploadSongActivity : AppCompatActivity() {
@@ -34,6 +35,9 @@ class UploadSongActivity : AppCompatActivity() {
     var user: User? = null
     var selectedAlbum: Album? = null
     var selectedGenere: String? = null
+    val selectSong: Int = 355
+    val selectLyrics: Int = 356
+    var seleccionarFichero: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activity_upload_song)
@@ -54,38 +58,29 @@ class UploadSongActivity : AppCompatActivity() {
             }
         })
 
-        obtainCurrentUserData({
-            obtainAlbumsFromUser(it!!, this, {
-                albums = it
-                val albumNames = ArrayList<String>()
-                /* Opcion por defecto, si se selecciona, pasar a la pantalla de crear album */
-                albumNames.add("Crear album")
-                /* Obtención de los nombres de los albumes */
-                for (i in albums!!) {
-                    albumNames.add(i.name)
-                }
-                spinnerAlbums!!.adapter = ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, albumNames)
-                spinnerAlbums!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) {
-                        if (position != 0)
-                            selectedAlbum = albums!!.get(position - 1)
-                        else selectedAlbum = null
-                    }
-
-                    override fun onNothingSelected(parentView: AdapterView<*>) {
-                        selectedAlbum = null
-                    }
+        spinnerAlbums!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) {
+                if (position != 0) {
+                    selectedAlbum = albums!!.get(position - 1)
+                    findViewById<Button>(R.id.continueButton).text = resources.getString(R.string.guardar)
+                } else {
+                    selectedAlbum = null
+                    findViewById<Button>(R.id.continueButton).text = resources.getString(R.string.continuar)
                 }
 
-            })
-        }, this)
+            }
+            override fun onNothingSelected(parentView: AdapterView<*>) {
+                selectedAlbum = null
+                findViewById<Button>(R.id.continueButton).text = resources.getString(R.string.continuar)
+            }
+        }
 
         val selecconarCancionBoton = findViewById<Button>(R.id.audioSelector)
         selecconarCancionBoton.setOnClickListener {
             val intent = Intent()
                     .setType("*/*")
                     .setAction(Intent.ACTION_GET_CONTENT)
-            startActivityForResult(Intent.createChooser(intent, "Select a file"), 1)
+            startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectSong)
         }
 
         val selecconarLetras = findViewById<Button>(R.id.lyricsSelector)
@@ -93,8 +88,34 @@ class UploadSongActivity : AppCompatActivity() {
             val intent = Intent()
                     .setType("*/*")
                     .setAction(Intent.ACTION_GET_CONTENT)
-            startActivityForResult(Intent.createChooser(intent, "Select a file"), 2)
+            startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectLyrics)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != RESULT_OK) {
+            onSelectFailure()
+            seleccionarFichero=true
+        } else if (requestCode == selectSong && resultCode == RESULT_OK) {
+            pathCancion = data!!.getData().toString()
+            if(!fileExtension(pathCancion!!).equals("mp3") && !fileExtension(pathCancion!!).equals("ogg") && !fileExtension(pathCancion!!).equals("wav") ) {
+                pathCancion=null
+                onSelectFailure()
+            }
+            seleccionarFichero = true
+        } else if (requestCode == selectLyrics && resultCode == RESULT_OK) {
+            pathLyrics = data!!.getData().toString()
+            if(!fileExtension(pathLyrics!!).equals("str")){
+                pathLyrics=null
+                onSelectFailure()
+            }
+            seleccionarFichero=true
+        }
+    }
+
+    fun fileExtension(file: String): String {
+        return file.substring(file.lastIndexOf(".") + 1, file.length)
     }
 
     fun onContinueClick(v: View) {
@@ -102,38 +123,43 @@ class UploadSongActivity : AppCompatActivity() {
         if (selectedAlbum != null) {
             createSongAction(v)
             //TODO(La parte del Pini)
-            setContentView(R.layout.activity_user)
+            finish()
         } else {
-            setContentView(R.layout.activity_create_album)
+            val intent = Intent(this, CreateAlbumActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        try {
-            super.onActivityResult(requestCode, resultCode, data)
-            if (resultCode != RESULT_OK) {
-                onSelectFailure()
-            } else if (requestCode == 1 && resultCode == RESULT_OK) {
-                pathCancion = data!!.getData().toString()
-            } else if (requestCode == 2 && resultCode == RESULT_OK) {
-                pathLyrics = data!!.getData().toString()
-            }
-        } catch (e: RuntimeException) {
-            // The RuntimeException status code indicates the detailed failure reason.
-            onSelectFailure()
+    override fun onResume() {
+        super.onResume()
+        if(!seleccionarFichero) {
+            obtainCurrentUserData({
+                obtainAlbumsFromUser(it!!, this, {
+                    albums = it
+                    val albumNames = ArrayList<String>()
+                    /* Opcion por defecto, si se selecciona, pasar a la pantalla de crear album */
+                    albumNames.add(resources.getString(R.string.crear_album))
+                    /* Obtención de los nombres de los albumes */
+                    for (i in albums!!) {
+                        albumNames.add(i.name)
+                    }
+                    spinnerAlbums!!.adapter = ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, albumNames)
+                })
+            }, this)
         }
+        seleccionarFichero=false
     }
 
     private fun onSelectFailure() {
-        Toast.makeText(applicationContext, "No has selecionado un fichero válido", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, R.string.error_fichero, Toast.LENGTH_SHORT).show()
     }
 
     fun createSongAction(v: View) {
         obtainCurrentUserData({
             val songname: String = newSongName.text.toString()
             val current: String = Calendar.getInstance().time.toString()
-            val newSong = Song(0, songname, pathCancion!!, 360, selectedAlbum!!, selectedGenere!!, pathLyrics)
+            val newSong = Song(0, songname, pathCancion!!, 360  , selectedAlbum!!, selectedGenere!!, pathLyrics)
             addSongToUser(it!!, this, newSong)
-        },this)
+        }, this)
     }
 }

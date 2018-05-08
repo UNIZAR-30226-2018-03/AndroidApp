@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -21,7 +22,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.spreadyourmusic.spreadyourmusic.models.User
-
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.AWSStartupHandler
+import com.amazonaws.mobile.client.AWSStartupResult
 
 class LoginActivity : AppCompatActivity() {
 
@@ -32,6 +35,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        AWSMobileClient.getInstance().initialize(this, AWSStartupHandler() {
+            @Override
+            fun onComplete(awsStartupResult: AWSStartupResult ) {
+                Log.d("YourMainActivity", "AWSMobileClient is instantiated and you are connected to AWS!");
+            }
+        }).execute();
 
         if(isLogin(this)){
             openHomeActivity()

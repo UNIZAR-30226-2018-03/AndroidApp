@@ -2,12 +2,12 @@ package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
 import com.spreadyourmusic.spreadyourmusic.apis.*
+import com.spreadyourmusic.spreadyourmusic.apis.*
 import com.spreadyourmusic.spreadyourmusic.models.Album
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
-import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 
 /**
  * Created by abel
