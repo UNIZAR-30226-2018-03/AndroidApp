@@ -2,6 +2,8 @@ package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
 import com.spreadyourmusic.spreadyourmusic.apis.*
+import com.spreadyourmusic.spreadyourmusic.apis.*
+import com.spreadyourmusic.spreadyourmusic.models.Album
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
@@ -47,6 +49,37 @@ fun obtainSongsFromUser(user: User, activity: Activity, listener: (List<Song>?) 
         }
         activity.runOnUiThread {
             listener(resultado)
+        }
+    }.start()
+}
+
+fun obtainAlbumsFromUser(user: User, activity: Activity, listener: (List<Album>?) -> Unit){
+    Thread {
+        val resultado = try {
+            obtainAlbumsFromUserServer(user.username!!)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
+}
+
+fun addAlbumToUser(user: User, activity: Activity, album:Album){
+    Thread {
+        try {
+            createAlbumsServer(user.username!!,SessionSingleton.sessionToken!!,album)
+            } catch (e: Exception) {
+        }
+    }.start()
+}
+
+fun addSongToUser(user: User, activity: Activity, song: Song){
+    Thread {
+        try {
+            addSongToUserServer(user.username!!,song)
+        } catch (e: Exception) {
         }
     }.start()
 }

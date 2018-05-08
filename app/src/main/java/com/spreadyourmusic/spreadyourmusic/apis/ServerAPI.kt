@@ -1,16 +1,64 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
 import com.spreadyourmusic.spreadyourmusic.models.*
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import com.amazonaws.ClientConfiguration
+import com.amazonaws.Protocol
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.util.StringUtils;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 /**
  * Created by abel on 8/03/18.
  */
 
+
+/*'use strict';
+TODO(Revisar este código)
+var url = require('url');
+var target = 'http://www.yourwebsite.com'; // Change this one
+
+exports.handler = function(event, context, callback) {
+    var urlObject = url.parse(target);
+    var mod = require(
+            urlObject.protocol.substring(0, urlObject.protocol.length - 1)
+    );
+    console.log('[INFO] - Checking ' + target);
+    var req = mod.request(urlObject, function(res) {
+        res.setEncoding('utf8');
+        res.on('data', function(chunk) {
+            console.log('[INFO] - Read body chunk');
+        });
+        res.on('end', function() {
+            console.log('[INFO] - Response end');
+            callback();
+        });
+    });
+
+    req.on('error', function(e) {
+        console.log('[ERROR] - ' + e.message);
+        callback(e);
+    });
+    req.end();
+}; */
+
 /**
  * Devuelve true si se puede acceder al servidor, false en caso contrario
  * Warning: esta operación puede ser costosa en tiempo
  */
+
 fun isServerOnline(): Boolean {
     // TODO:
     return true
@@ -82,6 +130,10 @@ fun obtainSongsFromUserServer(username: String): List<Song> {
         }
     }
     return resultado
+}
+
+fun addSongToUserServer(username: String, song: Song) {
+    ServerEmulator.songList.put(song.id, song)
 }
 
 fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
@@ -347,7 +399,7 @@ fun obtainUpdatedPlaylistsFollowedByUserServer(username: String, sessionToken: S
  * devuelve solamente playlists y si tipo = 3 devuelve solamente autores
  */
 @Throws(Exception::class)
-fun obtainResultForQueryServer(cantidad: Long, query: String, tipo : Int?): List<Recommendation>? {
+fun obtainResultForQueryServer(cantidad: Long, query: String, tipo: Int?): List<Recommendation>? {
 //TODO:
     return ServerEmulator.trends
 }
@@ -421,31 +473,31 @@ fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playl
 }
 
 @Throws(Exception::class)
-fun obtainGeneresServer():List<String>{
+fun obtainGeneresServer(): List<String> {
     //TODO:
     return ServerEmulator.generesList
 }
 
 @Throws(Exception::class)
-fun obtainAlbumsFromUserServer(username: String):List<Album>{
+fun obtainAlbumsFromUserServer(username: String): List<Album> {
     //TODO:
     return ServerEmulator.albumList
 }
 
 
 @Throws(Exception::class)
-fun createAlbumsServer(username: String, sessionToken: String, album: Album){
+fun createAlbumsServer(username: String, sessionToken: String, album: Album) {
     //TODO:
     ServerEmulator.albumList.add(album)
 }
 
 @Throws(Exception::class)
-fun updateAlbumsServer(username: String, sessionToken: String, album: Album){
+fun updateAlbumsServer(username: String, sessionToken: String, album: Album) {
     //TODO:
 }
 
 @Throws(Exception::class)
-fun deleteAlbumsServer(username: String, sessionToken: String, album: Album){
+fun deleteAlbumsServer(username: String, sessionToken: String, album: Album) {
     //TODO:
 }
 

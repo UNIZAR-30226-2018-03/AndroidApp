@@ -21,9 +21,11 @@
     <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
 
     <!-- Upload Song Screen -->
+
     <string name="newSongName">Nombre de la canción</string>
 
     <!-- Home screen -->
+
     <string name="recommendations">Recomendaciones</string>
     <string name="news">Novedades</string>
     <string name="populars">Populares</string>
@@ -33,15 +35,18 @@
     <string name="action_search">Buscar</string>
 
     <!-- Recomendaciones -->
+
     <string name="playlist_updates">Playlists actualizadas</string>
     <string name="new_songs">Canciones nuevas</string>
 
     <!-- Novedades -->
+
     <string name="popular_now">Populares ahora</string>
     <string name="popular_in_my_country">Populares en mi país</string>
     <string name="popular_in_the_world">Populares en el mundo</string>
 
     <!-- Navigation drawer-->
+
     <string name="browse">Explorar</string>
     <string name="my_library">Mi biblioteca</string>
     <string name="playlist">Playlists</string>
@@ -56,38 +61,35 @@
 
 
     <!-- Notificaiton Channel -->
+
     <string name="notification_channel">SYM_Channel_ID</string>
     <string name="notification_channel_description">Channel ID for SYM</string>
 
     <!-- Activity comunication-->
+
     <string name="user_id">UserId</string>
     <string name="playlist_id">PlaylistId</string>
-
     <string name="system_list_id">SystemList</string>
-
     <string name="creator">Creador</string>
     <string name="followers">Seguidores</string>
 
     <!-- Activity User -->
-    <string name="edit">Editar</string>
 
+    <string name="edit">Editar</string>
     <string name="create_playlist">Crear playlist</string>
     <string name="add_song">Añadir canción</string>
-
     <string name="share">Compartir</string>
-
     <string name="confirm">Confirmar</string>
     <string name="cancel">Cancelar</string>
     <string name="delete_account">Eliminar cuenta</string>
     <string name="delete_account_dialog">Esta seguro de que desea eliminar la cuenta. Esta acción es irreversible.</string>
-
     <string name="delete">Eliminar</string>
     <string name="delete_song_dialog">Esta seguro de que desea eliminar la canción. Esta acción es irreversible.</string>
     <string name="delete_playlist_dialog">Esta seguro de que desea eliminar la playlist. Esta acción es irreversible.</string>
-
     <string name="no_lyrics">Sin letra</string>
 
     <!-- Upload songs activity -->
+
     <string name="continuar">Continuar</string>
     <string name="album">Album</string>
     <string name="letras">Letras</string>
@@ -95,7 +97,23 @@
     <string name="audio">Audio</string>
     <string name="genero">Genero</string>
     <string name="crear_alb_m">Crear albúm</string>
-    <string name="new_album_name">New album name</string>
+    <string name="new_album_name">Nombre álbum</string>
     <string name="caratula">Caratula</string>
+    <string name="crear_album">Crear album</string>
+    <string name="seleccione_fichero">Seleccione un fichero válido</string>
+    <string name="guardar">Guardar</string>
+
+    <string name="crear_playlist">Crear Playlist</string>
+    <string name="nueva_playlist">Nueva Playlist</string>
+    <string name="portada">Portada</string>
+    <string name="canciones">Canciones</string>
+
+    <!-- Errores -->
+
+    <string name="error_caratula">"Seleccione una carátula válida"</string>
+    <string name="error_nombre_album">"Seleccione un nombre de álbum válido"</string>
+    <string name="error_fichero">"Seleccione un fichero válido"</string>
+    <string name="error_rellenar">"Rellene todos los campos correctamente"</string>
+    <string name="error_nombre_playlist">"Seleccione un nombre de playlist válido"</string>
 
 </resources>

@@ -13,6 +13,7 @@
     <!-- Necesario para implementar el visualizador de sonido -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -74,7 +75,11 @@
         </service>
 
         <activity android:name=".activities.CreatePlaylistActivity" />
-        <activity android:name=".activities.UploadSongActivity" />
-    </application>
 
+        <activity
+            android:name=".activities.CreateAlbumActivity" />
+        <activity android:name=".activities.UploadSongActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+    </application>
 </manifest>

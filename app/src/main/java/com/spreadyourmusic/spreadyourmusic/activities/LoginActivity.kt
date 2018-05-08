@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -34,6 +35,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        AWSMobileClient.getInstance().initialize(this, AWSStartupHandler() {
+            @Override
+            fun onComplete(awsStartupResult: AWSStartupResult ) {
+                Log.d("YourMainActivity", "AWSMobileClient is instantiated and you are connected to AWS!");
+            }
+        }).execute();
 
         if(isLogin(this)){
             openHomeActivity()
@@ -144,7 +152,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }.start()
 
-        } catch (e: ApiException) {
+        } catch (e: Exception) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             onLoginFailure()
