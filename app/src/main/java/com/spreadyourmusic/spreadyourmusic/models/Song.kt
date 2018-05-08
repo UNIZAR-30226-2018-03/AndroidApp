@@ -1,3 +1,7 @@
+/**
+ * Created by abel
+ * On 7/03/18.
+ */
 package com.spreadyourmusic.spreadyourmusic.models
 
 import android.support.v4.media.MediaBrowserCompat
@@ -6,23 +10,30 @@ import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource
 import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
 
 /**
- * Created by abel
- * On 7/03/18.
+ * Constructor usado cuando se generan datos desde el dispositivo
  */
-// TODO:
-class Song(val id: Long, val name: String, var locationUri: String, val duration: Long, val album: Album, val genere:String?, val lyricsPath:String?) : Recommendation {
-
+class Song(val name: String, var locationUri: String, val album: Album, val genere: String?, val lyricsPath: String?) : Recommendation {
+    var id: Long = 0
     var isDownloaded = false
+    //TODO: El link devuelto ha de ser el que apunta a la misma canción desde la interfaz web
+    override var shareLink: String = "http://SpreadYourMusic/song/"
 
-    private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
+    /**
+     * Constructor usado cuando se obtienen datos desde el back-end
+     */
+    constructor(id: Long, name: String, locationUri: String, album: Album, genere: String?, lyricsPath: String?)
+            : this(name, locationUri, album, genere, lyricsPath) {
+        this.id = id
+    }
+
+    /*private var mMediaMetadataCompat: MediaMetadataCompat = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id.toString())
             .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, locationUri)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album.name)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, album.creator.username)
-            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, album.artLocationUri)
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, name)
-            .build()
+            .build()*/
 
 
     fun getMediaItem(): MediaBrowserCompat.MediaItem {
@@ -30,11 +41,14 @@ class Song(val id: Long, val name: String, var locationUri: String, val duration
     }
 
     fun getMetadata(): MediaMetadataCompat {
-        return mMediaMetadataCompat
-    }
-
-    fun setMetadata(m: MediaMetadataCompat) {
-        mMediaMetadataCompat = m
+        return MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id.toString())
+                .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, locationUri)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album.name)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, album.creator.username)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, album.artLocationUri)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, name)
+                .build()
     }
 
     private fun createMediaItem(metadata: MediaMetadataCompat): MediaBrowserCompat.MediaItem {
@@ -50,10 +64,5 @@ class Song(val id: Long, val name: String, var locationUri: String, val duration
         return MediaBrowserCompat.MediaItem(copy.description,
                 MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
 
-    }
-
-    fun getShareLink(): String{
-        //TODO: El link devuelto ha de ser el que apunta a la misma cancion desde la interfaz web
-        return "https://www.google.es/"
     }
 }

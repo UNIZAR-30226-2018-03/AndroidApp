@@ -45,6 +45,10 @@ public class MusicService extends MediaBrowserServiceCompat implements
     public static final String CMD_PAUSE = "CMD_PAUSE";
     // Delay stopSelf by using a handler.
     private static final int STOP_DELAY = 30000;
+    // A value of a CMD_NAME key in the extras that request the audio session
+    public static final String CMD_AUDIO_SESSION = "CMD_AUDIO_SESSION";
+    // A value of a CMD_NAME key in the extras that request the audio session
+    public static final String CMD_SONG_DURATION = "CMD_SONG_DURATION";
 
     private PlaybackManager mPlaybackManager;
 

@@ -21,10 +21,10 @@ import java.util.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
+import com.spreadyourmusic.spreadyourmusic.controller.isCurrentUserLoggedinOtherSession
 import com.spreadyourmusic.spreadyourmusic.models.User
-import com.amazonaws.mobile.client.AWSMobileClient;
-import com.amazonaws.mobile.client.AWSStartupHandler
-import com.amazonaws.mobile.client.AWSStartupResult
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -85,10 +85,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun openHomeActivity(){
-        val int = Intent(applicationContext, HomeActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(int)
-        finish()
+        isCurrentUserLoggedinOtherSession(this,{
+            SessionSingleton.lastSongListened = it
+            SessionSingleton.isUserDataLoaded = false
+            val int = Intent(applicationContext, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(int)
+            finish()
+        })
     }
 
     private fun openSignupActivity(){
@@ -165,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showProgressDialog() : ProgressDialog{
         // Cambiar mensaje mostrado
-        var progressDialog = ProgressDialog(this,
+        val progressDialog = ProgressDialog(this,
                 R.style.AppTheme_Dialog)
         progressDialog.isIndeterminate = true
         progressDialog.setMessage("Authenticating...")

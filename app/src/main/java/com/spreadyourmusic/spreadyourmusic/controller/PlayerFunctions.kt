@@ -47,10 +47,11 @@ fun isCurrentSongFavorite(activity: Activity, listener: (Boolean) -> Unit){
 fun downloadCurrentSong(state: Boolean, activity: Activity, listener: (Boolean) -> Unit){
     Thread {
         val currentSong = getCurrentSong()
+        val songToDownload = Song(currentSong.id,currentSong.name,currentSong.locationUri,currentSong.album,currentSong.genere,currentSong.lyricsPath)
         val resultado = if(state){
-            saveSongLocal(currentSong,activity)
+            saveSongLocal(songToDownload,activity)
         }else{
-            deleteSongLocal(currentSong,activity)
+            deleteSongLocal(songToDownload,activity)
         }
         activity.runOnUiThread {
             listener(resultado)
@@ -77,4 +78,10 @@ fun randomReproduction(nextState: Boolean) {
 
 fun isRandomReproductionEnabled():Boolean{
     return  MusicQueueManager.getInstance().isRandomReproductionEnable()
+}
+
+fun addReproductionToSong(song: Song){
+    Thread {
+        addReproductionToSongServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,song.id)
+    }.start()
 }

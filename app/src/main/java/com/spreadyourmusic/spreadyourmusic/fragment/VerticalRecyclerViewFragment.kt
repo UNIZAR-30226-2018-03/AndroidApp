@@ -16,14 +16,16 @@ import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 
 class VerticalRecyclerViewFragment : Fragment() {
     private var mClickListener: (Recommendation) -> Unit = {}
+    private var mLongClickListener: (Recommendation, View?) -> Unit = {_,_->}
     private var mValues: List<Recommendation>? = null
+    private lateinit var recyclerViewAdapter:RecomendationsVerticalRecyclerViewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.content_dark_recyclerview, container, false)
 
         val lista = view.findViewById<RecyclerView>(R.id.recyclerView)
-        val recyclerViewAdapter = RecomendationsVerticalRecyclerViewAdapter(context)
+        recyclerViewAdapter = RecomendationsVerticalRecyclerViewAdapter(context)
 
         lista.adapter = recyclerViewAdapter
         lista.setHasFixedSize(true)
@@ -32,6 +34,7 @@ class VerticalRecyclerViewFragment : Fragment() {
         lista.itemAnimator = DefaultItemAnimator()
 
         recyclerViewAdapter.setOnClickListener(mClickListener)
+        recyclerViewAdapter.setOnLongClickListener(mLongClickListener)
 
         recyclerViewAdapter.changeData(mValues!!)
 
@@ -39,9 +42,21 @@ class VerticalRecyclerViewFragment : Fragment() {
         return view
     }
 
+    fun changeData(values: List<Recommendation>?){
+        recyclerViewAdapter.changeData(values!!)
+    }
+
     companion object {
         fun newInstance(mmClickListener: (Recommendation) -> Unit, mmValues: List<Recommendation>): VerticalRecyclerViewFragment {
             val fragment = VerticalRecyclerViewFragment()
+            fragment.mClickListener = mmClickListener
+            fragment.mValues = mmValues
+            return fragment
+        }
+
+        fun newInstance(mmClickListener: (Recommendation) -> Unit, mmLongClickListener: (Recommendation, View?) -> Unit, mmValues: List<Recommendation>): VerticalRecyclerViewFragment {
+            val fragment = VerticalRecyclerViewFragment()
+            fragment.mLongClickListener = mmLongClickListener
             fragment.mClickListener = mmClickListener
             fragment.mValues = mmValues
             return fragment
