@@ -1,58 +1,11 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
 import com.spreadyourmusic.spreadyourmusic.models.*
-import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import com.amazonaws.ClientConfiguration
-import com.amazonaws.Protocol
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.util.StringUtils;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 /**
  * Created by abel on 8/03/18.
  */
-
-
-/*'use strict';
-TODO(Revisar este código)
-var url = require('url');
-var target = 'http://www.yourwebsite.com'; // Change this one
-
-exports.handler = function(event, context, callback) {
-    var urlObject = url.parse(target);
-    var mod = require(
-            urlObject.protocol.substring(0, urlObject.protocol.length - 1)
-    );
-    console.log('[INFO] - Checking ' + target);
-    var req = mod.request(urlObject, function(res) {
-        res.setEncoding('utf8');
-        res.on('data', function(chunk) {
-            console.log('[INFO] - Read body chunk');
-        });
-        res.on('end', function() {
-            console.log('[INFO] - Response end');
-            callback();
-        });
-    });
-
-    req.on('error', function(e) {
-        console.log('[ERROR] - ' + e.message);
-        callback(e);
-    });
-    req.end();
-}; */
 
 /**
  * Devuelve true si se puede acceder al servidor, false en caso contrario

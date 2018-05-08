@@ -116,4 +116,7 @@
     <string name="error_rellenar">"Rellene todos los campos correctamente"</string>
     <string name="error_nombre_playlist">"Seleccione un nombre de playlist válido"</string>
 
+    <string name="campos_obligatorios_1">Los campos username, password y la foto de usuario son obligatorios</string>
+    <string name="campos_obligatorios_2">El campo nombre es obligatorio</string>
+
 </resources>

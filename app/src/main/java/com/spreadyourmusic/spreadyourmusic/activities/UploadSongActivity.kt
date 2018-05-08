@@ -20,7 +20,6 @@ import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_upload_song.*
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -69,6 +68,7 @@ class UploadSongActivity : AppCompatActivity() {
                 }
 
             }
+
             override fun onNothingSelected(parentView: AdapterView<*>) {
                 selectedAlbum = null
                 findViewById<Button>(R.id.continueButton).text = resources.getString(R.string.continuar)
@@ -96,21 +96,21 @@ class UploadSongActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) {
             onSelectFailure()
-            seleccionarFichero=true
+            seleccionarFichero = true
         } else if (requestCode == selectSong && resultCode == RESULT_OK) {
             pathCancion = data!!.getData().toString()
-            if(!fileExtension(pathCancion!!).equals("mp3") && !fileExtension(pathCancion!!).equals("ogg") && !fileExtension(pathCancion!!).equals("wav") ) {
-                pathCancion=null
+            if (!fileExtension(pathCancion!!).equals("mp3") && !fileExtension(pathCancion!!).equals("ogg") && !fileExtension(pathCancion!!).equals("wav")) {
+                pathCancion = null
                 onSelectFailure()
             }
             seleccionarFichero = true
         } else if (requestCode == selectLyrics && resultCode == RESULT_OK) {
             pathLyrics = data!!.getData().toString()
-            if(!fileExtension(pathLyrics!!).equals("str")){
-                pathLyrics=null
+            if (!fileExtension(pathLyrics!!).equals("str")) {
+                pathLyrics = null
                 onSelectFailure()
             }
-            seleccionarFichero=true
+            seleccionarFichero = true
         }
     }
 
@@ -132,7 +132,7 @@ class UploadSongActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(!seleccionarFichero) {
+        if (!seleccionarFichero) {
             obtainCurrentUserData({
                 obtainAlbumsFromUser(it!!, this, {
                     albums = it
@@ -147,7 +147,7 @@ class UploadSongActivity : AppCompatActivity() {
                 })
             }, this)
         }
-        seleccionarFichero=false
+        seleccionarFichero = false
     }
 
     private fun onSelectFailure() {
@@ -158,7 +158,7 @@ class UploadSongActivity : AppCompatActivity() {
         obtainCurrentUserData({
             val songname: String = newSongName.text.toString()
             val current: String = Calendar.getInstance().time.toString()
-            val newSong = Song(0, songname, pathCancion!!, 360  , selectedAlbum!!, selectedGenere!!, pathLyrics)
+            val newSong = Song(songname, pathCancion!!, selectedAlbum!!, selectedGenere!!, pathLyrics)
             addSongToUser(it!!, this, newSong)
         }, this)
     }
