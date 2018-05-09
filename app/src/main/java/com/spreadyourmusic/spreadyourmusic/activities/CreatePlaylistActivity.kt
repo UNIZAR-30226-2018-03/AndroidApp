@@ -1,72 +1,114 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
-import android.widget.Button
-import android.widget.Toast
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
+import android.support.v7.widget.Toolbar
+import android.view.Menu
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.controller.obtainCurrentUserData
-import com.spreadyourmusic.spreadyourmusic.models.Playlist
-import kotlinx.android.synthetic.main.activity_create_playlist.*
-import java.util.*
+import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsVerticalRecyclerViewAdapter
+import com.spreadyourmusic.spreadyourmusic.controller.obtainSongsFromQuery
+import com.spreadyourmusic.spreadyourmusic.models.Song
+import kotlinx.android.synthetic.main.content_create_playlist.*
+import kotlin.collections.ArrayList
 
 class CreatePlaylistActivity : AppCompatActivity() {
     var pathPortada: String? = null
     val selectPortada: Int = 455
+
+    private lateinit var recyclerViewAdapterSelected: RecomendationsVerticalRecyclerViewAdapter
+    private lateinit var recyclerViewAdapterBrowsed: RecomendationsVerticalRecyclerViewAdapter
+
+    private var selectedList: ArrayList<Song> = ArrayList()
+
+    private var browsedList: ArrayList<Song> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_playlist)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
-        val seleccionarPortada = findViewById<Button>(R.id.pathSelector)
-        seleccionarPortada.setOnClickListener {
-            val intent = Intent()
-                    .setType("*/*")
-                    .setAction(Intent.ACTION_GET_CONTENT)
-            startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectPortada)
+        toolbar.setTitle(R.string.create_playlist)
+        setSupportActionBar(toolbar)
+
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
         }
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != RESULT_OK) {
-            onSelectFailure()
-        } else if (requestCode == selectPortada && resultCode == RESULT_OK) {
-            pathPortada= data!!.getData().toString()
-            if(!fileExtension(pathPortada!!).equals("jpg") && !fileExtension(pathPortada!!).equals("png") && !fileExtension(pathPortada!!).equals("jpge") ) {
-                pathPortada=null
-                onSelectFailure()
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        recyclerViewAdapterSelected = RecomendationsVerticalRecyclerViewAdapter(this)
+
+        selectedRecyclerView.adapter = recyclerViewAdapterSelected
+        selectedRecyclerView.setHasFixedSize(true)
+
+        selectedRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        selectedRecyclerView.itemAnimator = DefaultItemAnimator()
+
+
+        recyclerViewAdapterBrowsed = RecomendationsVerticalRecyclerViewAdapter(this)
+
+        browsedRecyclerView.adapter = recyclerViewAdapterBrowsed
+        browsedRecyclerView.setHasFixedSize(true)
+
+        browsedRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        browsedRecyclerView.itemAnimator = DefaultItemAnimator()
+
+
+        recyclerViewAdapterSelected.setOnClickListener({ orgSong ->
+            if (orgSong is Song) {
+                selectedList.removeAll({
+                    orgSong.id == it.id
+                })
+                recyclerViewAdapterSelected.changeData(selectedList)
             }
-        }
+        })
+
+        recyclerViewAdapterBrowsed.setOnClickListener({ orgSong ->
+            if (orgSong is Song) {
+                val notContains = selectedList.all {
+                    it.id != orgSong.id
+                }
+                if (notContains) {
+                    selectedList.add(orgSong)
+                    recyclerViewAdapterSelected.changeData(selectedList)
+                }
+            }
+        })
     }
 
-    fun fileExtension(file: String): String {
-        val extension: String? = file.substring(file.lastIndexOf(".") + 1, file.length)
-        return extension!!
-    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val mInflater = menuInflater
+        mInflater.inflate(R.menu.menu_home, menu)
 
+        if (menu != null) {
+            val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query != null) {
+                        obtainSongsFromQuery(query, this@CreatePlaylistActivity, {
+                            browsedList.clear()
+                            if (it != null) {
+                                for (i in it) {
+                                    if (i is Song) {
+                                        browsedList.add(i)
+                                    }
+                                }
+                                recyclerViewAdapterBrowsed.changeData(browsedList)
+                            }
+                        })
+                    }
+                    return true
+                }
 
-    private fun onSelectFailure() {
-        Toast.makeText(applicationContext, R.string.error_fichero, Toast.LENGTH_SHORT).show()
-    }
-
-    fun onContinueClick(v: View) {
-        val playlistName: String = newPlaylistName.text.toString().trim()
-        val current: Calendar = Calendar.getInstance()
-        if(pathPortada==null) {
-            Toast.makeText(this,R.string.error_caratula,Toast.LENGTH_LONG).show()
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return true
+                }
+            })
         }
-        else if(playlistName.equals("")){
-            Toast.makeText(this,R.string.error_nombre_playlist,Toast.LENGTH_LONG).show()
-        }
-        else{
-            obtainCurrentUserData({
-                val newPlaylist = Playlist(0,playlistName,it!!,pathPortada!!,TODO())
-            }, this)
-            //TODO(La parte del Pini)
-            finish()
-        }
+        return super.onCreateOptionsMenu(menu)
     }
 }
 
