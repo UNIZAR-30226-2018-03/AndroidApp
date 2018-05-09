@@ -119,6 +119,7 @@
     <string name="campos_obligatorios_2">El campo nombre es obligatorio</string>
 
     <string name="campos_obligatorios_3">Los campos nombre, álbum, genero y audio son obligatorios </string>
+    <string name="campos_obligatorios_4">Los campos caratula y nombre son obligatorios. La playlist ha de poseer al menos un elemento</string>
 
     <string name="create">Crear</string>
 
@@ -127,4 +128,7 @@
     <string name="album_name">AlbumName</string>
 
     <string name="upload_song">Subir canción</string>
+
+    <string name="browser">Buscador</string>
+    <string name="selected">Seleccionadas</string>
 </resources>

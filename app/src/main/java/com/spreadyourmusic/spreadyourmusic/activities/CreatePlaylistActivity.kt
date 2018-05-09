@@ -1,17 +1,24 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
 import android.view.Menu
+import android.view.View
+import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsVerticalRecyclerViewAdapter
+import com.spreadyourmusic.spreadyourmusic.controller.createPlaylist
+import com.spreadyourmusic.spreadyourmusic.controller.obtainCurrentUserData
 import com.spreadyourmusic.spreadyourmusic.controller.obtainSongsFromQuery
+import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import kotlinx.android.synthetic.main.content_create_playlist.*
+import kotlinx.android.synthetic.main.activity_create_playlist.*
 import kotlin.collections.ArrayList
 
 class CreatePlaylistActivity : AppCompatActivity() {
@@ -28,7 +35,6 @@ class CreatePlaylistActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_playlist)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
         toolbar.setTitle(R.string.create_playlist)
         setSupportActionBar(toolbar)
@@ -109,6 +115,51 @@ class CreatePlaylistActivity : AppCompatActivity() {
             })
         }
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != RESULT_OK) {
+            onSelectFailure()
+        } else if (requestCode == selectPortada) {
+            val uriImage = data!!.data
+            pathPortada = uriImage!!.path
+
+            if (pathPortada != null) {
+                Glide.with(this).load(uriImage).into(foto_perfil)
+            }
+        }
+    }
+
+    private fun onSelectFailure() {
+        Toast.makeText(applicationContext, R.string.error_fichero, Toast.LENGTH_SHORT).show()
+    }
+
+    fun onPictureClick(v: View) {
+        val intent = Intent()
+                .setType("image/*")
+                .setAction(Intent.ACTION_GET_CONTENT)
+        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectPortada)
+    }
+
+    fun onCreateClick(v: View) {
+        val nombre = newPlaylistName.text.toString().trim()
+        if (pathPortada.isNullOrEmpty() || nombre.isEmpty() || selectedList.size == 0) {
+            Toast.makeText(applicationContext, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.campos_obligatorios_4, Toast.LENGTH_SHORT).show()
+        } else {
+            obtainCurrentUserData({
+                val newPlaylist = Playlist(nombre, it!!, pathPortada!!, selectedList)
+                createPlaylist( newPlaylist, this, { error, _ ->
+                    if (error != null) {
+                        Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+                    } else {
+                        finish()
+                    }
+                })
+            }, this)
+
+        }
     }
 }
 
