@@ -440,7 +440,7 @@ fun obtainAlbumsFromUserServer(username: String): List<Album> {
 
 @Throws(Exception::class)
 fun createAlbumsServer(username: String, sessionToken: String, album: Album) {
-    //TODO:
+    //TODO: Aqui se hace ka parte de subir la imagen a los servers de Pini
     ServerEmulator.albumList.add(album)
 }
 

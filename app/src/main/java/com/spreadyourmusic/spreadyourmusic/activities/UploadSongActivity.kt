@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import com.spreadyourmusic.spreadyourmusic.R
 import android.content.Intent
 import android.net.Uri
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import com.google.android.gms.common.api.ApiException
@@ -37,6 +40,11 @@ class UploadSongActivity : AppCompatActivity() {
     val selectSong: Int = 355
     val selectLyrics: Int = 356
     var seleccionarFichero: Boolean = false
+
+    var setAlbum = false
+
+    private val NO_CATEGORY_ID = Menu.FIRST
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activity_upload_song)
@@ -162,4 +170,52 @@ class UploadSongActivity : AppCompatActivity() {
             addSongToUser(it!!, this, newSong)
         }, this)
     }
+
+    fun selectGenre(v: View) {
+        setAlbum = false
+    }
+
+    fun selectAlbum(v: View) {
+        setAlbum = true
+
+    }
+
+    fun selectLyrics(v: View) {
+
+    }
+
+    fun selectAudio(v: View) {}
+
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        if (setAlbum) {
+            menu!!.add(Menu.NONE, NO_CATEGORY_ID, Menu.NONE, R.string.create_album)
+            if (albums != null) {
+                for (i in 1..albums!!.size) {
+                    val value = albums!!.get(i)
+                    menu.add(Menu.NONE, NO_CATEGORY_ID + i, Menu.NONE, value.name)
+                }
+            }
+        } else {
+            if (generos != null) {
+                for (i in 1..generos!!.size) {
+                    val value = generos!!.get(i)
+                    menu!!.add(Menu.NONE, NO_CATEGORY_ID + i, Menu.NONE, value)
+                }
+            }
+        }
+
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        return if (item != null && item.itemId == R.id.delete_item && itemSelectedToDelete != null) {
+            when (itemSelectedToDelete) {
+                is Song -> onDeleteSong(itemSelectedToDelete!! as Song)
+                is Playlist -> onDeletePlaylist(itemSelectedToDelete!! as Playlist)
+            }
+            true
+        } else
+            super.onContextItemSelected(item)
+    }
+
 }

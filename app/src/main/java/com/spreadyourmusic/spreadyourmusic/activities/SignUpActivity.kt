@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.activity_sign_up_screen_1.*
 import kotlinx.android.synthetic.main.activity_sign_up_screen_2.*
 import java.util.*
 import android.net.Uri
-import android.widget.DatePicker
 import android.app.DatePickerDialog
+import com.spreadyourmusic.spreadyourmusic.controller.obtainUserFromID
 import com.spreadyourmusic.spreadyourmusic.fragment.DatePickerFragment
 
 
@@ -29,6 +29,8 @@ class SignUpActivity : AppCompatActivity() {
     var userFacebookAccount: String? = null
     var userPictureLocationUri: String? = null
 
+    var userId: String? = null
+
     var uriImage: Uri? = null
 
     var selectPictureCode: Int = 567
@@ -37,11 +39,28 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up_screen_1)
 
-        val userId = intent.getStringExtra(resources.getString(R.string.user_id))
+        userId = intent.getStringExtra(resources.getString(R.string.user_id))
         if (userId != null) {
             idEditActivity = true
-            // TODO: En el caso de que se reciba un usuario rellenar los datos porque es edición
+            obtainUserFromID(userId!!, this, {
+                if (it != null) {
+                    username = it.username
+                    realname = it.name
+                    password = it.password
+                    mail = it.email
+                    userBirth = it.birthDate
+                    userTwitterAccount = it.twitterAccount
+                    userInstagramAccount = it.instagramAccount
+                    userFacebookAccount = it.facebookAccount
+                    userPictureLocationUri = it.pictureLocationUri
 
+                    realname = nameEditText.text.toString().trim()
+                    userFacebookAccount = facebookAccountEditText.text.toString().trim()
+                    userTwitterAccount = twitterAccountEditText.text.toString().trim()
+                    userInstagramAccount = instagramAccountEditText.text.toString().trim()
+                }
+
+            })
         }
     }
 
@@ -57,6 +76,18 @@ class SignUpActivity : AppCompatActivity() {
         } else {
             numOfScreen = 2
             setContentView(R.layout.activity_sign_up_screen_2)
+
+            // TODO : ERROR esto no se realiza por algun motivo
+            nameEditText.setText(realname)
+
+            if (userBirth != null) {
+                val selectedDate = userBirth!!.day.toString() + " / " + (userBirth!!.month + 1).toString() + " / " + userBirth!!.year.toString()
+                birthDateEditText.setText(selectedDate)
+            }
+
+            twitterAccountEditText.setText(userTwitterAccount)
+            instagramAccountEditText.setText(userInstagramAccount)
+            facebookAccountEditText.setText(userFacebookAccount)
         }
     }
 
@@ -77,15 +108,16 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (numOfScreen == 2) {
+            numOfScreen = 1
+            setContentView(R.layout.activity_sign_up_screen_1)
+
+            // TODO : ERROR esto no se realiza por algun motivo
             usernameEditText.setText(username)
             passwordEditText.setText(password)
             mailEditText.setText(mail)
             if (userPictureLocationUri != null) {
                 Glide.with(this).load(uriImage).into(foto_perfil)
             }
-
-            numOfScreen = 1
-            setContentView(R.layout.activity_sign_up_screen_1)
         } else {
             super.onBackPressed()
         }
