@@ -12,8 +12,12 @@ import kotlinx.android.synthetic.main.activity_sign_up_screen_2.*
 import java.util.*
 import android.net.Uri
 import android.app.DatePickerDialog
+import com.spreadyourmusic.spreadyourmusic.controller.doSignUp
+import com.spreadyourmusic.spreadyourmusic.controller.isCurrentUserLoggedinOtherSession
 import com.spreadyourmusic.spreadyourmusic.controller.obtainUserFromID
 import com.spreadyourmusic.spreadyourmusic.fragment.DatePickerFragment
+import com.spreadyourmusic.spreadyourmusic.models.User
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -101,7 +105,24 @@ class SignUpActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, R.string.campos_obligatorios_1, Toast.LENGTH_SHORT).show()
 
         } else {
-            // TODO: Crear usuario
+            val user = User(username!!, password!!, realname!!, userPictureLocationUri!!, mail, null, userBirth)
+            user.twitterAccount = userTwitterAccount
+            user.facebookAccount = userFacebookAccount
+            user.instagramAccount = userInstagramAccount
+            doSignUp(user, this, {
+                if (it.isNullOrEmpty()) {
+                    Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                } else {
+                    isCurrentUserLoggedinOtherSession(this, {
+                        SessionSingleton.lastSongListened = it
+                        SessionSingleton.isUserDataLoaded = false
+                        val int = Intent(applicationContext, HomeActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(int)
+                        finish()
+                    })
+                }
+            })
         }
 
     }

@@ -12,7 +12,6 @@ import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.controller.createAlbum
 import com.spreadyourmusic.spreadyourmusic.controller.obtainCurrentUserData
 import com.spreadyourmusic.spreadyourmusic.models.Album
-import kotlinx.android.synthetic.main.activity_sign_up_screen_1.*
 import kotlinx.android.synthetic.main.content_create_album.*
 import java.util.*
 
@@ -32,6 +31,8 @@ class CreateAlbumActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
+
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     fun onProfilePictureClick(v: View) {
@@ -49,7 +50,7 @@ class CreateAlbumActivity : AppCompatActivity() {
         } else if (requestCode == selectPictureCode) {
             uriImage = data!!.data
             if (uriImage != null && uriImage!!.path != null) {
-                Glide.with(this).load(uriImage).into(foto_perfil)
+                Glide.with(this).load(uriImage).into(caratulaImageView)
             }
         }
     }
@@ -68,11 +69,16 @@ class CreateAlbumActivity : AppCompatActivity() {
         } else {
             obtainCurrentUserData({
                 val newAlbum = Album(albumName, it!!, current, uriImage!!.path)
-                createAlbum(newAlbum, this, {
-                    if (!it.isNullOrEmpty()) {
-                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-                    } else
+                createAlbum(newAlbum, this, { error, idAlbum ->
+                    if (!error.isNullOrEmpty()) {
+                        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                    } else{
+                        val passIntent = Intent()
+                        passIntent.putExtra(resources.getString(R.string.album_id),idAlbum)
+                        passIntent.putExtra(resources.getString(R.string.album_name), albumName)
+                        setResult(RESULT_OK, passIntent)
                         finish()
+                    }
                 })
             }, this)
         }

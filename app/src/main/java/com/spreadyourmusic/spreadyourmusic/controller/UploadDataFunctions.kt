@@ -10,14 +10,20 @@ import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
 // listener devuelve string nulo si la creacion es correcta, en caso de que string no sea
 // nulo, se almacena en el el error
-fun createAlbum(album: Album, activity: Activity, listener: (String?) -> Unit) {
+fun createAlbum(album: Album, activity: Activity, listener: (String?, Long) -> Unit) {
     Thread {
-        try {
-            createAlbumsServer(album.creator.username, SessionSingleton.sessionToken!!, album)
-            listener(null)
+        var id: Long
+        val resultado = try {
+            id = createAlbumsServer(album.creator.username, SessionSingleton.sessionToken!!, album)
+            null
         } catch (e: Exception) {
-            listener(e.message)
+            id = 0L
+            e.message
         }
+        activity.runOnUiThread {
+            listener(resultado, id)
+        }
+
     }.start()
 }
 
@@ -25,11 +31,14 @@ fun createAlbum(album: Album, activity: Activity, listener: (String?) -> Unit) {
 // nulo, se almacena en el el error
 fun createSong(user: User, song: Song, activity: Activity, listener: (String?) -> Unit) {
     Thread {
-        try {
+        val resultado = try {
             addSongToUserServer(user.username, song)
-            listener(null)
+            null
         } catch (e: Exception) {
-            listener(e.message)
+            e.message
+        }
+        activity.runOnUiThread {
+            listener(resultado)
         }
     }.start()
 }

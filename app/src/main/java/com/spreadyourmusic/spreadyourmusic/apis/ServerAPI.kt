@@ -275,13 +275,21 @@ fun obtainPlaylistDataServer(id: Long): Playlist? {
     return ServerEmulator.playlistList[id]
 }
 
+/**
+ * Devuelve el id e la cancion creada
+ * Atención: El id lo ha de devolver la llamada al servidor, el id del parametro song siempre tendra un valor indefinido
+ */
 @Throws(Exception::class)
-fun uploadSongServer(username: String, sessionToken: String, song: Song){
+fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
+    val id = ServerEmulator.songList.size + 30
+    song.id = id.toLong()
+    ServerEmulator.songList[song.id] = song
+    return song.id
 //TODO:
 }
 
 @Throws(Exception::class)
-fun deleteSongServer(username: String, sessionToken: String, song: Song){
+fun deleteSongServer(username: String, sessionToken: String, song: Song) {
     ServerEmulator.songList.remove(song.id)
 //TODO:
 }
@@ -389,30 +397,31 @@ fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? 
  * Crea una lista en el servidor
  */
 @Throws(Exception::class)
-fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist): Long {
 //TODO:
     val position = ServerEmulator.playlistList.size + 4
     playlist.id = position.toLong()
     ServerEmulator.playlistList[playlist.id!!] = playlist
+    return playlist.id!!
 }
 
 /**
  * Elimina una lista en el servidor
  */
 @Throws(Exception::class)
-fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
+fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
 //TODO:
-    if(ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)){
+    if (ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)) {
         ServerEmulator.playlistList.remove(playlist.id)
-        for (i in ServerEmulator.playlistSeguidos.values){
-            for (j in i){
-                if(j.id == playlist.id){
+        for (i in ServerEmulator.playlistSeguidos.values) {
+            for (j in i) {
+                if (j.id == playlist.id) {
                     i.remove(j)
                     break
                 }
             }
         }
-    }else{
+    } else {
         throw Exception("Error")
     }
 }
@@ -421,7 +430,7 @@ fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playl
  * Actualiza una lista en el servidor
  */
 @Throws(Exception::class)
-fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
+fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
 //TODO:
 }
 
@@ -438,10 +447,23 @@ fun obtainAlbumsFromUserServer(username: String): List<Album> {
 }
 
 
+/**
+ * Obtiene la información asociada a la playlist con id @id
+ * Warning: esta operación puede ser costosa en tiempo
+ */
 @Throws(Exception::class)
-fun createAlbumsServer(username: String, sessionToken: String, album: Album) {
+fun obtainAlbumDataServer(id: Long): Album? {
+    //TODO:
+    return ServerEmulator.albumList[id.toInt()]
+}
+
+@Throws(Exception::class)
+fun createAlbumsServer(username: String, sessionToken: String, album: Album): Long {
     //TODO: Aqui se hace ka parte de subir la imagen a los servers de Pini
+    val albumid = ServerEmulator.albumList.size
+    album.id = albumid.toLong()
     ServerEmulator.albumList.add(album)
+    return album.id!!
 }
 
 @Throws(Exception::class)

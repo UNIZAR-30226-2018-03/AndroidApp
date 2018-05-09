@@ -118,5 +118,13 @@
     <string name="campos_obligatorios_1">Los campos username, password y la foto de usuario son obligatorios</string>
     <string name="campos_obligatorios_2">El campo nombre es obligatorio</string>
 
+    <string name="campos_obligatorios_3">Los campos nombre, álbum, genero y audio son obligatorios </string>
+
     <string name="create">Crear</string>
+
+
+    <string name="album_id">AlbumID</string>
+    <string name="album_name">AlbumName</string>
+
+    <string name="upload_song">Subir canción</string>
 </resources>
