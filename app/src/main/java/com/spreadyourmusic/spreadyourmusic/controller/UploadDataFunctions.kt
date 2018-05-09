@@ -3,6 +3,7 @@ package com.spreadyourmusic.spreadyourmusic.controller
 import android.app.Activity
 import com.spreadyourmusic.spreadyourmusic.apis.addSongToUserServer
 import com.spreadyourmusic.spreadyourmusic.apis.createAlbumsServer
+import com.spreadyourmusic.spreadyourmusic.apis.doUpdateAccountServer
 import com.spreadyourmusic.spreadyourmusic.models.Album
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
@@ -33,6 +34,20 @@ fun createSong(user: User, song: Song, activity: Activity, listener: (String?) -
     Thread {
         val resultado = try {
             addSongToUserServer(user.username, song)
+            null
+        } catch (e: Exception) {
+            e.message
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
+}
+
+fun updateUserData(user: User, activity: Activity, listener: (String?) -> Unit){
+    Thread {
+        val resultado = try {
+            doUpdateAccountServer(user, SessionSingleton.sessionToken!!)
             null
         } catch (e: Exception) {
             e.message

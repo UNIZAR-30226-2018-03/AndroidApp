@@ -46,10 +46,18 @@ fun doSignUpServer(user: User): String {
  * Elimina cuenta servidor
  */
 @Throws(Exception::class)
-fun doDeleteAccountServer(user: String, sessionToken: String): Boolean {
+fun doDeleteAccountServer(user: String, sessionToken: String){
     //TODO:
     Thread.sleep(300)
-    return true
+}
+
+/**
+ * Elimina cuenta servidor
+ */
+@Throws(Exception::class)
+fun doUpdateAccountServer(user: User, sessionToken: String){
+    //TODO:
+    Thread.sleep(300)
 }
 
 /**
