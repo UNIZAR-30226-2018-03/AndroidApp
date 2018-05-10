@@ -1,10 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
-import com.spreadyourmusic.spreadyourmusic.apis.addSongToUserServer
-import com.spreadyourmusic.spreadyourmusic.apis.createAlbumsServer
-import com.spreadyourmusic.spreadyourmusic.apis.createPlaylistServer
-import com.spreadyourmusic.spreadyourmusic.apis.doUpdateAccountServer
+import com.spreadyourmusic.spreadyourmusic.apis.*
 import com.spreadyourmusic.spreadyourmusic.models.Album
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
@@ -44,6 +41,23 @@ fun createPlaylist(playlist: Playlist, activity: Activity, listener: (String?, L
         }
         activity.runOnUiThread {
             listener(resultado, id)
+        }
+
+    }.start()
+}
+
+// listener devuelve string nulo si la creacion es correcta, en caso de que string no sea
+// nulo, se almacena en el el error
+fun updatePlaylist(playlist: Playlist, activity: Activity, listener: (String?) -> Unit) {
+    Thread {
+        val resultado = try {
+            updatePlaylistServer(playlist.creator.username, SessionSingleton.sessionToken!!, playlist)
+            null
+        } catch (e: Exception) {
+            e.message
+        }
+        activity.runOnUiThread {
+            listener(resultado)
         }
 
     }.start()

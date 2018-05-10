@@ -55,12 +55,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.spreadyourmusic.spreadyourmusic.soundvisualizer.CircleSoundVisualizer
+        <com.spreadyourmusic.spreadyourmusic.view.soundvisualizer.CircleSoundVisualizer
             android:id="@+id/visualizer"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
+        <com.spreadyourmusic.spreadyourmusic.view.circularprogressbar.CircularMusicProgressBar
             android:id="@+id/album_art"
             android:layout_width="196dp"
             android:layout_height="196dp"

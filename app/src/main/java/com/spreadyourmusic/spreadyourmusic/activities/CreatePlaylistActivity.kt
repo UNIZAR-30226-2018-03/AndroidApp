@@ -12,9 +12,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsVerticalRecyclerViewAdapter
-import com.spreadyourmusic.spreadyourmusic.controller.createPlaylist
-import com.spreadyourmusic.spreadyourmusic.controller.obtainCurrentUserData
-import com.spreadyourmusic.spreadyourmusic.controller.obtainSongsFromQuery
+import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.helpers.getPathFromUri
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
@@ -23,8 +21,8 @@ import kotlinx.android.synthetic.main.activity_create_playlist.*
 import kotlin.collections.ArrayList
 
 class CreatePlaylistActivity : AppCompatActivity() {
-    var pathPortada: String? = null
-    val selectPortada: Int = 455
+    private var pathCover: String? = null
+    private val selectPortada: Int = 455
 
     private lateinit var recyclerViewAdapterSelected: RecomendationsVerticalRecyclerViewAdapter
     private lateinit var recyclerViewAdapterBrowsed: RecomendationsVerticalRecyclerViewAdapter
@@ -33,11 +31,21 @@ class CreatePlaylistActivity : AppCompatActivity() {
 
     private var browsedList: ArrayList<Song> = ArrayList()
 
+    private var playlistId = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_playlist)
 
-        toolbar.setTitle(R.string.create_playlist)
+        playlistId = intent.getLongExtra(resources.getString(R.string.playlist_id), 0)
+
+        if (playlistId != 0L){
+            toolbar.setTitle(R.string.update_playlist)
+            createButton.setText(R.string.update)
+        }
+        else
+            toolbar.setTitle(R.string.create_playlist)
+
         setSupportActionBar(toolbar)
 
         toolbar.setNavigationOnClickListener {
@@ -48,20 +56,20 @@ class CreatePlaylistActivity : AppCompatActivity() {
 
         recyclerViewAdapterSelected = RecomendationsVerticalRecyclerViewAdapter(this)
 
-        selectedRecyclerView.adapter = recyclerViewAdapterSelected
-        selectedRecyclerView.setHasFixedSize(true)
+        selectedSongsRecyclerView.adapter = recyclerViewAdapterSelected
+        selectedSongsRecyclerView.setHasFixedSize(true)
 
-        selectedRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        selectedRecyclerView.itemAnimator = DefaultItemAnimator()
+        selectedSongsRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        selectedSongsRecyclerView.itemAnimator = DefaultItemAnimator()
 
 
         recyclerViewAdapterBrowsed = RecomendationsVerticalRecyclerViewAdapter(this)
 
-        browsedRecyclerView.adapter = recyclerViewAdapterBrowsed
-        browsedRecyclerView.setHasFixedSize(true)
+        browsedSongsRecyclerView.adapter = recyclerViewAdapterBrowsed
+        browsedSongsRecyclerView.setHasFixedSize(true)
 
-        browsedRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        browsedRecyclerView.itemAnimator = DefaultItemAnimator()
+        browsedSongsRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        browsedSongsRecyclerView.itemAnimator = DefaultItemAnimator()
 
 
         recyclerViewAdapterSelected.setOnClickListener({ orgSong ->
@@ -84,6 +92,21 @@ class CreatePlaylistActivity : AppCompatActivity() {
                 }
             }
         })
+
+        if (playlistId != 0L) {
+            obtainPlaylistFromID(playlistId, this, {
+                if (it != null) {
+                    pathCover = it.artLocationUri
+                    if (pathCover != null)
+                        Glide.with(this).load(pathCover).into(foto_perfil)
+                    nameEditText.setText(it.name)
+                    for (i in it.content) {
+                        selectedList.add(i)
+                    }
+                    recyclerViewAdapterSelected.changeData(selectedList)
+                }
+            })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -123,10 +146,10 @@ class CreatePlaylistActivity : AppCompatActivity() {
         if (resultCode != RESULT_OK) {
             onSelectFailure()
         } else if (requestCode == selectPortada) {
-            pathPortada = getPathFromUri(this,data!!.data)
+            pathCover = getPathFromUri(this, data!!.data)
 
-            if (pathPortada != null) {
-                Glide.with(this).load(pathPortada).into(foto_perfil)
+            if (pathCover != null) {
+                Glide.with(this).load(pathCover).into(foto_perfil)
             }
         }
     }
@@ -143,20 +166,31 @@ class CreatePlaylistActivity : AppCompatActivity() {
     }
 
     fun onCreateClick(v: View) {
-        val nombre = newPlaylistName.text.toString().trim()
-        if (pathPortada.isNullOrEmpty() || nombre.isEmpty() || selectedList.size == 0) {
+        val nombre = nameEditText.text.toString().trim()
+        if (pathCover.isNullOrEmpty() || nombre.isEmpty() || selectedList.size == 0) {
             Toast.makeText(applicationContext, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
             Toast.makeText(applicationContext, R.string.campos_obligatorios_4, Toast.LENGTH_SHORT).show()
         } else {
             obtainCurrentUserData({
-                val newPlaylist = Playlist(nombre, it!!, pathPortada!!, selectedList)
-                createPlaylist( newPlaylist, this, { error, _ ->
-                    if (error != null) {
-                        Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
-                    } else {
-                        finish()
-                    }
-                })
+                if (playlistId != 0L) {
+                    val newPlaylist = Playlist(playlistId, nombre, it!!, pathCover!!, selectedList)
+                    updatePlaylist(newPlaylist, this, { error ->
+                        if (error != null) {
+                            Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+                        } else {
+                            finish()
+                        }
+                    })
+                } else {
+                    val newPlaylist = Playlist(nombre, it!!, pathCover!!, selectedList)
+                    createPlaylist(newPlaylist, this, { error, _ ->
+                        if (error != null) {
+                            Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+                        } else {
+                            finish()
+                        }
+                    })
+                }
             }, this)
 
         }

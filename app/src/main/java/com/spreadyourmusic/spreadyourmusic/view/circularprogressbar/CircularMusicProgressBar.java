@@ -2,7 +2,7 @@
 * Fichero importado de https://github.com/AbelChT/circular-music-progressbar
 */
 
-package com.spreadyourmusic.spreadyourmusic.circularprogressbar;
+package com.spreadyourmusic.spreadyourmusic.view.circularprogressbar;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;

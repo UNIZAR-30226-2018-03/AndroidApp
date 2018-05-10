@@ -17,7 +17,7 @@ import android.widget.Toast
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.activities.PlayerActivity
 import com.spreadyourmusic.spreadyourmusic.controller.getCurrentSong
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
 
 /**
  * Player buttons controller

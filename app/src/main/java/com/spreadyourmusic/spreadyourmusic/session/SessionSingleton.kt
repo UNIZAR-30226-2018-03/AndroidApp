@@ -1,10 +1,8 @@
 package com.spreadyourmusic.spreadyourmusic.session
 
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
-import com.spreadyourmusic.spreadyourmusic.models.Playlist
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
-import java.util.HashMap
 
 /**
  * Created by abel on 27/02/18.

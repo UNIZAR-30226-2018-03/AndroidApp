@@ -131,4 +131,11 @@
 
     <string name="browser">Buscador</string>
     <string name="selected">Seleccionadas</string>
+
+    <string name="update_user">Actualizar usuario</string>
+    <string name="update_playlist">Actualizar playlist</string>
+
+    <string name="error">Error</string>
+
+    <string name="update">Actualizar</string>
 </resources>

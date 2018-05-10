@@ -27,12 +27,12 @@ import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
-import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBarChangeListener
+import com.spreadyourmusic.spreadyourmusic.view.circularprogressbar.CircularMusicProgressBar
+import com.spreadyourmusic.spreadyourmusic.view.circularprogressbar.OnCircularSeekBarChangeListener
 import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
-import com.spreadyourmusic.spreadyourmusic.soundvisualizer.CircleSoundVisualizer
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
+import com.spreadyourmusic.spreadyourmusic.view.soundvisualizer.CircleSoundVisualizer
 
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
