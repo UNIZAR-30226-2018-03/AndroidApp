@@ -15,6 +15,7 @@ import com.spreadyourmusic.spreadyourmusic.adapters.RecomendationsVerticalRecycl
 import com.spreadyourmusic.spreadyourmusic.controller.createPlaylist
 import com.spreadyourmusic.spreadyourmusic.controller.obtainCurrentUserData
 import com.spreadyourmusic.spreadyourmusic.controller.obtainSongsFromQuery
+import com.spreadyourmusic.spreadyourmusic.helpers.getPathFromUri
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import kotlinx.android.synthetic.main.content_create_playlist.*
@@ -122,11 +123,10 @@ class CreatePlaylistActivity : AppCompatActivity() {
         if (resultCode != RESULT_OK) {
             onSelectFailure()
         } else if (requestCode == selectPortada) {
-            val uriImage = data!!.data
-            pathPortada = uriImage!!.path
+            pathPortada = getPathFromUri(this,data!!.data)
 
             if (pathPortada != null) {
-                Glide.with(this).load(uriImage).into(foto_perfil)
+                Glide.with(this).load(pathPortada).into(foto_perfil)
             }
         }
     }

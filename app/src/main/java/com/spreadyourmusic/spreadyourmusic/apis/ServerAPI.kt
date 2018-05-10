@@ -38,8 +38,13 @@ fun doLoginServer(username: String, password: String): String {
 @Throws(Exception::class)
 fun doSignUpServer(user: User): String {
     //TODO:
-    Thread.sleep(300)
-    return "dfsdfdsdf"
+    if (!ServerEmulator.userList.containsKey(user.username)) {
+        ServerEmulator.userList[user.username] = user
+        Thread.sleep(300)
+        return "dfsdfdsdf"
+    } else {
+        throw Exception("Error")
+    }
 }
 
 /**

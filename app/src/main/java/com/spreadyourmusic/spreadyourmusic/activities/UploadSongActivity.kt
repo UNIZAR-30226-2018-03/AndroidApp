@@ -1,25 +1,21 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
-import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.spreadyourmusic.spreadyourmusic.R
 import android.content.Intent
-import android.net.Uri
 import android.support.v7.widget.Toolbar
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import com.google.android.gms.common.api.ApiException
 import com.spreadyourmusic.spreadyourmusic.R.layout.activity_upload_song
-import com.spreadyourmusic.spreadyourmusic.apis.obtainAlbumsFromUserServer
 import com.spreadyourmusic.spreadyourmusic.controller.*
+import com.spreadyourmusic.spreadyourmusic.helpers.getPathFromUri
 import com.spreadyourmusic.spreadyourmusic.models.Album
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_upload_song.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -75,16 +71,11 @@ class UploadSongActivity : AppCompatActivity() {
         if (resultCode != RESULT_OK) {
             onSelectFailure()
         } else if (requestCode == selectSong) {
-            pathCancion = data!!.data.toString()
-            audioEditText.setText(pathCancion)
+            pathCancion = getPathFromUri(this, data!!.data)
+            audioEditText.setText(data.data.toString())
         } else if (requestCode == selectLyrics) {
-            pathLyrics = data!!.getData().toString()
-            if (!fileExtension(pathLyrics!!).equals("str")) {
-                pathLyrics = null
-                onSelectFailure()
-            } else {
-                lyricsEditText.setText(pathLyrics)
-            }
+            pathLyrics = getPathFromUri(this, data!!.data)
+            lyricsEditText.setText(data.data.toString())
         } else if (requestCode == CREATE_ALBUM_RESULT) {
             val extras = data!!.extras
             val nombreAlbum = extras.getString(resources.getString(R.string.album_name))
@@ -142,7 +133,7 @@ class UploadSongActivity : AppCompatActivity() {
 
     fun selectLyrics(v: View) {
         val intent = Intent()
-                .setType("text/plain")
+                .setType("application/x-subrip")
                 .setAction(Intent.ACTION_GET_CONTENT)
         startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectLyrics)
     }

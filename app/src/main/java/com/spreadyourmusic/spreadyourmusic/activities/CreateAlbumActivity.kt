@@ -11,12 +11,13 @@ import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.controller.createAlbum
 import com.spreadyourmusic.spreadyourmusic.controller.obtainCurrentUserData
+import com.spreadyourmusic.spreadyourmusic.helpers.getPathFromUri
 import com.spreadyourmusic.spreadyourmusic.models.Album
 import kotlinx.android.synthetic.main.content_create_album.*
 import java.util.*
 
 class CreateAlbumActivity : AppCompatActivity() {
-    var uriImage: Uri? = null
+    var imagePath: String? = null
     var selectPictureCode: Int = 567
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +49,9 @@ class CreateAlbumActivity : AppCompatActivity() {
         if (resultCode != RESULT_OK) {
             onSelectFailure()
         } else if (requestCode == selectPictureCode) {
-            uriImage = data!!.data
-            if (uriImage != null && uriImage!!.path != null) {
-                Glide.with(this).load(uriImage).into(caratulaImageView)
+            imagePath = getPathFromUri(this,data!!.data)
+            if (imagePath != null) {
+                Glide.with(this).load(imagePath).into(caratulaImageView)
             }
         }
     }
@@ -62,13 +63,13 @@ class CreateAlbumActivity : AppCompatActivity() {
     fun onContinueClick(v: View) {
         val albumName: String = newAlbumName.text.toString().trim()
         val current: Calendar = Calendar.getInstance()
-        if (uriImage == null || uriImage!!.path.isNullOrEmpty()) {
+        if (imagePath.isNullOrEmpty()) {
             Toast.makeText(this, R.string.error_caratula, Toast.LENGTH_LONG).show()
         } else if (albumName.isEmpty()) {
             Toast.makeText(this, R.string.error_nombre_album, Toast.LENGTH_LONG).show()
         } else {
             obtainCurrentUserData({
-                val newAlbum = Album(albumName, it!!, current, uriImage!!.path)
+                val newAlbum = Album(albumName, it!!, current, imagePath!!)
                 createAlbum(newAlbum, this, { error, idAlbum ->
                     if (!error.isNullOrEmpty()) {
                         Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
