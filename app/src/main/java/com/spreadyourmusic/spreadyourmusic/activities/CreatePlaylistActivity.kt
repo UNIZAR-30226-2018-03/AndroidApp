@@ -155,21 +155,21 @@ class CreatePlaylistActivity : AppCompatActivity() {
     }
 
     private fun onSelectFailure() {
-        Toast.makeText(applicationContext, R.string.error_fichero, Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, R.string.select_valid_file, Toast.LENGTH_SHORT).show()
     }
 
     fun onPictureClick(v: View) {
         val intent = Intent()
                 .setType("image/*")
                 .setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectPortada)
+        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectPortada)
     }
 
     fun onCreateClick(v: View) {
         val nombre = nameEditText.text.toString().trim()
         if (pathCover.isNullOrEmpty() || nombre.isEmpty() || selectedList.size == 0) {
-            Toast.makeText(applicationContext, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
-            Toast.makeText(applicationContext, R.string.campos_obligatorios_4, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.empty_fields_4, Toast.LENGTH_SHORT).show()
         } else {
             obtainCurrentUserData({
                 if (playlistId != 0L) {

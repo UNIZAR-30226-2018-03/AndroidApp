@@ -29,7 +29,7 @@
             android:drawablePadding="5dp"
             android:drawableStart="@drawable/ic_view_module_black_24dp"
             android:ems="10"
-            android:hint="@string/new_album_name"
+            android:hint="@string/album_name"
             android:inputType="textPersonName"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"

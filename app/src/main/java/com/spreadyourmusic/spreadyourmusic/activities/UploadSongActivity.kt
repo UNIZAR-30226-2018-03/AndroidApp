@@ -96,8 +96,8 @@ class UploadSongActivity : AppCompatActivity() {
     fun onContinueClick(v: View) {
         val songname: String = nameEditText.text.toString()
         if (selectedAlbum == null || songname.isEmpty() || selectedGenere.isNullOrEmpty() || pathCancion.isNullOrEmpty()) {
-            Toast.makeText(applicationContext, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
-            Toast.makeText(applicationContext, R.string.campos_obligatorios_3, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.empty_fields_3, Toast.LENGTH_SHORT).show()
         } else {
             obtainCurrentUserData({
                 val newSong = Song(songname, pathCancion!!, selectedAlbum!!, selectedGenere!!, pathLyrics)
@@ -113,7 +113,7 @@ class UploadSongActivity : AppCompatActivity() {
     }
 
     private fun onSelectFailure() {
-        Toast.makeText(applicationContext, R.string.error_fichero, Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, R.string.select_valid_file, Toast.LENGTH_SHORT).show()
     }
 
 
@@ -135,14 +135,14 @@ class UploadSongActivity : AppCompatActivity() {
         val intent = Intent()
                 .setType("application/x-subrip")
                 .setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectLyrics)
+        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectLyrics)
     }
 
     fun selectAudio(v: View) {
         val intent = Intent()
                 .setType("audio/*")
                 .setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectSong)
+        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectSong)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {

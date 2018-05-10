@@ -39,7 +39,7 @@ class CreateAlbumActivity : AppCompatActivity() {
         val intent = Intent()
                 .setType("image/*")
                 .setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectPictureCode)
+        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectPictureCode)
     }
 
 
@@ -56,16 +56,16 @@ class CreateAlbumActivity : AppCompatActivity() {
     }
 
     private fun onSelectFailure() {
-        Toast.makeText(applicationContext, R.string.error_fichero, Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, R.string.select_valid_file, Toast.LENGTH_SHORT).show()
     }
 
     fun onContinueClick(v: View) {
         val albumName: String = albumNameEditText.text.toString().trim()
         val current: Calendar = Calendar.getInstance()
         if (imagePath.isNullOrEmpty()) {
-            Toast.makeText(this, R.string.error_caratula, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.select_valid_cover, Toast.LENGTH_LONG).show()
         } else if (albumName.isEmpty()) {
-            Toast.makeText(this, R.string.error_nombre_album, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.select_valid_album_name, Toast.LENGTH_LONG).show()
         } else {
             obtainCurrentUserData({
                 val newAlbum = Album(albumName, it!!, current, imagePath!!)

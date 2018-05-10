@@ -184,8 +184,8 @@ class SignUpActivity : AppCompatActivity() {
             mail = view!!.mailEditText.text.toString().trim()
 
             if (password.isNullOrEmpty() || username.isNullOrEmpty() || userPictureLocationUri.isNullOrEmpty()) {
-                Toast.makeText(activity, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
-                Toast.makeText(activity, R.string.campos_obligatorios_1, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.empty_fields_1, Toast.LENGTH_SHORT).show()
 
             } else
                 l!!.invoke(username, mail, password, userPictureLocationUri)
@@ -195,13 +195,13 @@ class SignUpActivity : AppCompatActivity() {
             val intent = Intent()
                     .setType("image/*")
                     .setAction(Intent.ACTION_GET_CONTENT)
-            startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectPictureCode)
+            startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectPictureCode)
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
             super.onActivityResult(requestCode, resultCode, data)
             if (resultCode != RESULT_OK) {
-                Toast.makeText(activity, R.string.error_fichero, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.select_valid_file, Toast.LENGTH_SHORT).show()
             } else if (requestCode == selectPictureCode) {
                 val uriImage = data!!.data
                 userPictureLocationUri = getPathFromUri(context!!, uriImage!!)
@@ -259,8 +259,8 @@ class SignUpActivity : AppCompatActivity() {
             userTwitterAccount = view!!.twitterAccountEditText.text.toString().trim()
             userInstagramAccount = view!!.instagramAccountEditText.text.toString().trim()
             if (realname.isNullOrEmpty()) {
-                Toast.makeText(activity, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
-                Toast.makeText(activity, R.string.campos_obligatorios_2, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.empty_fields_2, Toast.LENGTH_SHORT).show()
 
             } else
                 l!!.invoke(realname, userBirth, userFacebookAccount, userTwitterAccount, userInstagramAccount)
