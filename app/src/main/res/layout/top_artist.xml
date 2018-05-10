@@ -7,7 +7,7 @@
     android:background="@drawable/artist_bg">
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profile_image"
+        android:id="@+id/profileCircleImageView"
         android:layout_width="170dp"
         android:layout_height="170dp"
         android:layout_marginEnd="8dp"
@@ -29,7 +29,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+        app:layout_constraintTop_toBottomOf="@+id/profileCircleImageView" />
 
     <Button
         android:id="@+id/followButton"
@@ -58,6 +58,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/artistUsername" />
-
 
 </android.support.constraint.ConstraintLayout>

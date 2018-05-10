@@ -94,7 +94,7 @@ class UploadSongActivity : AppCompatActivity() {
     }
 
     fun onContinueClick(v: View) {
-        val songname: String = newSongName.text.toString()
+        val songname: String = nameEditText.text.toString()
         if (selectedAlbum == null || songname.isEmpty() || selectedGenere.isNullOrEmpty() || pathCancion.isNullOrEmpty()) {
             Toast.makeText(applicationContext, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
             Toast.makeText(applicationContext, R.string.campos_obligatorios_3, Toast.LENGTH_SHORT).show()
@@ -178,7 +178,7 @@ class UploadSongActivity : AppCompatActivity() {
                 }
             } else {
                 selectedGenere = generos!![item.itemId - NO_CATEGORY_ID - 1]
-                generoEditText.setText(selectedGenere)
+                genreEditText.setText(selectedGenere)
             }
             true
         } else

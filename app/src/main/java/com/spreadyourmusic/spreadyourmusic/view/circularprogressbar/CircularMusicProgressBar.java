@@ -92,7 +92,7 @@ public class CircularMusicProgressBar extends AppCompatImageView {
         mBorderColor = styledAttributes.getColor(R.styleable.CircularMusicProgressBar_border_color, DEFAULT_BORDER_COLOR);
         mDrawAntiClockwise = styledAttributes.getBoolean(R.styleable.CircularMusicProgressBar_draw_anticlockwise, DEFAULT_DRAW_ANTI_CLOCKWISE);
         mFillColor = styledAttributes.getColor(R.styleable.CircularMusicProgressBar_fill_color, DEFAULT_FILL_COLOR);
-        mInnrCircleDiammeter = styledAttributes.getFloat(R.styleable.CircularMusicProgressBar_centercircle_diammterer, DEFAULT_INNTER_DAIMMETER_FRACTION);
+        mInnrCircleDiammeter = styledAttributes.getFloat(R.styleable.CircularMusicProgressBar_center_circle_diameter, DEFAULT_INNTER_DAIMMETER_FRACTION);
         mProgressColor = styledAttributes.getColor(R.styleable.CircularMusicProgressBar_progress_color, DEFAULT_PROGRESS_COLOR);
         mBaseStartAngle = styledAttributes.getFloat(R.styleable.CircularMusicProgressBar_progress_startAngle, 0);
 

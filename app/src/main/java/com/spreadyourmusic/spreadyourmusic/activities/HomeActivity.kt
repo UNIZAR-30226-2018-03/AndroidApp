@@ -60,8 +60,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val hView = nav_view.getHeaderView(0)
 
-        val circularImageView = hView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.foto_perfil)
-        val userName = hView.findViewById<TextView>(R.id.nombre_usuario)
+        val circularImageView = hView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.coverCircleImageView)
+        val userName = hView.findViewById<TextView>(R.id.usernameTextView)
         obtainCurrentUserData({
             val mmCurrentUser = it
             if (mmCurrentUser != null) {

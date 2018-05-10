@@ -56,7 +56,7 @@ class UserActivity : BaseActivity() {
 
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         val viewPager = findViewById<ViewPager>(R.id.viewPager)
-        val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
+        val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profileCircleImageView)
         val artistUsername = findViewById<TextView>(R.id.artistUsername)
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
         followButton = findViewById(R.id.followButton)
@@ -119,7 +119,7 @@ class UserActivity : BaseActivity() {
                         mTabsAdapter!!.playlistListFragment.changeData(playlistList)
                     })
                 })
-                val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
+                val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profileCircleImageView)
                 Glide.with(this).load(it.pictureLocationUri).into(profileImage)
             })
         }

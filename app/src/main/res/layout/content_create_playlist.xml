@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/foto_perfil"
+        android:id="@+id/coverCircleImageView"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginEnd="8dp"
@@ -28,16 +28,16 @@
         android:layout_marginTop="68dp"
         android:background="@drawable/trans_rounded_white"
         android:drawablePadding="5dp"
+        android:drawableStart="@drawable/ic_view_module_black_24dp"
         android:ems="10"
         android:hint="@string/name"
         android:inputType="textPersonName"
-        android:drawableStart="@drawable/ic_view_module_black_24dp"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/foto_perfil" />
+        app:layout_constraintTop_toBottomOf="@+id/coverCircleImageView" />
 
     <TextView
         android:id="@+id/textView"

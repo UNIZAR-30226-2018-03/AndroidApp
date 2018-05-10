@@ -1,7 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -51,7 +50,7 @@ class CreateAlbumActivity : AppCompatActivity() {
         } else if (requestCode == selectPictureCode) {
             imagePath = getPathFromUri(this,data!!.data)
             if (imagePath != null) {
-                Glide.with(this).load(imagePath).into(caratulaImageView)
+                Glide.with(this).load(imagePath).into(coverCircleImageView)
             }
         }
     }
@@ -61,7 +60,7 @@ class CreateAlbumActivity : AppCompatActivity() {
     }
 
     fun onContinueClick(v: View) {
-        val albumName: String = newAlbumName.text.toString().trim()
+        val albumName: String = albumNameEditText.text.toString().trim()
         val current: Calendar = Calendar.getInstance()
         if (imagePath.isNullOrEmpty()) {
             Toast.makeText(this, R.string.error_caratula, Toast.LENGTH_LONG).show()

@@ -61,7 +61,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        mControlsFragment = supportFragmentManager.findFragmentById(R.id.fragment_player_controls) as PlayerControlsFragment
+        mControlsFragment = supportFragmentManager.findFragmentById(R.id.fragmentPlayerControls) as PlayerControlsFragment
         hidePlaybackControls()
         mMediaBrowser!!.connect()
     }

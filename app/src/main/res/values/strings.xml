@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Spread Your Music</string>
+    <string name="app_name_no_spaces">SpreadYourMusic</string>
+
     <string name="title_activity_home">Inicio</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_artist">ArtistActivity</string>

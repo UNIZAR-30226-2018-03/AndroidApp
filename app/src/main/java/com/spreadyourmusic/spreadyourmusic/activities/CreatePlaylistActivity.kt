@@ -98,7 +98,7 @@ class CreatePlaylistActivity : AppCompatActivity() {
                 if (it != null) {
                     pathCover = it.artLocationUri
                     if (pathCover != null)
-                        Glide.with(this).load(pathCover).into(foto_perfil)
+                        Glide.with(this).load(pathCover).into(coverCircleImageView)
                     nameEditText.setText(it.name)
                     for (i in it.content) {
                         selectedList.add(i)
@@ -149,7 +149,7 @@ class CreatePlaylistActivity : AppCompatActivity() {
             pathCover = getPathFromUri(this, data!!.data)
 
             if (pathCover != null) {
-                Glide.with(this).load(pathCover).into(foto_perfil)
+                Glide.with(this).load(pathCover).into(coverCircleImageView)
             }
         }
     }

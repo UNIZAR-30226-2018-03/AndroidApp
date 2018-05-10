@@ -51,9 +51,9 @@ class PlaylistActivity : BaseActivity() {
 
         recyclerViewAdapter.setOnClickListener(onRecomendationSelected)
 
-        val image = findViewById<ImageView>(R.id.image)
+        val image = findViewById<ImageView>(R.id.coverImageView)
 
-        val creatorName = findViewById<TextView>(R.id.creatorUsername)
+        val creatorName = findViewById<TextView>(R.id.creatorTextView)
 
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
 

@@ -165,16 +165,16 @@ class SignUpActivity : AppCompatActivity() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                                   savedInstanceState: Bundle?): View? {
             val view = inflater.inflate(R.layout.content_sign_up_screen_1, container, false)
-            view.signupButton.setOnClickListener { onContinueClick() }
+            view.signUpButton.setOnClickListener { onContinueClick() }
             view.usernameEditText.setText(username)
             view.mailEditText.setText(mail)
             if (userPictureLocationUri != null)
-                Glide.with(this).load(userPictureLocationUri).into(view.foto_perfil)
+                Glide.with(this).load(userPictureLocationUri).into(view.coverCircleImageView)
 
             if (isEdition)
                 view.usernameEditText.isEnabled = false
 
-            view.foto_perfil.setOnClickListener { onProfilePictureClick() }
+            view.coverCircleImageView.setOnClickListener { onProfilePictureClick() }
             return view
         }
 
@@ -207,7 +207,7 @@ class SignUpActivity : AppCompatActivity() {
                 userPictureLocationUri = getPathFromUri(context!!, uriImage!!)
 
                 if (userPictureLocationUri != null)
-                    Glide.with(this).load(userPictureLocationUri).into(foto_perfil)
+                    Glide.with(this).load(userPictureLocationUri).into(coverCircleImageView)
             }
         }
 
