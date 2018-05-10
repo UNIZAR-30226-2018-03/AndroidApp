@@ -1,72 +1,115 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
+import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import com.spreadyourmusic.spreadyourmusic.R
+import com.spreadyourmusic.spreadyourmusic.apis.*
 import com.spreadyourmusic.spreadyourmusic.models.*
-import java.util.*
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 import kotlin.collections.ArrayList
 
-fun obtainPlaylistFromID(id: Int): Playlist {
-    // TODO: HACER
-    val autor1 = User("Media", "Media", "Right", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val autor2 = User("Silent", "Silent", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-
-    val album1 = Album("Jazz", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val album2 = Album("Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
-
-    val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3")
-    val cancion2 = Song(album = album2, id = 2, name = "The Messenger", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3")
-
-    val listaCanciones = ArrayList<Song>()
-    listaCanciones.add(cancion1)
-    listaCanciones.add(cancion2)
-
-    val playlist = Playlist(3, "Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
-
-    return playlist
+fun obtainPlaylistFromID(id: Long, activity: Activity, listener: (Playlist?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainPlaylistDataServer(id)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }
 
 
-fun obtainSystemGeneratedPlaylist(id: Int, context: Context): Pair<String, List<Recommendation>> {
-    return when (id) {
-        0 -> Pair<String, List<Recommendation>>(context.resources.getString(R.string.playlist), obtainFollowedPlaylists())
-        1 -> Pair<String, List<Recommendation>>(context.resources.getString(R.string.artist), obtainFollowedArtists())
-        else -> Pair<String, List<Recommendation>>(context.resources.getString(R.string.songs), obtainFavoriteSongsPlaylist().content)
+fun obtainSystemGeneratedPlaylist(id: Int, activity: Activity, listener: (Pair<String, List<Recommendation>>) -> Unit) {
+    when (id) {
+        0 -> {
+            obtainFollowedPlaylists(activity, {
+                if (it != null) {
+                    listener(Pair<String, List<Recommendation>>(activity.resources.getString(R.string.playlist), it))
+                } else {
+                    Toast.makeText(activity, "ErrorPlaylist", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+        1 -> {
+            obtainFollowedArtists(activity, {
+                if (it != null) {
+                    listener(Pair<String, List<Recommendation>>(activity.resources.getString(R.string.artist), it))
+                } else {
+                    Toast.makeText(activity, "ErrorPlaylist", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+        }
+        2 -> {
+            obtainFavoriteSongsList(activity, {
+                if (it != null) {
+                    listener(Pair<String, List<Recommendation>>(activity.resources.getString(R.string.songs), it))
+                } else {
+                    Toast.makeText(activity, "ErrorPlaylist", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+        else -> {
+            obtainDownloadSongsList(activity, {
+                if (it != null) {
+                    listener(Pair<String, List<Recommendation>>(activity.resources.getString(R.string.downloaded), it))
+                } else {
+                    Toast.makeText(activity, "ErrorPlaylist", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
     }
 }
 
-fun obtainFavoriteSongsPlaylist(): Playlist {
-    // TODO: HACER
-    val autor1 = User("Media", "Media", "Right", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val autor2 = User("Silent", "Silent", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-
-    val album1 = Album("Jazz", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val album2 = Album("Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
-
-    val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 103000L, locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3")
-    val cancion2 = Song(album = album2, id = 2, name = "The Messenger", numOfLikes = 15, numOfViews = 16, collaborators = null, duration = 132000L, locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3")
-
-    val listaCanciones = ArrayList<Song>()
-    listaCanciones.add(cancion1)
-    listaCanciones.add(cancion2)
-
-    val playlist = Playlist(3, "Lista", autor1, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", listaCanciones)
-    return playlist
+fun obtainFavoriteSongsList(activity: Activity, listener: (List<Song>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainFavouriteSongsByUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }
 
-fun obtainFollowedArtists(): List<User> {
-    // TODO: HACER
-    val devolver = ArrayList<User>()
-    val autor1 = User("Media", "Media", "Right", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    val autor2 = User("Silent", "Silent", "Partner", "http://storage.googleapis.com/automotive-media/album_art.jpg")
-    devolver.add(autor1)
-    devolver.add(autor2)
-    return devolver
+fun obtainFollowedArtists(activity: Activity, listener: (List<User>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            getFollowedUsersServer(SessionSingleton.currentUser!!.username!!)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }
 
-fun obtainFollowedPlaylists(): List<Playlist> {
-    // TODO: HACER
-    val devolver = ArrayList<Playlist>()
-    devolver.add(obtainFavoriteSongsPlaylist())
-    return devolver
+fun obtainFollowedPlaylists(activity: Activity, listener: (List<Playlist>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            getFollowedPlaylistsServer(SessionSingleton.currentUser!!.username!!)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
+
+}
+
+fun obtainDownloadSongsList(activity: Activity, listener: (List<Song>?) -> Unit) {
+    Thread {
+        val resultado = getDownloadedSongs(activity)
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+    }.start()
 }

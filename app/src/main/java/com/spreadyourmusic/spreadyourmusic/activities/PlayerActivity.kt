@@ -1,12 +1,10 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
 import android.content.ComponentName
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.*
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.RemoteException
-import android.os.SystemClock
 import android.support.v4.content.ContextCompat
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -16,11 +14,14 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v7.widget.Toolbar
 import android.text.format.DateUtils
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
@@ -29,9 +30,9 @@ import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
 import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBarChangeListener
 import com.spreadyourmusic.spreadyourmusic.controller.*
+import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager
 import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
-
-import kotlinx.android.synthetic.main.app_bar_home.*
+import com.spreadyourmusic.spreadyourmusic.soundvisualizer.CircleSoundVisualizer
 
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -49,19 +50,23 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var randomReproductionImageButton: ImageButton
     private lateinit var downloadOrDeleteSongImageButton: ImageButton
     private lateinit var favoriteSongImageButton: ImageButton
-    private lateinit var shareSongImageButton: ImageButton
+    private lateinit var lyricsImageButton: ImageButton
 
     private lateinit var startTimeTextView: TextView
     private lateinit var finalTimeTextView: TextView
 
     private lateinit var albumArtCircularMusicProgressBar: CircularMusicProgressBar
+    private lateinit var circleSoundVisualizer: CircleSoundVisualizer
     private lateinit var playerBackGroundImageView: ImageView
     private lateinit var songCreatorTextView: TextView
     private lateinit var songNameTextView: TextView
+    private lateinit var lyricsTextView: TextView
+
+
+    private var isLyricsShowed = false
 
     private var mPauseDrawable: Drawable? = null
     private var mPlayDrawable: Drawable? = null
-
 
     private val mHandler = Handler()
     private var mMediaBrowser: MediaBrowserCompat? = null
@@ -87,7 +92,7 @@ class PlayerActivity : AppCompatActivity() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             if (metadata != null) {
                 updateMediaDescription(metadata.description)
-                updateDuration(metadata)
+               // updateDuration(metadata)
             }
         }
     }
@@ -101,7 +106,6 @@ class PlayerActivity : AppCompatActivity() {
 
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,10 +131,13 @@ class PlayerActivity : AppCompatActivity() {
         randomReproductionImageButton = findViewById(R.id.randomReproduction)
         downloadOrDeleteSongImageButton = findViewById(R.id.downloadOrDeleteSong)
         favoriteSongImageButton = findViewById(R.id.favoriteSong)
-        shareSongImageButton = findViewById(R.id.shareSong)
+
+        lyricsImageButton = findViewById(R.id.viewLyrics)
 
         startTimeTextView = findViewById(R.id.startTime)
         finalTimeTextView = findViewById(R.id.finalTime)
+
+        lyricsTextView = findViewById(R.id.lyricsTextView)
 
 
         mPauseDrawable = ContextCompat.getDrawable(this, R.drawable.ic_pause_circle_filled_white_24dp)
@@ -173,23 +180,23 @@ class PlayerActivity : AppCompatActivity() {
                 // Mientras se modifica el seekbar, este no es actualizado mediante programa
                 val state = MediaControllerCompat.getMediaController(this@PlayerActivity).playbackState
                 if (state != null) {
-                    if(state.state == PlaybackStateCompat.STATE_PLAYING ||
-                            state.state == PlaybackStateCompat.STATE_BUFFERING ){
+                    if (state.state == PlaybackStateCompat.STATE_PLAYING ||
+                            state.state == PlaybackStateCompat.STATE_BUFFERING) {
                         stopSeekbarUpdate()
                     }
                 }
             }
 
             override fun onStopTrackingTouch(seekBar: CircularMusicProgressBar?) {
-                if(onProgessChangedControl){
+                if (onProgessChangedControl) {
                     MediaControllerCompat.getMediaController(this@PlayerActivity).transportControls.seekTo((songDuration.toFloat() * (onLastProgessChanged.toFloat() / 100)).toLong())
                 }
 
                 // Tras modificarse se permite que se siga actualizando
                 val state = MediaControllerCompat.getMediaController(this@PlayerActivity).playbackState
                 if (state != null) {
-                    if(state.state == PlaybackStateCompat.STATE_PLAYING ||
-                            state.state == PlaybackStateCompat.STATE_BUFFERING ){
+                    if (state.state == PlaybackStateCompat.STATE_PLAYING ||
+                            state.state == PlaybackStateCompat.STATE_BUFFERING) {
                         scheduleSeekbarUpdate()
                     }
                 }
@@ -205,27 +212,90 @@ class PlayerActivity : AppCompatActivity() {
             }
         })
 
+        isLyricsShowed = false
+
+        circleSoundVisualizer = findViewById(R.id.visualizer)
+
+        // set custom color to the line of the visualizer
+        circleSoundVisualizer.setColor(Color.WHITE)
+
+        randomReproductionImageButton.setOnClickListener {
+            randReproduction()
+        }
+
+        downloadOrDeleteSongImageButton.setOnClickListener {
+            downloadSong()
+        }
+
+        favoriteSongImageButton.setOnClickListener {
+            addSongToFavourite()
+        }
+
+        lyricsImageButton.setOnClickListener {
+            showLyrics()
+        }
+
         mMediaBrowser = MediaBrowserCompat(this,
                 ComponentName(this, MusicService::class.java), mConnectionCallback, null)
+
+        if (!isRandomReproductionEnabled()) {
+            randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
+        } else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val mInflater = menuInflater
+        mInflater.inflate(R.menu.menu_player, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return if (item != null) {
+            when (item.itemId) {
+                R.id.share -> {
+                    shareSong()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+        } else super.onOptionsItemSelected(item)
+    }
+
+    private val commandHandler = object : ResultReceiver(
+            null) {
+        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+            super.onReceiveResult(resultCode, resultData)
+            if (resultData != null) {
+                val ausioSessionID = resultData.getInt(MusicService.CMD_AUDIO_SESSION, -1)
+                val songDurationLocal = resultData.getLong(MusicService.CMD_SONG_DURATION, -1)
+                if (ausioSessionID != -1) {
+                    circleSoundVisualizer.setPlayer(ausioSessionID)
+                }
+
+                if (songDurationLocal != -1L) {
+                    songDuration = songDurationLocal.toInt()
+                    finalTimeTextView.text = DateUtils.formatElapsedTime((songDurationLocal / 1000f).toLong())
+                }
+            }
+        }
+    }
 
     @Throws(RemoteException::class)
     private fun connectToSession(token: MediaSessionCompat.Token) {
-        val mediaController = MediaControllerCompat(
+        val mMediaController = MediaControllerCompat(
                 this, token)
-        if (mediaController.metadata == null) {
+        if (mMediaController.metadata == null) {
             finish()
             return
         }
-        MediaControllerCompat.setMediaController(this, mediaController)
-        mediaController.registerCallback(mCallback)
-        val state = mediaController.playbackState
+        MediaControllerCompat.setMediaController(this, mMediaController)
+        mMediaController.registerCallback(mCallback)
+        val state = mMediaController.playbackState
         updatePlaybackState(state)
-        val metadata = mediaController.metadata
+        val metadata = mMediaController.metadata
         if (metadata != null) {
             updateMediaDescription(metadata.description)
-            updateDuration(metadata)
+          //  updateDuration(metadata)
         }
 
         updateProgress()
@@ -254,6 +324,7 @@ class PlayerActivity : AppCompatActivity() {
         if (mMediaBrowser != null) {
             (mMediaBrowser as MediaBrowserCompat).connect()
         }
+        LyricsManager.changeListener(lyricsListener)
     }
 
     public override fun onStop() {
@@ -261,8 +332,10 @@ class PlayerActivity : AppCompatActivity() {
         if (mMediaBrowser != null) {
             mMediaBrowser!!.disconnect()
         }
+        circleSoundVisualizer.releasePlayer()
         val controllerCompat = MediaControllerCompat.getMediaController(this)
         controllerCompat?.unregisterCallback(mCallback)
+        LyricsManager.changeListener(null)
     }
 
     public override fun onDestroy() {
@@ -285,22 +358,42 @@ class PlayerActivity : AppCompatActivity() {
         Glide.with(this).load(artUrl).into(playerBackGroundImageView)
         Glide.with(this).load(artUrl).into(albumArtCircularMusicProgressBar)
 
-        val randomReproductionImageButton :ImageButton = findViewById(R.id.randomReproduction)
-        randomReproductionImageButton.alpha = if(isRandomReproductionEnabled()) 1f else 0.5f
-        val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
-        favoriteSongImageButton.alpha = if(isCurrentSongFavorite()) 1f else 0.5f
-        val downloadOrDeleteSongImageButton:ImageButton = findViewById(R.id.downloadOrDeleteSong)
-        downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f
+        val favoriteSongImageButton: ImageButton = findViewById(R.id.favoriteSong)
+        isCurrentSongFavorite(this, {
+            if (it) {
+                favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp))
+            } else favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp))
+        })
+
+        if (currentSong.isDownloaded) {
+            downloadOrDeleteSongImageButton.visibility = View.INVISIBLE
+        } else {
+            downloadOrDeleteSongImageButton.visibility = View.VISIBLE
+            isCurrentSongDownloaded(this, {
+                if (!it) {
+                    downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
+                } else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
+            })
+        }
+
+        if (currentSong.lyricsPath == null) {
+            lyricsTextView.text = resources.getString(R.string.no_lyrics)
+        } else lyricsTextView.text = ""
+
+        MediaControllerCompat.getMediaController(this)!!.sendCommand(MusicService.CMD_AUDIO_SESSION, null, commandHandler)
+        MediaControllerCompat.getMediaController(this)!!.sendCommand(MusicService.CMD_SONG_DURATION, null, commandHandler)
+
     }
 
-    private fun updateDuration(metadata: MediaMetadataCompat?) {
+   /* private fun updateDuration(metadata: MediaMetadataCompat?) {
         if (metadata == null) {
             return
         }
-        val duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION).toInt()
+        val currentSong = getCurrentSong()
+        val duration = currentSong.duration.toInt()
         songDuration = duration
         finalTimeTextView.text = DateUtils.formatElapsedTime((duration / 1000f).toLong())
-    }
+    }*/
 
     private fun updatePlaybackState(state: PlaybackStateCompat?) {
         if (state == null) {
@@ -362,28 +455,79 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     // handle the share songs button's click
-    fun shareSong(v:View){
-        shareCurrentSong(this)
+    private fun shareSong() {
+        shareElement(getCurrentSong().shareLink, this)
+    }
+
+    private var lyricsListener: ((String) -> Unit) = {
+        lyricsTextView.text = it
     }
 
     // handle the add song to favourite button's click
-    fun addSongToFavourite(v:View){
-        setFavoriteCurrentSong(!isCurrentSongFavorite())
-        val favoriteSongImageButton:ImageButton = findViewById(R.id.favoriteSong)
-        favoriteSongImageButton.alpha = if(isCurrentSongFavorite()) 1f else 0.5f
+    private fun addSongToFavourite() {
+        isCurrentSongFavorite(this, {
+            val estado = it
+            setFavoriteCurrentSong(!estado, this, {
+                if (it) {
+                    val actualState = !estado
+                    if (actualState) {
+                        favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp))
+                    } else favoriteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp))
+                } else {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                }
+            })
+        })
     }
 
     // handle the random download button's click
-    fun downloadSong(v:View){
-        downloadCurrentSong(!isCurrentSongDownloaded())
-        val downloadOrDeleteSongImageButton:ImageButton = findViewById(R.id.downloadOrDeleteSong)
-        downloadOrDeleteSongImageButton.alpha = if(isCurrentSongDownloaded()) 1f else 0.5f
+    private fun downloadSong() {
+        isCurrentSongDownloaded(this, {
+            val estado = it
+            downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_queue_white_24dp))
+            downloadCurrentSong(!it, this, {
+                if (it) {
+                    if (estado) {
+                        downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
+                    } else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
+
+                } else {
+                    if (!estado) {
+                        downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cloud_download_white_24dp))
+                    } else downloadOrDeleteSongImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_forever_white_24dp))
+
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                }
+            })
+        })
     }
 
     // handle the random reproduction button's click
-    fun randReproduction(v:View){
+    private fun randReproduction() {
         randomReproduction(!isRandomReproductionEnabled())
-        val randomReproductionImageButton :ImageButton = findViewById(R.id.randomReproduction)
-        randomReproductionImageButton.alpha = if(isRandomReproductionEnabled()) 1f else 0.5f
+        if (isRandomReproductionEnabled()) {
+            randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_shuffle_white_24dp))
+        } else randomReproductionImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trending_flat_white_24dp))
+    }
+
+    private fun showLyrics() {
+        if (isLyricsShowed) {
+            albumArtCircularMusicProgressBar.visibility = View.VISIBLE
+            startTimeTextView.visibility = View.VISIBLE
+            finalTimeTextView.visibility = View.VISIBLE
+            circleSoundVisualizer.visibility = View.VISIBLE
+            lyricsTextView.visibility = View.INVISIBLE
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp))
+
+        } else {
+            albumArtCircularMusicProgressBar.visibility = View.INVISIBLE
+            circleSoundVisualizer.visibility = View.INVISIBLE
+            startTimeTextView.visibility = View.INVISIBLE
+            finalTimeTextView.visibility = View.INVISIBLE
+            lyricsTextView.visibility = View.VISIBLE
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_white_24dp))
+
+        }
+        isLyricsShowed = !isLyricsShowed
     }
 }

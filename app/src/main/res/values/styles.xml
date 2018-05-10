@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@android:color/holo_red_light</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -26,6 +26,11 @@
 
     <style name="AppTheme.ToolBarWithNavigationBack">
         <item name="navigationIcon">@drawable/ic_arrow_back_white_24dp</item>
+    </style>
+
+    <style name="TabLayout" parent="android:Widget">
+        <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabSelectedTextColor">?android:textColorPrimary</item>
     </style>
 
 </resources>

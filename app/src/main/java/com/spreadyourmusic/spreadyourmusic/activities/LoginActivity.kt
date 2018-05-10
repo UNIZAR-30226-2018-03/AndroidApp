@@ -20,7 +20,9 @@ import java.util.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
+import com.spreadyourmusic.spreadyourmusic.controller.isCurrentUserLoggedinOtherSession
 import com.spreadyourmusic.spreadyourmusic.models.User
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
 
 class LoginActivity : AppCompatActivity() {
@@ -33,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        if(isLogin()){
+        if(isLogin(this)){
             openHomeActivity()
         }
 
@@ -53,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         val pass = passwordEditText.text.toString()
         val progressDialog = showProgressDialog()
         Thread {
-            val user = doLogin(User(username, pass))
+            val user = doLogin(User(username, pass),this)
             runOnUiThread {
                 progressDialog.dismiss()
                 if(user){
@@ -75,10 +77,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun openHomeActivity(){
-        val int = Intent(applicationContext, HomeActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(int)
-        finish()
+        isCurrentUserLoggedinOtherSession(this,{
+            SessionSingleton.lastSongListened = it
+            SessionSingleton.isUserDataLoaded = false
+            val int = Intent(applicationContext, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(int)
+            finish()
+        })
     }
 
     private fun openSignupActivity(){
@@ -127,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
             val account:GoogleSignInAccount = completedTask.getResult(ApiException::class.java)
             val progressDialog = showProgressDialog()
             Thread {
-                val user = doGoogleLogin(account)
+                val user = doGoogleLogin(account,this)
                 runOnUiThread {
                     progressDialog.dismiss()
                     if(user){
@@ -155,7 +161,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showProgressDialog() : ProgressDialog{
         // Cambiar mensaje mostrado
-        var progressDialog = ProgressDialog(this,
+        val progressDialog = ProgressDialog(this,
                 R.style.AppTheme_Dialog)
         progressDialog.isIndeterminate = true
         progressDialog.setMessage("Authenticating...")

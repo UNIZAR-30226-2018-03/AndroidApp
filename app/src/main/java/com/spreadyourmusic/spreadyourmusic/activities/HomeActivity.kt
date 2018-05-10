@@ -1,9 +1,9 @@
 package com.spreadyourmusic.spreadyourmusic.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.media.session.MediaControllerCompat
 
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -11,8 +11,8 @@ import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.R
 import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.fragment.*
@@ -20,6 +20,7 @@ import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Recommendation
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
+import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 
@@ -36,7 +37,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var beforeBrowserOpenID: Int = -1
 
     // Almacena los fragmentos para evitar recalcularlos
-    private val fragmentHashMap: HashMap<Int, Fragment> = HashMap<Int, Fragment>(3)
+    private val fragmentHashMap: HashMap<Int, Fragment> = HashMap(3)
 
     private var searchView: SearchView? = null
 
@@ -51,25 +52,37 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val actualFragmentToDisplay = getFragmentFromID(FRAGMENT_HOME_ID)
-
-        if (actualFragmentToDisplay != null) {
-            changeActualFragment(actualFragmentToDisplay)
+        getFragmentFromID(FRAGMENT_HOME_ID,{
+            changeActualFragment(it)
             actualFragmentDisplayed = FRAGMENT_HOME_ID
             beforeBrowserOpenID = -1
-        }
+        })
 
         val hView = nav_view.getHeaderView(0)
 
         val circularImageView = hView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.foto_perfil)
         val userName = hView.findViewById<TextView>(R.id.nombre_usuario)
-        userName.text = obtainCurrentUser().name
+        obtainCurrentUserData({
+            val mmCurrentUser = it
+            if (mmCurrentUser != null) {
+                userName.text = mmCurrentUser.name
+                circularImageView.setOnClickListener {
+                    onUserSelected(mmCurrentUser, this)
+                }
+                Glide.with(this).load(mmCurrentUser.pictureLocationUri).into(circularImageView)
+            } else {
+                Toast.makeText(this, "Error: No se han podido obtener los datos de usuario", Toast.LENGTH_SHORT).show()
+            }
+        }, this)
+    }
 
-        circularImageView.setOnClickListener {
-            onUserSelected(obtainCurrentUser(), this)
+    override fun onStart() {
+        super.onStart()
+        val lastSongListened = SessionSingleton.lastSongListened
+        if(lastSongListened!=null){
+            SessionSingleton.lastSongListened = null
+            onSongSelected(lastSongListened,this)
         }
-
-        Glide.with(this).load(obtainCurrentUser().pictureLocationUri).into(circularImageView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -81,14 +94,17 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query != null) {
-                        val queryResults = obtainResultFromQuery(query)
-                        val fragmento: Fragment? = BrowserFragment.newInstance(onRecomendationSelected, queryResults)
-
-                        if (fragmento != null) {
-                            beforeBrowserOpenID = actualFragmentDisplayed
-                            actualFragmentDisplayed = FRAGMENT_BROWSER_ID
-                            changeActualFragment(fragmento)
-                        }
+                        obtainResultFromQuery(query, this@HomeActivity, {
+                            val queryResults = it
+                            if (queryResults != null) {
+                                val fragmento: Fragment? = BrowserFragment.newInstance(onRecomendationSelected, queryResults)
+                                if (fragmento != null) {
+                                    beforeBrowserOpenID = actualFragmentDisplayed
+                                    actualFragmentDisplayed = FRAGMENT_BROWSER_ID
+                                    changeActualFragment(fragmento)
+                                }
+                            } else Toast.makeText(this@HomeActivity, "Error", Toast.LENGTH_SHORT).show()
+                        })
                     }
                     return true
                 }
@@ -102,17 +118,24 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onBackPressed() {
-        val previousFragment = getFragmentFromID(beforeBrowserOpenID)
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
-        } else if (previousFragment != null) {
-            changeActualFragment(previousFragment)
-            actualFragmentDisplayed = beforeBrowserOpenID
-            beforeBrowserOpenID = -1
+        } else if (!searchView!!.isIconified) {
             searchView!!.setQuery("", false)
             searchView!!.isIconified = true
             searchView!!.clearFocus()
-        } else if (!searchView!!.isIconified) {
+            if (beforeBrowserOpenID != -1) {
+                getFragmentFromID(beforeBrowserOpenID,{changeActualFragment(it)})
+                actualFragmentDisplayed = beforeBrowserOpenID
+                beforeBrowserOpenID = -1
+                searchView!!.setQuery("", false)
+                searchView!!.isIconified = true
+                searchView!!.clearFocus()
+            }
+        } else if (beforeBrowserOpenID != -1) {
+            getFragmentFromID(beforeBrowserOpenID,{changeActualFragment(it)})
+            actualFragmentDisplayed = beforeBrowserOpenID
+            beforeBrowserOpenID = -1
             searchView!!.setQuery("", false)
             searchView!!.isIconified = true
             searchView!!.clearFocus()
@@ -131,42 +154,46 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         // Handle navigation view item clicks
-        val fragmento: Fragment? = when (item.itemId) {
+        when (item.itemId) {
             R.id.trends -> {
                 actualFragmentDisplayed = FRAGMENT_TREND_ID
                 beforeBrowserOpenID = -1
-                getFragmentFromID(actualFragmentDisplayed)
+                getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
 
             R.id.home -> {
                 actualFragmentDisplayed = FRAGMENT_HOME_ID
                 beforeBrowserOpenID = -1
-                getFragmentFromID(actualFragmentDisplayed)
+                getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
             R.id.news -> {
                 actualFragmentDisplayed = FRAGMENT_NEWS_ID
                 beforeBrowserOpenID = -1
-                getFragmentFromID(actualFragmentDisplayed)
+                getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
             R.id.genres -> {
                 actualFragmentDisplayed = FRAGMENT_GENRES_ID
                 beforeBrowserOpenID = -1
-                getFragmentFromID(actualFragmentDisplayed)
+                getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
-            else ->
-                null
-        }
-
-        if (fragmento != null) {
-            // Insert the fragment by replacing any existing fragment
-            changeActualFragment(fragmento)
-        } else {
-            when (item.itemId) {
-                R.id.playlist -> onSystemListSelected(0, this)
-                R.id.artist -> onSystemListSelected(1, this)
-                R.id.songs -> onSystemListSelected(2, this)
-
+            R.id.playlist -> onSystemListSelected(0, this)
+            R.id.artist -> onSystemListSelected(1, this)
+            R.id.songs -> onSystemListSelected(2, this)
+            R.id.downloaded -> onSystemListSelected(3, this)
+            R.id.open_profile -> {
+                obtainCurrentUserData({
+                    if (it != null)
+                        onUserSelected(it, this)
+                }, this)
             }
+            R.id.close_session -> {
+                doLogout(this)
+                val int = Intent(applicationContext, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(int)
+                finish()
+            }
+
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -180,47 +207,110 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 .commit()
     }
 
-    private fun getFragmentFromID(id: Int): Fragment? {
-        return when (id) {
+    private fun getFragmentFromID(id: Int, listener: (Fragment) -> Unit) {
+        when (id) {
             FRAGMENT_TREND_ID -> {
                 if (!fragmentHashMap.containsKey(id)) {
                     val mList = ArrayList<Pair<String, List<Recommendation>>>()
-                    mList.add(Pair(resources.getString(R.string.popular_now), obtainTrendSongs()))
-                    mList.add(Pair(resources.getString(R.string.popular_in_my_country), obtainTrendInMyCountry()))
-                    mList.add(Pair(resources.getString(R.string.popular_in_the_world), obtainPopularSongs()))
-                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                    // Mientras se carga se muestra una pantalla en blanco
+                    listener(HomeBaseFragment.newInstance(onRecomendationSelected, mList))
+
+                    obtainTrendSongs(this, {
+                        val trendSongs = it
+                        obtainTrendInMyCountry(this, {
+                            val trendInMyCountry = it
+                            obtainPopularSongs(this, {
+                                val popularSongs = it
+                                if (popularSongs == null || trendInMyCountry == null || trendSongs == null) {
+                                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    mList.add(Pair(resources.getString(R.string.popular_now), trendSongs))
+                                    mList.add(Pair(resources.getString(R.string.popular_in_my_country), trendInMyCountry))
+                                    mList.add(Pair(resources.getString(R.string.popular_in_the_world), popularSongs))
+                                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                                    listener(fragmentHashMap[id]!!)
+                                }
+                            })
+                        })
+                    })
+                } else {
+                    listener(fragmentHashMap[id]!!)
                 }
-                fragmentHashMap[id]
             }
 
             FRAGMENT_HOME_ID -> {
                 if (!fragmentHashMap.containsKey(id)) {
                     val mList = ArrayList<Pair<String, List<Recommendation>>>()
-                    mList.add(Pair(resources.getString(R.string.recommendations), obtainRecommendations()))
-                    mList.add(Pair(resources.getString(R.string.news), obtainNewsSongs()))
-                    mList.add(Pair(resources.getString(R.string.populars), obtainPopularSongs()))
-                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                    // Mientras se carga se muestra una pantalla en blanco
+                    listener(HomeBaseFragment.newInstance(onRecomendationSelected, mList))
+
+                    obtainRecommendations(this, {
+                        val recommendations = it
+                        obtainNewsSongs(this, {
+                            val newsSongs = it
+                            obtainPopularSongs(this, {
+                                val popularSongs = it
+                                if (popularSongs == null || recommendations == null || newsSongs == null) {
+                                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    mList.add(Pair(resources.getString(R.string.recommendations), recommendations))
+                                    mList.add(Pair(resources.getString(R.string.new_songs), newsSongs))
+                                    mList.add(Pair(resources.getString(R.string.popular_in_the_world), popularSongs))
+                                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                                    listener(fragmentHashMap[id]!!)
+                                }
+                            })
+                        })
+                    })
+                } else {
+                    listener(fragmentHashMap[id]!!)
                 }
-                fragmentHashMap[id]
             }
 
             FRAGMENT_NEWS_ID -> {
                 if (!fragmentHashMap.containsKey(id)) {
                     val mList = ArrayList<Pair<String, List<Recommendation>>>()
-                    mList.add(Pair(resources.getString(R.string.playlist_updates), obtainUpdatedPlaylists()))
-                    mList.add(Pair(resources.getString(R.string.new_songs), obtainNewsSongs()))
-                    fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                    // Mientras se carga se muestra una pantalla en blanco
+                    listener(HomeBaseFragment.newInstance(onRecomendationSelected, mList))
+
+                    obtainUpdatedPlaylists(this, {
+                        val updatedPlaylists = it
+                        obtainNewsSongs(this, {
+                            val newsSongs = it
+                            if (updatedPlaylists == null || newsSongs == null) {
+                                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                            } else {
+                                mList.add(Pair(resources.getString(R.string.new_songs), newsSongs))
+                                mList.add(Pair(resources.getString(R.string.playlist_updates), updatedPlaylists))
+                                fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, mList)
+                                listener(fragmentHashMap[id]!!)
+                            }
+                        })
+                    })
+                } else {
+                    listener(fragmentHashMap[id]!!)
                 }
-                fragmentHashMap[id]
             }
 
             FRAGMENT_GENRES_ID -> {
-                if (!fragmentHashMap.containsKey(id)) fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, obtainPopularByGenre())
-                fragmentHashMap[id]
-            }
+                if (!fragmentHashMap.containsKey(id)) {
+                    val mList = ArrayList<Pair<String, List<Recommendation>>>()
+                    // Mientras se carga se muestra una pantalla en blanco
+                    listener(HomeBaseFragment.newInstance(onRecomendationSelected, mList))
 
-            else ->
-                null
+                    obtainPopularByGenre(this, {
+                        val popularByGenre = it
+                        if (popularByGenre == null) {
+                            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                        } else {
+                            fragmentHashMap[id] = HomeBaseFragment.newInstance(onRecomendationSelected, popularByGenre)
+                            listener(fragmentHashMap[id]!!)
+                        }
+                    })
+                } else {
+                    listener(fragmentHashMap[id]!!)
+                }
+            }
         }
     }
 

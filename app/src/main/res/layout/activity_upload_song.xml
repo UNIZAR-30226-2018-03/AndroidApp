@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimaryDark"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.UploadSongActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
+
+        <EditText
+            android:id="@+id/newSongName"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="64dp"
+            android:background="@drawable/trans_rounded_white"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_music_note_black_24dp"
+            android:ems="10"
+            android:hint="@string/newSongName"
+            android:inputType="textPersonName"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/albumEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/trans_rounded_white"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_view_module_black_24dp"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/album"
+            android:onClick="selectAlbum"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/newSongName" />
+
+
+        <EditText
+            android:id="@+id/generoEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/trans_rounded_white"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_view_module_black_24dp"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/genre"
+            android:onClick="selectGenre"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/albumEditText" />
+
+
+        <EditText
+            android:id="@+id/lyricsEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/trans_rounded_white"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/baseline_drag_handle_black_24"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/letras"
+            android:onClick="selectLyrics"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/audioEditText" />
+
+        <EditText
+            android:id="@+id/audioEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/trans_rounded_white"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/baseline_headset_black_24"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/audio"
+            android:onClick="selectAudio"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/generoEditText" />
+
+        <Button
+            android:id="@+id/continueButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/rounded_white"
+            android:onClick="onContinueClick"
+            android:text="@string/create"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
