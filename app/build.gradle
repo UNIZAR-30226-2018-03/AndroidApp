@@ -29,17 +29,6 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    // Dependencies for AWS and S3
-    compile 'com.amazonaws:aws-android-sdk-core:2.6.18'
-
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    testCompile 'junit:junit:4.12'
-    implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
 
     //https://github.com/hdodenhof/CircleImageView
     implementation 'de.hdodenhof:circleimageview:2.2.0'
@@ -63,6 +52,9 @@ dependencies {
     implementation 'android.arch.persistence.room:runtime:1.0.0'
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 
+    // Dependencies for AWS and S3
+    implementation 'com.amazonaws:aws-android-sdk-core:2.6.18'
+    implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
 
     // Tests
     testImplementation 'junit:junit:4.12'

@@ -118,6 +118,20 @@ fun obtainResultFromQuery(query: String,activity: Activity, listener: (List<Reco
     }.start()
 }
 
+fun obtainSongsFromQuery(query: String,activity: Activity, listener: (List<Recommendation>?) -> Unit) {
+    Thread {
+        val resultado = try {
+            obtainResultForQueryServer(25,query, 1)
+        } catch (e: Exception) {
+            null
+        }
+        activity.runOnUiThread {
+            listener(resultado)
+        }
+
+    }.start()
+}
+
 // Obtain Songs to show in Popular by genre screen
 fun obtainPopularByGenre(activity: Activity, listener: (List<Pair<String, List<Recommendation>>>?) -> Unit){
     Thread {

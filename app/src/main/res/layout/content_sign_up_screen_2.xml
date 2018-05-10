@@ -9,12 +9,12 @@
     tools:context=".activities.SignUpActivity">
 
     <EditText
-        android:id="@+id/nameEditText"
+        android:id="@+id/realnameEditText"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="96dp"
         android:background="@drawable/trans_rounded_white"
         android:drawablePadding="5dp"
         android:drawableStart="@drawable/ic_account_circle_black_24dp"
@@ -41,12 +41,14 @@
         android:ems="10"
         android:hint="@string/birth_date"
         android:inputType="date"
+        android:focusable="false"
+        android:clickable="true"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/realnameEditText" />
 
     <EditText
         android:id="@+id/twitterAccountEditText"
@@ -109,7 +111,7 @@
         app:layout_constraintTop_toBottomOf="@+id/instagramAccountEditText" />
 
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/createUserButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -117,8 +119,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="104dp"
         android:background="@drawable/rounded_white"
-        android:text="Crear"
-        android:onClick="onCreateClick"
+        android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

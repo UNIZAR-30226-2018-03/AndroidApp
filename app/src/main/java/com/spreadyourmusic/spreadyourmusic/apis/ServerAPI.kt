@@ -1,58 +1,11 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
 import com.spreadyourmusic.spreadyourmusic.models.*
-import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import com.amazonaws.ClientConfiguration
-import com.amazonaws.Protocol
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.util.StringUtils;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 /**
  * Created by abel on 8/03/18.
  */
-
-
-/*'use strict';
-TODO(Revisar este código)
-var url = require('url');
-var target = 'http://www.yourwebsite.com'; // Change this one
-
-exports.handler = function(event, context, callback) {
-    var urlObject = url.parse(target);
-    var mod = require(
-            urlObject.protocol.substring(0, urlObject.protocol.length - 1)
-    );
-    console.log('[INFO] - Checking ' + target);
-    var req = mod.request(urlObject, function(res) {
-        res.setEncoding('utf8');
-        res.on('data', function(chunk) {
-            console.log('[INFO] - Read body chunk');
-        });
-        res.on('end', function() {
-            console.log('[INFO] - Response end');
-            callback();
-        });
-    });
-
-    req.on('error', function(e) {
-        console.log('[ERROR] - ' + e.message);
-        callback(e);
-    });
-    req.end();
-}; */
 
 /**
  * Devuelve true si se puede acceder al servidor, false en caso contrario
@@ -85,18 +38,31 @@ fun doLoginServer(username: String, password: String): String {
 @Throws(Exception::class)
 fun doSignUpServer(user: User): String {
     //TODO:
-    Thread.sleep(300)
-    return "dfsdfdsdf"
+    if (!ServerEmulator.userList.containsKey(user.username)) {
+        ServerEmulator.userList[user.username] = user
+        Thread.sleep(300)
+        return "dfsdfdsdf"
+    } else {
+        throw Exception("Error")
+    }
 }
 
 /**
  * Elimina cuenta servidor
  */
 @Throws(Exception::class)
-fun doDeleteAccountServer(user: String, sessionToken: String): Boolean {
+fun doDeleteAccountServer(user: String, sessionToken: String){
     //TODO:
     Thread.sleep(300)
-    return true
+}
+
+/**
+ * Elimina cuenta servidor
+ */
+@Throws(Exception::class)
+fun doUpdateAccountServer(user: User, sessionToken: String){
+    //TODO:
+    Thread.sleep(300)
 }
 
 /**
@@ -322,13 +288,21 @@ fun obtainPlaylistDataServer(id: Long): Playlist? {
     return ServerEmulator.playlistList[id]
 }
 
+/**
+ * Devuelve el id e la cancion creada
+ * Atención: El id lo ha de devolver la llamada al servidor, el id del parametro song siempre tendra un valor indefinido
+ */
 @Throws(Exception::class)
-fun uploadSongServer(username: String, sessionToken: String, song: Song){
+fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
+    val id = ServerEmulator.songList.size + 30
+    song.id = id.toLong()
+    ServerEmulator.songList[song.id] = song
+    return song.id
 //TODO:
 }
 
 @Throws(Exception::class)
-fun deleteSongServer(username: String, sessionToken: String, song: Song){
+fun deleteSongServer(username: String, sessionToken: String, song: Song) {
     ServerEmulator.songList.remove(song.id)
 //TODO:
 }
@@ -436,30 +410,31 @@ fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? 
  * Crea una lista en el servidor
  */
 @Throws(Exception::class)
-fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist): Long {
 //TODO:
     val position = ServerEmulator.playlistList.size + 4
     playlist.id = position.toLong()
     ServerEmulator.playlistList[playlist.id!!] = playlist
+    return playlist.id!!
 }
 
 /**
  * Elimina una lista en el servidor
  */
 @Throws(Exception::class)
-fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
+fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
 //TODO:
-    if(ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)){
+    if (ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)) {
         ServerEmulator.playlistList.remove(playlist.id)
-        for (i in ServerEmulator.playlistSeguidos.values){
-            for (j in i){
-                if(j.id == playlist.id){
+        for (i in ServerEmulator.playlistSeguidos.values) {
+            for (j in i) {
+                if (j.id == playlist.id) {
                     i.remove(j)
                     break
                 }
             }
         }
-    }else{
+    } else {
         throw Exception("Error")
     }
 }
@@ -468,7 +443,7 @@ fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playl
  * Actualiza una lista en el servidor
  */
 @Throws(Exception::class)
-fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist){
+fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
 //TODO:
 }
 
@@ -485,10 +460,23 @@ fun obtainAlbumsFromUserServer(username: String): List<Album> {
 }
 
 
+/**
+ * Obtiene la información asociada a la playlist con id @id
+ * Warning: esta operación puede ser costosa en tiempo
+ */
 @Throws(Exception::class)
-fun createAlbumsServer(username: String, sessionToken: String, album: Album) {
+fun obtainAlbumDataServer(id: Long): Album? {
     //TODO:
+    return ServerEmulator.albumList[id.toInt()]
+}
+
+@Throws(Exception::class)
+fun createAlbumsServer(username: String, sessionToken: String, album: Album): Long {
+    //TODO: Aqui se hace ka parte de subir la imagen a los servers de Pini
+    val albumid = ServerEmulator.albumList.size
+    album.id = albumid.toLong()
     ServerEmulator.albumList.add(album)
+    return album.id!!
 }
 
 @Throws(Exception::class)

@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimaryDark"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.UploadSongActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/login_bg"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".activities.UploadSongActivity">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
 
         <EditText
             android:id="@+id/newSongName"
@@ -14,7 +38,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="64dp"
             android:background="@drawable/trans_rounded_white"
             android:drawablePadding="5dp"
             android:drawableStart="@drawable/ic_music_note_black_24dp"
@@ -26,141 +50,111 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-             />
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_1"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/newSongName"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:paddingStart="40dp">
-
-        <TextView
-            android:id="@+id/textAlbum"
-            android:text="@string/album"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
+        <EditText
+            android:id="@+id/albumEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/trans_rounded_white"
-            />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/textAlbum"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_view_module_black_24dp"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/album"
+            android:onClick="selectAlbum"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newSongName" />
 
-    </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_2"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/layout_1"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:paddingStart="40dp">
-
-        <TextView
-            android:id="@+id/genero"
-            android:text="@string/genero"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
+        <EditText
+            android:id="@+id/generoEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/trans_rounded_white"
-            />
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_view_module_black_24dp"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/genre"
+            android:onClick="selectGenre"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/albumEditText" />
 
-        <Spinner
-            android:id="@+id/spinnerGenero"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/textAlbum"
-            app:layout_constraintTop_toBottomOf="@+id/newSongName" />
 
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_3"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/layout_2"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:paddingStart="40dp">
-
-        <TextView
-            android:id="@+id/lyrics"
-            android:text="@string/letras"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
+        <EditText
+            android:id="@+id/lyricsEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/trans_rounded_white"
-            />
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/baseline_drag_handle_black_24"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/letras"
+            android:onClick="selectLyrics"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/audioEditText" />
+
+        <EditText
+            android:id="@+id/audioEditText"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/trans_rounded_white"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/baseline_headset_black_24"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/audio"
+            android:onClick="selectAudio"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/generoEditText" />
 
         <Button
-            android:text="@string/seleccionar"
-            android:id="@+id/lyricsSelector"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_4"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/layout_3"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:paddingStart="40dp">
-
-        <TextView
-            android:id="@+id/audio"
-            android:text="@string/audio"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/trans_rounded_white"
-            />
-
-        <Button
-            android:text="@string/seleccionar"
-            android:id="@+id/audioSelector"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            />
-
-    </LinearLayout>
-
-        <Button
-
             android:id="@+id/continueButton"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="24dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="104dp"
             android:background="@drawable/rounded_white"
-            android:text="@string/continuar"
             android:onClick="onContinueClick"
+            android:text="@string/create"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newSongName"
-             />
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

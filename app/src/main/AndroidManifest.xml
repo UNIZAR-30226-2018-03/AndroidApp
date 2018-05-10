@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!-- Necesario para implementar el visualizador de sonido -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -41,9 +40,7 @@
             android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.PlayerActivity"
             android:label=""
@@ -64,6 +61,19 @@
             android:label="Playlist"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.CreatePlaylistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".activities.CreateAlbumActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.UploadSongActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".services.MusicService"
@@ -73,13 +83,5 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-
-        <activity android:name=".activities.CreatePlaylistActivity" />
-
-        <activity
-            android:name=".activities.CreateAlbumActivity" />
-        <activity android:name=".activities.UploadSongActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
     </application>
 </manifest>

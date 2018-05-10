@@ -42,6 +42,27 @@ class User(val username: String) : Recommendation {
         this.birthDate = birthDate
     }
 
+    constructor(username: String, name: String, pictureLocationUri: String,
+                email: String?, biography: String?, birthDate: Date?) : this(username) {
+        this.name = name
+        this.email = email
+        this.pictureLocationUri = pictureLocationUri
+        this.verifiedAccount = false
+        this.biography = biography
+        this.birthDate = birthDate
+    }
+
+    constructor(username: String, password: String, name: String, pictureLocationUri: String,
+                email: String?, biography: String?, birthDate: Date?) : this(username) {
+        this.password = password
+        this.name = name
+        this.email = email
+        this.pictureLocationUri = pictureLocationUri
+        this.verifiedAccount = false
+        this.biography = biography
+        this.birthDate = birthDate
+    }
+
     fun getTwitterAccountURL(): String? {
         return if (twitterAccount != null) "https://twitter.com/$twitterAccount"
         else null

@@ -65,21 +65,3 @@ fun obtainAlbumsFromUser(user: User, activity: Activity, listener: (List<Album>?
         }
     }.start()
 }
-
-fun addAlbumToUser(user: User, activity: Activity, album:Album){
-    Thread {
-        try {
-            createAlbumsServer(user.username!!,SessionSingleton.sessionToken!!,album)
-            } catch (e: Exception) {
-        }
-    }.start()
-}
-
-fun addSongToUser(user: User, activity: Activity, song: Song){
-    Thread {
-        try {
-            addSongToUserServer(user.username!!,song)
-        } catch (e: Exception) {
-        }
-    }.start()
-}
