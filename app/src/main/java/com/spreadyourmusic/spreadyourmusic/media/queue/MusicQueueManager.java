@@ -1,4 +1,4 @@
-package com.spreadyourmusic.spreadyourmusic.media.playback;
+package com.spreadyourmusic.spreadyourmusic.media.queue;
 
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;

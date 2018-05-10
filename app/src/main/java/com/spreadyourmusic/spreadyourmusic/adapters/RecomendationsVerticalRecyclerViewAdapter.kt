@@ -95,9 +95,9 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
     inner class SongHomeRecyclerViewViewHolder(itemView: View) : GeneralRecyclerViewViewHolder(itemView) {
         override fun bind(obj: Any) {
             if (obj is Song) {
-                val titulo = itemView.findViewById<View>(R.id.nombre_cancion) as TextView
-                val autor = itemView.findViewById<View>(R.id.nombre_artista) as TextView
-                val imagen = itemView.findViewById<View>(R.id.caratula) as ImageView
+                val titulo = itemView.findViewById<View>(R.id.songNameTextView) as TextView
+                val autor = itemView.findViewById<View>(R.id.creatorNameTextView) as TextView
+                val imagen = itemView.findViewById<View>(R.id.coverCircleImageView) as ImageView
                 titulo.text = obj.name
                 autor.text = obj.album.creator.username
                 if (context != null)
@@ -122,8 +122,8 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
     inner class UserHomeRecyclerViewViewHolder(itemView: View) : GeneralRecyclerViewViewHolder(itemView) {
         override fun bind(obj: Any) {
             if (obj is User) {
-                val usuario = itemView.findViewById<View>(R.id.nombre_artista) as TextView
-                val imagen = itemView.findViewById<View>(R.id.foto_perfil) as de.hdodenhof.circleimageview.CircleImageView
+                val usuario = itemView.findViewById<View>(R.id.creatorNameTextView) as TextView
+                val imagen = itemView.findViewById<View>(R.id.coverCircleImageView) as de.hdodenhof.circleimageview.CircleImageView
                 usuario.text = obj.username
                 if (context != null)
                     Glide.with(context).load(obj.pictureLocationUri).into(imagen)
@@ -145,9 +145,9 @@ class RecomendationsVerticalRecyclerViewAdapter(val context: Context?) : Recycle
     inner class PlaylistHomeRecyclerViewViewHolder(itemView: View) : GeneralRecyclerViewViewHolder(itemView) {
         override fun bind(obj: Any) {
             if (obj is Playlist) {
-                val usuario = itemView.findViewById<View>(R.id.nombre_artista) as TextView
+                val usuario = itemView.findViewById<View>(R.id.creatorNameTextView) as TextView
                 val titulo = itemView.findViewById<View>(R.id.nombre_playlist) as TextView
-                val imagen = itemView.findViewById<View>(R.id.caratula) as de.hdodenhof.circleimageview.CircleImageView
+                val imagen = itemView.findViewById<View>(R.id.coverCircleImageView) as de.hdodenhof.circleimageview.CircleImageView
                 usuario.text = obj.creator.username
                 titulo.text = obj.name
                 if (context != null)

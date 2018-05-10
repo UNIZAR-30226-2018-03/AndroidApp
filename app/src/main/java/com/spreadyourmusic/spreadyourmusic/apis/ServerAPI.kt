@@ -11,7 +11,6 @@ import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
  * Devuelve true si se puede acceder al servidor, false en caso contrario
  * Warning: esta operación puede ser costosa en tiempo
  */
-
 fun isServerOnline(): Boolean {
     // TODO:
     return true
@@ -34,6 +33,8 @@ fun doLoginServer(username: String, password: String): String {
 
 /**
  * Realiza una creación de usuario en el servidor y devuelve el token de sesión
+ * Sube los datos tanto al back-end (nombre, ...) como la foto de perfil al servidor de
+ * almacenamiento
  */
 @Throws(Exception::class)
 fun doSignUpServer(user: User): String {
@@ -49,18 +50,21 @@ fun doSignUpServer(user: User): String {
 
 /**
  * Elimina cuenta servidor
+ * Elimina los datos tanto del back-end como la carátula del servidor de almacenamiento
  */
 @Throws(Exception::class)
-fun doDeleteAccountServer(user: String, sessionToken: String){
+fun doDeleteAccountServer(user: String, sessionToken: String) {
     //TODO:
     Thread.sleep(300)
 }
 
 /**
  * Elimina cuenta servidor
+ * Sube los datos tanto al back-end (nombre, ...) como la foto de perfil al servidor de
+ * almacenamiento
  */
 @Throws(Exception::class)
-fun doUpdateAccountServer(user: User, sessionToken: String){
+fun doUpdateAccountServer(user: User, sessionToken: String) {
     //TODO:
     Thread.sleep(300)
 }
@@ -96,10 +100,6 @@ fun obtainSongsFromUserServer(username: String): List<Song> {
         }
     }
     return resultado
-}
-
-fun addSongToUserServer(username: String, song: Song) {
-    ServerEmulator.songList.put(song.id, song)
 }
 
 fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
@@ -141,14 +141,6 @@ fun isUserFollowedByUserServer(username: String, user: String): Boolean {
     }
 }
 
-/**
- * Devuelve una lista con los usuarios que siguen al usuario @username
- */
-@Throws(Exception::class)
-fun getFollowersOfUserServer(username: String): List<User> {
-    //TODO:
-    return ArrayList()
-}
 
 /**
  * Devuelve el numero de seguidores del usuario @username
@@ -200,14 +192,6 @@ fun isPlaylistFollowedByUserServer(username: String, playlist: Long): Boolean {
     return false
 }
 
-/**
- * Devuelve una lista con los usuarios que siguen a la playlist @playlist
- */
-@Throws(Exception::class)
-fun getFollowersOfPlaylistServer(playlist: Long): List<User> {
-//TODO:
-    return ArrayList()
-}
 
 /**
  * Devuelve el numero de seguidores de la playlist @playlist
@@ -289,8 +273,10 @@ fun obtainPlaylistDataServer(id: Long): Playlist? {
 }
 
 /**
- * Devuelve el id e la cancion creada
- * Atención: El id lo ha de devolver la llamada al servidor, el id del parametro song siempre tendra un valor indefinido
+ * Sube una canción al servidor y devuelve el id e la cancion creada.
+ * Sube los datos tanto al back-end (título, autor, ...) como el fichero de audio y las letras en caso de que existan al servidor de
+ * almacenamiento
+ * Atención: El id lo ha de devolver la llamada al servidor, el id del parametro @song siempre tendra un valor indefinido
  */
 @Throws(Exception::class)
 fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
@@ -301,6 +287,9 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
 //TODO:
 }
 
+/**
+ * Elimina los datos tanto del back-end como del servidor de almacenamiento
+ */
 @Throws(Exception::class)
 fun deleteSongServer(username: String, sessionToken: String, song: Song) {
     ServerEmulator.songList.remove(song.id)
@@ -408,6 +397,8 @@ fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? 
 
 /**
  * Crea una lista en el servidor
+ * Sube los datos tanto al back-end (nombre, autor, ...) como la carátula al servidor de
+ * almacenamiento
  */
 @Throws(Exception::class)
 fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist): Long {
@@ -420,6 +411,7 @@ fun createPlaylistServer(username: String, sessionToken: String, playlist: Playl
 
 /**
  * Elimina una lista en el servidor
+ * Elimina los datos tanto en el back-end como la carátula en el servidor de almacenamiento
  */
 @Throws(Exception::class)
 fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
@@ -441,6 +433,8 @@ fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playl
 
 /**
  * Actualiza una lista en el servidor
+ * Sube los datos tanto al back-end (nombre, autor, ...) como la carátula al servidor de
+ * almacenamiento
  */
 @Throws(Exception::class)
 fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
@@ -459,17 +453,10 @@ fun obtainAlbumsFromUserServer(username: String): List<Album> {
     return ServerEmulator.albumList
 }
 
-
 /**
- * Obtiene la información asociada a la playlist con id @id
- * Warning: esta operación puede ser costosa en tiempo
+ * Sube los datos tanto al back-end (nombre, autor, ...) como la carátula al servidor de
+ * almacenamiento
  */
-@Throws(Exception::class)
-fun obtainAlbumDataServer(id: Long): Album? {
-    //TODO:
-    return ServerEmulator.albumList[id.toInt()]
-}
-
 @Throws(Exception::class)
 fun createAlbumsServer(username: String, sessionToken: String, album: Album): Long {
     //TODO: Aqui se hace ka parte de subir la imagen a los servers de Pini
@@ -478,17 +465,6 @@ fun createAlbumsServer(username: String, sessionToken: String, album: Album): Lo
     ServerEmulator.albumList.add(album)
     return album.id!!
 }
-
-@Throws(Exception::class)
-fun updateAlbumsServer(username: String, sessionToken: String, album: Album) {
-    //TODO:
-}
-
-@Throws(Exception::class)
-fun deleteAlbumsServer(username: String, sessionToken: String, album: Album) {
-    //TODO:
-}
-
 
 
 

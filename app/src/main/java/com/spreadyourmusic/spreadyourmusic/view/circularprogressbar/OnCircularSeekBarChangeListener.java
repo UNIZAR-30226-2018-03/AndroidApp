@@ -2,7 +2,7 @@
  * Fichero importado de https://github.com/AbelChT/circular-music-progressbar
  */
 
-package com.spreadyourmusic.spreadyourmusic.circularprogressbar;
+package com.spreadyourmusic.spreadyourmusic.view.circularprogressbar;
 
 /**
  * A callback that notifies clients when the progress level has been changed.

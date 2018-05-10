@@ -27,8 +27,7 @@ import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
 class LoginActivity : AppCompatActivity() {
 
-    private val RC_SIGN_IN = 9001
-
+    private val rcSignIn = 9001
     private var mGoogleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun loginGoogleAction(v: View){
         val signInIntent = mGoogleSignInClient!!.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        startActivityForResult(signInIntent, rcSignIn)
     }
 
     private fun openHomeActivity(){
@@ -92,35 +91,11 @@ class LoginActivity : AppCompatActivity() {
         startActivity(int)
     }
 
-    fun randomBackgroundColorGenerator(v: View){
-        val randomGenerator = Random()
-        val red:Int = randomGenerator.nextInt(180)
-        val green:Int = randomGenerator.nextInt(180)
-        val blue:Int = randomGenerator.nextInt(180)
-
-        val maxRed:Int = red + randomGenerator.nextInt(256-red)
-        val maxGreen:Int = red + randomGenerator.nextInt(256-green)
-        val maxBlue:Int = red + randomGenerator.nextInt(256-blue)
-
-        val cambiar:Int = randomGenerator.nextInt(3)
-        val startColor:Int = 255 and 0xff shl 24 or (red and 0xff shl 16) or (green and 0xff shl 8) or (maxBlue and 0xff)
-
-        val finalColor:Int =  when(cambiar){
-            0 -> 255 and 0xff shl 24 or (red and 0xff shl 16) or (green and 0xff shl 8) or (blue and 0xff)
-            1 -> 255 and 0xff shl 24 or (red and 0xff shl 16) or (maxGreen and 0xff shl 8) or (blue and 0xff)
-            else -> 255 and 0xff shl 24 or (maxRed and 0xff shl 16) or (green and 0xff shl 8) or (maxBlue and 0xff)
-        }
-
-        val i:IntArray = intArrayOf(startColor, finalColor)
-        val mDrawable = GradientDrawable(GradientDrawable.Orientation .BOTTOM_TOP,i)
-        findViewById<View>(R.id.fondo).background = mDrawable
-    }
-
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == rcSignIn) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)

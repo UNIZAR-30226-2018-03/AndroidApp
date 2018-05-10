@@ -1,9 +1,8 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
-import android.widget.Toast
 import com.spreadyourmusic.spreadyourmusic.apis.*
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 

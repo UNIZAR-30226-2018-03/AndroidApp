@@ -6,7 +6,7 @@ package com.spreadyourmusic.spreadyourmusic.models
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
-import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource
+import com.spreadyourmusic.spreadyourmusic.media.common.MusicProviderSource
 import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
 
 /**

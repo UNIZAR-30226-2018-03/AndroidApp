@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryDark"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/foto_perfil"
+        android:id="@+id/coverCircleImageView"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginEnd="8dp"
@@ -21,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/newPlaylistName"
+        android:id="@+id/nameEditText"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
@@ -29,16 +28,16 @@
         android:layout_marginTop="68dp"
         android:background="@drawable/trans_rounded_white"
         android:drawablePadding="5dp"
-        android:ems="10"
-        android:hint="@string/nueva_playlist"
-        android:inputType="textPersonName"
         android:drawableStart="@drawable/ic_view_module_black_24dp"
+        android:ems="10"
+        android:hint="@string/name"
+        android:inputType="textPersonName"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/foto_perfil" />
+        app:layout_constraintTop_toBottomOf="@+id/coverCircleImageView" />
 
     <TextView
         android:id="@+id/textView"
@@ -52,10 +51,10 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newPlaylistName" />
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/browsedRecyclerView"
+        android:id="@+id/browsedSongsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -76,10 +75,10 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/browsedRecyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/browsedSongsRecyclerView" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/selectedRecyclerView"
+        android:id="@+id/selectedSongsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -88,7 +87,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
-        android:id="@+id/continuePlaylistButton"
+        android:id="@+id/createButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -99,10 +98,10 @@
         android:clickable="true"
         android:focusable="true"
         android:onClick="onCreateClick"
-        android:text="@string/continuar"
+        android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectedRecyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/selectedSongsRecyclerView" />
 
 </android.support.constraint.ConstraintLayout>
