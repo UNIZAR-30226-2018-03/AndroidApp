@@ -309,7 +309,7 @@ class UserActivity : BaseActivity() {
         builder.show()
     }
 
-    private fun stopSongReproduction(){
+    private fun stopSongReproduction() {
         val mediaController = MediaControllerCompat.getMediaController(this)
         mediaController.transportControls.stop()
     }

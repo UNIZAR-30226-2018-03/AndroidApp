@@ -125,14 +125,14 @@ class SignUpActivity : AppCompatActivity() {
                     userPictureLocationUri = it.pictureLocationUri
 
                     fragmentPage1 = FragmentSignUpPage1.newInstance(username, mail, userPictureLocationUri, true, onContinueFunction)
-                    fragmentPage2 = FragmentSignUpPage2.newInstance(realname, userBirth, userTwitterAccount, userInstagramAccount, userFacebookAccount,true, onCreateFunction)
+                    fragmentPage2 = FragmentSignUpPage2.newInstance(realname, userBirth, userTwitterAccount, userInstagramAccount, userFacebookAccount, true, onCreateFunction)
                     changeActualFragment(fragmentPage1!!)
                 }
 
             }, this)
         } else {
             fragmentPage1 = FragmentSignUpPage1.newInstance(null, null, null, false, onContinueFunction)
-            fragmentPage2 = FragmentSignUpPage2.newInstance(null, null, null, null, null,false, onCreateFunction)
+            fragmentPage2 = FragmentSignUpPage2.newInstance(null, null, null, null, null, false, onCreateFunction)
             changeActualFragment(fragmentPage1!!)
         }
     }
@@ -248,7 +248,7 @@ class SignUpActivity : AppCompatActivity() {
             view.facebookAccountEditText.setText(userFacebookAccount)
             view.createUserButton.setOnClickListener { onCreateClick() }
             view.birthDateEditText.setOnClickListener { onSelectDate() }
-            if(isEdition)
+            if (isEdition)
                 view.createUserButton.setText(R.string.update)
             return view
         }
@@ -278,7 +278,7 @@ class SignUpActivity : AppCompatActivity() {
 
         companion object {
             fun newInstance(realname: String?, userBirth: Date?, userTwitterAccount: String?, userInstagramAccount: String?,
-                            userFacebookAccount: String?,isEdition: Boolean, l: (String?, Date?, String?, String?, String?) -> Unit): FragmentSignUpPage2 {
+                            userFacebookAccount: String?, isEdition: Boolean, l: (String?, Date?, String?, String?, String?) -> Unit): FragmentSignUpPage2 {
                 val frag = FragmentSignUpPage2()
                 frag.realname = realname
                 frag.userBirth = userBirth

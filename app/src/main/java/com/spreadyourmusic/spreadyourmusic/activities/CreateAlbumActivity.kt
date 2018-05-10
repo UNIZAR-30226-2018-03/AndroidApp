@@ -13,17 +13,16 @@ import com.spreadyourmusic.spreadyourmusic.controller.obtainCurrentUserData
 import com.spreadyourmusic.spreadyourmusic.helpers.getPathFromUri
 import com.spreadyourmusic.spreadyourmusic.models.Album
 import kotlinx.android.synthetic.main.content_create_album.*
+import kotlinx.android.synthetic.main.activity_create_album.*
 import java.util.*
 
 class CreateAlbumActivity : AppCompatActivity() {
-    var imagePath: String? = null
-    var selectPictureCode: Int = 567
+    private var imagePath: String? = null
+    private var selectPictureCode: Int = 567
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_album)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
         toolbar.setTitle(R.string.create_album)
         setSupportActionBar(toolbar)
@@ -31,24 +30,20 @@ class CreateAlbumActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     fun onProfilePictureClick(v: View) {
-        val intent = Intent()
-                .setType("image/*")
-                .setAction(Intent.ACTION_GET_CONTENT)
+        val intent = Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT)
         startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectPictureCode)
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) {
             onSelectFailure()
         } else if (requestCode == selectPictureCode) {
-            imagePath = getPathFromUri(this,data!!.data)
+            imagePath = getPathFromUri(this, data!!.data)
             if (imagePath != null) {
                 Glide.with(this).load(imagePath).into(coverCircleImageView)
             }
@@ -72,9 +67,9 @@ class CreateAlbumActivity : AppCompatActivity() {
                 createAlbum(newAlbum, this, { error, idAlbum ->
                     if (!error.isNullOrEmpty()) {
                         Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
-                    } else{
+                    } else {
                         val passIntent = Intent()
-                        passIntent.putExtra(resources.getString(R.string.album_id),idAlbum)
+                        passIntent.putExtra(resources.getString(R.string.album_id), idAlbum)
                         passIntent.putExtra(resources.getString(R.string.album_name), albumName)
                         setResult(RESULT_OK, passIntent)
                         finish()

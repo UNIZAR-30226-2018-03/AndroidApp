@@ -22,7 +22,7 @@ import kotlin.collections.ArrayList
 
 class CreatePlaylistActivity : AppCompatActivity() {
     private var pathCover: String? = null
-    private val selectPortada: Int = 455
+    private val selectCover: Int = 455
 
     private lateinit var recyclerViewAdapterSelected: RecomendationsVerticalRecyclerViewAdapter
     private lateinit var recyclerViewAdapterBrowsed: RecomendationsVerticalRecyclerViewAdapter
@@ -39,11 +39,10 @@ class CreatePlaylistActivity : AppCompatActivity() {
 
         playlistId = intent.getLongExtra(resources.getString(R.string.playlist_id), 0)
 
-        if (playlistId != 0L){
+        if (playlistId != 0L) {
             toolbar.setTitle(R.string.update_playlist)
             createButton.setText(R.string.update)
-        }
-        else
+        } else
             toolbar.setTitle(R.string.create_playlist)
 
         setSupportActionBar(toolbar)
@@ -145,7 +144,7 @@ class CreatePlaylistActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) {
             onSelectFailure()
-        } else if (requestCode == selectPortada) {
+        } else if (requestCode == selectCover) {
             pathCover = getPathFromUri(this, data!!.data)
 
             if (pathCover != null) {
@@ -162,7 +161,7 @@ class CreatePlaylistActivity : AppCompatActivity() {
         val intent = Intent()
                 .setType("image/*")
                 .setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectPortada)
+        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectCover)
     }
 
     fun onCreateClick(v: View) {

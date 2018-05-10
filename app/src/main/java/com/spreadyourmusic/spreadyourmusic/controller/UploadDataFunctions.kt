@@ -68,7 +68,7 @@ fun updatePlaylist(playlist: Playlist, activity: Activity, listener: (String?) -
 fun createSong(user: User, song: Song, activity: Activity, listener: (String?) -> Unit) {
     Thread {
         val resultado = try {
-            addSongToUserServer(user.username, song)
+            uploadSongServer(user.username,SessionSingleton.sessionToken!!, song)
             null
         } catch (e: Exception) {
             e.message
