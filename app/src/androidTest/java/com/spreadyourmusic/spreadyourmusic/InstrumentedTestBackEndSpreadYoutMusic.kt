@@ -2,6 +2,7 @@ package com.spreadyourmusic.spreadyourmusic
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,5 +21,14 @@ class InstrumentedTestBackEndSpreadYoutMusic {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
         assertEquals("com.spreadyourmusic.spreadyourmusic", appContext.packageName)
+    }
+
+    @Test
+    fun amazonServicestest() {
+       AmazonS3UploadFileService.uploadFile("/storage/emulated/0/Music/Prueba/postmalone.mp3","postmalone3", InstrumentationRegistry.getTargetContext(), {
+           val i = it
+       })
+
+        Thread.sleep(10000)
     }
 }

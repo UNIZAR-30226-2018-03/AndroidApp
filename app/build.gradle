@@ -53,8 +53,11 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 
     // Dependencies for AWS and S3
-    implementation 'com.amazonaws:aws-android-sdk-core:2.6.18'
-    implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
+    //compile 'com.amazonaws:aws-java-sdk-s3'
+    implementation 'com.amazonaws:aws-android-sdk-core:2.6.19'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.6.19'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.6.19'
+    implementation 'com.amazonaws:aws-android-sdk-ddb:2.6.19'
 
     // Tests
     testImplementation 'junit:junit:4.12'
