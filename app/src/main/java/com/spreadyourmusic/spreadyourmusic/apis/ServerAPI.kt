@@ -1,5 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
+import com.spreadyourmusic.spreadyourmusic.helpers.fetchJSONFromUrl
 import com.spreadyourmusic.spreadyourmusic.models.*
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 
@@ -280,6 +281,13 @@ fun obtainPlaylistDataServer(id: Long): Playlist? {
  */
 @Throws(Exception::class)
 fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
+
+    //val x = fetchJSONFromUrl("Direccion")
+
+    /* String title = json.getString(JSON_TITLE);
+    String album = json.getString(JSON_ALBUM);
+    String artist = json.getString(JSON_ARTIST);*/
+
     val id = ServerEmulator.songList.size + 30
     song.id = id.toLong()
     ServerEmulator.songList[song.id] = song
