@@ -53,6 +53,10 @@ object ServerEmulator {
         val cancion16 = Song(album = album5, id = 16, name = "Drop and Roll 9", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
         val cancion17 = Song(album = album5, id = 17, name = "Drop and Roll 10", locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
 
+        val cancion18 = Song(album = album5, id = 18, name = "PostMalone No ext", locationUri = "/storage/emulated/0/Music/Prueba/postmalonenoext", lyricsPath = null, genere = null)
+        val cancion19 = Song(album = album5, id = 19, name = "KAYDYCAIN_DIME_NOEXT", locationUri = "/storage/emulated/0/Music/Prueba/KAYDYCAIN_DIME_NOEXT", lyricsPath = null, genere = null)
+        val cancion20 = Song(album = album5, id = 20, name = "MIGOS_BEAMER_NOEXT", locationUri = "/storage/emulated/0/Music/Prueba/MIGOS_BEAMER_NOEXT", lyricsPath = null, genere = null)
+
 
         val list1 = ArrayList<Song>()
         list1.add(cancion1)
@@ -62,6 +66,9 @@ object ServerEmulator {
         list1.add(cancion5)
         list1.add(cancion6)
         list1.add(cancion7)
+        list1.add(cancion18)
+        list1.add(cancion19)
+        list1.add(cancion20)
 
         val list2 = ArrayList<Song>()
         list2.add(cancion3)
@@ -94,6 +101,7 @@ object ServerEmulator {
         songList[cancion15.id] = cancion15
         songList[cancion16.id] = cancion16
         songList[cancion17.id] = cancion17
+        songList[cancion18.id] = cancion18
 
         playlistList[playlist1.id!!] = playlist1
         playlistList[playlist2.id!!] = playlist2

@@ -114,4 +114,10 @@
     <string name="empty_fields_3">Los campos nombre, álbum, genero y audio son obligatorios </string>
     <string name="empty_fields_4">Los campos caratula y nombre son obligatorios. La playlist ha de poseer al menos un elemento</string>
 
+
+    <!-- Oauth -->
+    <string name="server_client_id">·</string>
+
+    <string name="authenticating">Autenticando</string>
+
 </resources>

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.graphics.drawable.GradientDrawable
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,7 +15,6 @@ import com.spreadyourmusic.spreadyourmusic.controller.doLogin
 import com.spreadyourmusic.spreadyourmusic.controller.isLogin
 import kotlinx.android.synthetic.main.activity_login.*
 
-import java.util.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
@@ -42,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
+                .requestIdToken(resources.getString(R.string.server_client_id))
                 .build()
 
         // Build a GoogleSignInClient with the options specified by gso.
@@ -139,7 +137,7 @@ class LoginActivity : AppCompatActivity() {
         val progressDialog = ProgressDialog(this,
                 R.style.AppTheme_Dialog)
         progressDialog.isIndeterminate = true
-        progressDialog.setMessage("Authenticating...")
+        progressDialog.setMessage(resources.getString(R.string.authenticating))
         progressDialog.show()
         return progressDialog
     }
