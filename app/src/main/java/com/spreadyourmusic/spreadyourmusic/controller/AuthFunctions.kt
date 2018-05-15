@@ -67,6 +67,9 @@ fun doLogout(activity: Activity) {
 }
 
 fun doGoogleLogin(user: GoogleSignInAccount, activity: Activity): Boolean {
+    val email = user.email
+    val auth_code = user.getServerAuthCode();
+
     // TODO: Falta implementar
     // Si el login es correcto se sobreescribe session
     // Y preferences y demas

@@ -14,8 +14,8 @@ import java.lang.Exception
 object AmazonS3UploadFileService {
     val connection:AmazonS3Client
     init {
-        val accessKey = "69RY1JSB5DQLTWXV2TT9"
-        val secretKey = "575Mp0DbjzXbZ8AKaswxu9KytL4uqX9S6GDBF9PW"
+        val accessKey = "_"
+        val secretKey = "_"
 
         val credentials = BasicAWSCredentials(accessKey, secretKey)
         connection = AmazonS3Client(credentials)
