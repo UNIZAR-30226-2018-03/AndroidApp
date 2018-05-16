@@ -1,6 +1,7 @@
 package com.spreadyourmusic.spreadyourmusic.services
 
 import android.content.Context
+import com.amazonaws.AmazonServiceException
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
@@ -48,5 +49,20 @@ object AmazonS3UploadFileService {
                 l("Error Amazon S3: ${ex!!.message}")
             }
         })
+    }
+
+    /**
+     * Elimina el archivo con el key @key del servidor
+     */
+    fun deleteFile(key: String, context: Context, l: (String?) -> Unit) {
+        // TODO : Esta fallando
+        try {
+            connection.deleteObject("Public", key)
+            l(null)
+        } catch (e: AmazonServiceException) {
+            l(e.errorMessage)
+        } catch (e: Exception) {
+            l(e.message)
+        }
     }
 }

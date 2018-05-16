@@ -25,10 +25,17 @@ class InstrumentedTestBackEndSpreadYoutMusic {
 
     @Test
     fun amazonServicestest() {
-       AmazonS3UploadFileService.uploadFile("/storage/emulated/0/Music/Prueba/postmalone.mp3","postmalone3", InstrumentationRegistry.getTargetContext(), {
-           val i = it
-       })
+        AmazonS3UploadFileService.uploadFile("/storage/emulated/0/Music/Prueba/postmalone.mp3", "postmalone3", InstrumentationRegistry.getTargetContext(), {
+            val i = it
+        })
 
         Thread.sleep(10000)
+    }
+
+    @Test
+    fun amazonServicesDelete() {
+        AmazonS3UploadFileService.deleteFile("postmalone", InstrumentationRegistry.getTargetContext(), {
+            val i = it
+        })
     }
 }

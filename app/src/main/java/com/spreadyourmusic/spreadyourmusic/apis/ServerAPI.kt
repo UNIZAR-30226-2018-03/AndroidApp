@@ -33,6 +33,16 @@ fun doLoginServer(username: String, password: String): String {
 }
 
 /**
+ * Realiza un login en el servidor mediante google y devuelve el token de sesión
+ * Warning: esta operación puede ser costosa en tiempo
+ */
+@Throws(Exception::class)
+fun doGoogleLoginServer(serverAuthCode: String): String {
+    //TODO:
+    throw Exception("Error")
+}
+
+/**
  * Realiza una creación de usuario en el servidor y devuelve el token de sesión
  * Sube los datos tanto al back-end (nombre, ...) como la foto de perfil al servidor de
  * almacenamiento
@@ -300,8 +310,9 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
  */
 @Throws(Exception::class)
 fun deleteSongServer(username: String, sessionToken: String, song: Song) {
+
     ServerEmulator.songList.remove(song.id)
-//TODO:
+//TODO: Ademas de eliminar la cancion del back end la elimina del servidor de datos
 }
 
 @Throws(Exception::class)
