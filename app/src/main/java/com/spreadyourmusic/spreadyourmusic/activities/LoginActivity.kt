@@ -5,7 +5,6 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.graphics.drawable.GradientDrawable
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,15 +15,12 @@ import com.spreadyourmusic.spreadyourmusic.controller.doLogin
 import com.spreadyourmusic.spreadyourmusic.controller.isLogin
 import kotlinx.android.synthetic.main.activity_login.*
 
-import java.util.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
 import com.spreadyourmusic.spreadyourmusic.controller.isCurrentUserLoggedinOtherSession
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
-import com.google.android.gms.common.Scopes
 
 
 
@@ -42,16 +38,10 @@ class LoginActivity : AppCompatActivity() {
             openHomeActivity()
         }
 
-        // TODO: Contrastar con backend https://developers.google.com/identity/sign-in/android/backend-auth
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // TODO: Cambiar client id a client id de release
         val serverClientId = "946633470887-7sre5m4dltntp7ijsc1looufu7seu77i.apps.googleusercontent.com"
-//https://www.googleapis.com/auth/userinfo.profile
-      /* val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope("https://www.googleapis.com/auth/userinfo.profile"))
-         .requestServerAuthCode(serverClientId)
-                .requestEmail()
-                .build()*/
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestServerAuthCode(serverClientId)

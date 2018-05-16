@@ -113,5 +113,6 @@
     <string name="empty_fields_2">El campo nombre es obligatorio</string>
     <string name="empty_fields_3">Los campos nombre, álbum, genero y audio son obligatorios </string>
     <string name="empty_fields_4">Los campos caratula y nombre son obligatorios. La playlist ha de poseer al menos un elemento</string>
+    <string name="error_upload_file_error">Error al subir el archivo al servidor de almacenamiento</string>
 
 </resources>
