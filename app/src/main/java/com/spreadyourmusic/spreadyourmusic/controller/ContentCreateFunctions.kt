@@ -7,10 +7,10 @@ import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
-fun doDeleteSong(song: Song,activity: Activity, listener: (Boolean) -> Unit){
+fun doDeleteSong(song: Song, activity: Activity, listener: (Boolean) -> Unit) {
     Thread {
         val result = try {
-            deleteSongServer(SessionSingleton.currentUser!!.username,SessionSingleton.sessionToken!!, song)
+            deleteSongServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!, song, activity)
             true
         } catch (e: Exception) {
             false
@@ -21,10 +21,10 @@ fun doDeleteSong(song: Song,activity: Activity, listener: (Boolean) -> Unit){
     }.start()
 }
 
-fun doDeletePlaylist(playlist: Playlist,activity: Activity, listener: (Boolean) -> Unit){
+fun doDeletePlaylist(playlist: Playlist, activity: Activity, listener: (Boolean) -> Unit) {
     Thread {
         val result = try {
-            deletePlaylistServer(SessionSingleton.currentUser!!.username,SessionSingleton.sessionToken!!, playlist)
+            deletePlaylistServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!, playlist, activity)
             true
         } catch (e: Exception) {
             false

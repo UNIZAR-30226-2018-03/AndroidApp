@@ -1,19 +1,191 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
+import android.content.Context
 import com.spreadyourmusic.spreadyourmusic.helpers.fetchJSONFromUrl
 import com.spreadyourmusic.spreadyourmusic.models.*
+import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
+import org.json.JSONObject
+import java.util.*
+
+/**
+ * Address of Back-End Server
+ */
+private const val serverAddress = "http://155.210.13.105:7800"
+
+/**
+ * Address of Data Server
+ */
+private const val dataServerAdress = "http://155.210.13.105:7480"
+
+/**
+ * Direcciónes de los diferentes tipos de datos en el servidor de almacenamiento
+ */
+private const val songLocationUploadPrefix = "song_"
+private const val songLyricsUploadPrefix = "lyric_"
+private const val userUploadPrefix = "user_"
+private const val albumUploadPrefix = "album_"
+private const val playlistUploadPrefix = "playlist_"
 
 /**
  * Created by abel on 8/03/18.
  */
+/**
+ * Función auxiliar que permite obtener el JSON de una request al back end
+ * Si la request exige GET postData ha de ser null
+ */
+private fun getJSONFromRequest(urlString: String, postData: List<Pair<String, String>>?): JSONObject? {
+    return if (postData == null) fetchJSONFromUrl(serverAddress + urlString)
+    else fetchJSONFromUrl(serverAddress + urlString, postData)
+}
+
+/**
+ * Devuelve la dirección de las letras de una canción
+ */
+private fun getSongLyricsPath(songId: Long): String {
+    return "$dataServerAdress/$songLyricsUploadPrefix$songId"
+}
+
+/**
+ * Devuelve la dirección del archivo de música de una canción
+ */
+private fun getSongLocationPath(songId: Long): String {
+    return "$dataServerAdress/$songLocationUploadPrefix$songId"
+}
+
+/**
+ * Devuelve la dirección de la foto de perfil de un usuario
+ */
+private fun getUserProfilePicturePath(username: String): String {
+    return "$dataServerAdress/$userUploadPrefix$username"
+}
+
+/**
+ * Devuelve la dirección de la foto de portada de una playlist
+ */
+private fun getPlaylistCoverPath(playlistId: Long): String {
+    return "$dataServerAdress/$playlistUploadPrefix$playlistId"
+}
+
+/**
+ * Devuelve la dirección de la foto de portada de un álbum
+ */
+private fun getAlbumCoverPath(albumId: Long): String {
+    return "$dataServerAdress/$albumUploadPrefix$albumId"
+}
+
+/**
+ * Elimina las letras de una canción
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun deleteSongLyrics(songId: Long, context: Context): Boolean {
+    AmazonS3UploadFileService.deleteFile("$songLyricsUploadPrefix$songId", context, {
+    })
+    return true
+}
+
+/**
+ * Elimina el archivo de música de una canción
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun deleteSongLocation(songId: Long, context: Context): Boolean {
+    AmazonS3UploadFileService.deleteFile("$songLocationUploadPrefix$songId", context, {
+    })
+    return true
+}
+
+/**
+ * Elimina la foto de perfil de un usuario
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun deleteUserProfilePicture(username: String, context: Context): Boolean {
+    AmazonS3UploadFileService.deleteFile("$userUploadPrefix$username", context, {
+    })
+    return true
+}
+
+/**
+ * Elimina la foto de portada de una playlist
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun deletePlaylistCover(playlistId: Long, context: Context): Boolean {
+    AmazonS3UploadFileService.deleteFile("$playlistUploadPrefix$playlistId", context, {
+    })
+    return true
+}
+
+/**
+ * Elimina la foto de portada de un álbum
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun deleteAlbumCover(albumId: Long, context: Context): Boolean {
+    AmazonS3UploadFileService.deleteFile("$albumUploadPrefix$albumId", context, {
+    })
+    return true
+}
+
+
+/**
+ * Sube las letras de una canción
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun uploadSongLyrics(songId: Long, filePath: String, context: Context): Boolean {
+    AmazonS3UploadFileService.uploadFile(filePath, "$songLyricsUploadPrefix$songId", context, {
+        // CUIDADO: Si falla al subir no se está tratando el error
+    })
+    return true
+}
+
+/**
+ * Sube el archivo de música de una canción
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun uploadSongLocation(songId: Long, filePath: String, context: Context): Boolean {
+    AmazonS3UploadFileService.uploadFile(filePath, "$songLocationUploadPrefix$songId", context, {
+        // CUIDADO: Si falla al subir no se está tratando el error
+    })
+    return true
+}
+
+/**
+ * Sube la foto de perfil de un usuario
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun uploadUserProfilePicture(username: String, filePath: String, context: Context): Boolean {
+    AmazonS3UploadFileService.uploadFile(filePath, "$userUploadPrefix$username", context, {
+        // CUIDADO: Si falla al subir no se está tratando el error
+    })
+    return true
+}
+
+/**
+ * Sube la foto de portada de una playlist
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun uploadPlaylistCover(playlistId: Long, filePath: String, context: Context): Boolean {
+    AmazonS3UploadFileService.uploadFile(filePath, "$playlistUploadPrefix$playlistId", context, {
+        // CUIDADO: Si falla al subir no se está tratando el error
+    })
+    return true
+}
+
+/**
+ * Sube la foto de portada de un álbum
+ * Devuelve true si la operación ha tenido exito
+ */
+private fun uploadAlbumCover(albumId: Long, filePath: String, context: Context): Boolean {
+    AmazonS3UploadFileService.uploadFile(filePath, "$albumUploadPrefix$albumId", context, {
+        // CUIDADO: Si falla al subir no se está tratando el error
+    })
+    return true
+}
 
 /**
  * Devuelve true si se puede acceder al servidor, false en caso contrario
  * Warning: esta operación puede ser costosa en tiempo
  */
 fun isServerOnline(): Boolean {
-    // TODO:
+    // No implementar por el momento
     return true
 }
 
@@ -48,7 +220,7 @@ fun doGoogleLoginServer(serverAuthCode: String): String {
  * almacenamiento
  */
 @Throws(Exception::class)
-fun doSignUpServer(user: User): String {
+fun doSignUpServer(user: User, context: Context): String {
     //TODO:
     if (!ServerEmulator.userList.containsKey(user.username)) {
         ServerEmulator.userList[user.username] = user
@@ -75,7 +247,7 @@ fun doDeleteAccountServer(user: String, sessionToken: String) {
  * almacenamiento
  */
 @Throws(Exception::class)
-fun doUpdateAccountServer(user: User, sessionToken: String) {
+fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
     //TODO:
     Thread.sleep(300)
 }
@@ -95,15 +267,44 @@ fun doLogoutServer(username: String, sessionToken: String) {
  */
 @Throws(Exception::class)
 fun obtainUserDataServer(username: String, sessionToken: String): User? {
-    //TODO:
-    if (ServerEmulator.userList.containsKey(username)) {
-        return ServerEmulator.userList[username]
+    val json = getJSONFromRequest("/users/$username?token=$sessionToken", null)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
     } else {
-        throw Exception("Error")
+        val error = json.getBoolean("error")
+        if (error) throw Exception("Error")
+
+        val profile = json.getJSONObject("profile")
+        val name = profile.getString("user")
+        val email = profile.getString("mail")
+        val biography = profile.getString("bio")
+
+        //val dateStr = profile.getString("birth_date")
+
+        /*
+        TODO: Hacer en lo que se especifique
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val birthDate = sdf.parse(dateStr)*/
+
+        val birthDate = null
+
+
+        val verifiedAccount = profile.getBoolean("verified")
+        val twitterAccount = profile.getString("twitter")
+        val facebookAccount = profile.getString("facebook")
+        val instagramAccount = profile.getString("instagram")
+        val pictureLocationURI = getUserProfilePicturePath(username)
+
+        val user = User(username, name, pictureLocationURI, verifiedAccount, email, biography, birthDate)
+        user.twitterAccount = twitterAccount
+        user.facebookAccount = facebookAccount
+        user.instagramAccount = instagramAccount
+        return user
     }
 }
 
 fun obtainSongsFromUserServer(username: String): List<Song> {
+    //TODO:
     val resultado = ArrayList<Song>()
     for (i in ServerEmulator.songList) {
         if (i.value.album.creator.username == username) {
@@ -114,6 +315,7 @@ fun obtainSongsFromUserServer(username: String): List<Song> {
 }
 
 fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
+    //TODO:
     val resultado = ArrayList<Playlist>()
     for (i in ServerEmulator.playlistList) {
         if (i.value.creator.username == username) {
@@ -159,7 +361,7 @@ fun isUserFollowedByUserServer(username: String, user: String): Boolean {
 @Throws(Exception::class)
 fun getNumberOfFollowersOfUserServer(username: String): Long {
     //TODO:
-    return 4
+    return 430
 }
 
 /**
@@ -290,7 +492,8 @@ fun obtainPlaylistDataServer(id: Long): Playlist? {
  * Atención: El id lo ha de devolver la llamada al servidor, el id del parametro @song siempre tendra un valor indefinido
  */
 @Throws(Exception::class)
-fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
+fun uploadSongServer(username: String, sessionToken: String, song: Song, context: Context): Long {
+    //TODO:
 
     //val x = fetchJSONFromUrl("Direccion")
 
@@ -309,7 +512,7 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song): Long {
  * Elimina los datos tanto del back-end como del servidor de almacenamiento
  */
 @Throws(Exception::class)
-fun deleteSongServer(username: String, sessionToken: String, song: Song) {
+fun deleteSongServer(username: String, sessionToken: String, song: Song, context: Context) {
 
     ServerEmulator.songList.remove(song.id)
 //TODO: Ademas de eliminar la cancion del back end la elimina del servidor de datos
@@ -420,7 +623,7 @@ fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? 
  * almacenamiento
  */
 @Throws(Exception::class)
-fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist): Long {
+fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist, context: Context): Long {
 //TODO:
     val position = ServerEmulator.playlistList.size + 4
     playlist.id = position.toLong()
@@ -433,7 +636,7 @@ fun createPlaylistServer(username: String, sessionToken: String, playlist: Playl
  * Elimina los datos tanto en el back-end como la carátula en el servidor de almacenamiento
  */
 @Throws(Exception::class)
-fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist, context: Context) {
 //TODO:
     if (ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)) {
         ServerEmulator.playlistList.remove(playlist.id)
@@ -456,7 +659,7 @@ fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playl
  * almacenamiento
  */
 @Throws(Exception::class)
-fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist) {
+fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist, context: Context) {
 //TODO:
 }
 
@@ -477,7 +680,7 @@ fun obtainAlbumsFromUserServer(username: String): List<Album> {
  * almacenamiento
  */
 @Throws(Exception::class)
-fun createAlbumsServer(username: String, sessionToken: String, album: Album): Long {
+fun createAlbumsServer(username: String, sessionToken: String, album: Album, context: Context): Long {
     //TODO: Aqui se hace ka parte de subir la imagen a los servers de Pini
     val albumid = ServerEmulator.albumList.size
     album.id = albumid.toLong()

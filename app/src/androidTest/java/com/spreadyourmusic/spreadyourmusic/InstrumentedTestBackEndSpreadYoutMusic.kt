@@ -2,6 +2,7 @@ package com.spreadyourmusic.spreadyourmusic
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.spreadyourmusic.spreadyourmusic.apis.obtainUserDataServer
 import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
 
 import org.junit.Test
@@ -24,18 +25,14 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     }
 
     @Test
-    fun amazonServicestest() {
-        AmazonS3UploadFileService.uploadFile("/storage/emulated/0/Music/Prueba/postmalone.mp3", "postmalone3", InstrumentationRegistry.getTargetContext(), {
-            val i = it
-        })
-
-        Thread.sleep(10000)
-    }
-
-    @Test
     fun amazonServicesDelete() {
         AmazonS3UploadFileService.deleteFile("postmalone", InstrumentationRegistry.getTargetContext(), {
             val i = it
         })
+    }
+
+    @Test
+fun userGetServer(){
+        obtainUserDataServer("lAngelP","dfdgffgdfgdf")
     }
 }

@@ -119,7 +119,7 @@ fun doSignUp(user: User, activity: Activity, listener: (String?) -> Unit) {
     Thread {
         var sessionToken = ""
         val resultado = try {
-            sessionToken = doSignUpServer(user)
+            sessionToken = doSignUpServer(user,activity)
             null
         } catch (e: Exception) {
             e.message

@@ -14,7 +14,7 @@ fun createAlbum(album: Album, activity: Activity, listener: (String?, Long) -> U
     Thread {
         var id: Long
         val resultado = try {
-            id = createAlbumsServer(album.creator.username, SessionSingleton.sessionToken!!, album)
+            id = createAlbumsServer(album.creator.username, SessionSingleton.sessionToken!!, album, activity)
             null
         } catch (e: Exception) {
             id = 0L
@@ -33,7 +33,7 @@ fun createPlaylist(playlist: Playlist, activity: Activity, listener: (String?, L
     Thread {
         var id: Long
         val resultado = try {
-            id = createPlaylistServer(playlist.creator.username, SessionSingleton.sessionToken!!, playlist)
+            id = createPlaylistServer(playlist.creator.username, SessionSingleton.sessionToken!!, playlist, activity)
             null
         } catch (e: Exception) {
             id = 0L
@@ -51,7 +51,7 @@ fun createPlaylist(playlist: Playlist, activity: Activity, listener: (String?, L
 fun updatePlaylist(playlist: Playlist, activity: Activity, listener: (String?) -> Unit) {
     Thread {
         val resultado = try {
-            updatePlaylistServer(playlist.creator.username, SessionSingleton.sessionToken!!, playlist)
+            updatePlaylistServer(playlist.creator.username, SessionSingleton.sessionToken!!, playlist, activity)
             null
         } catch (e: Exception) {
             e.message
@@ -68,7 +68,7 @@ fun updatePlaylist(playlist: Playlist, activity: Activity, listener: (String?) -
 fun createSong(user: User, song: Song, activity: Activity, listener: (String?) -> Unit) {
     Thread {
         val resultado = try {
-            uploadSongServer(user.username,SessionSingleton.sessionToken!!, song)
+            uploadSongServer(user.username, SessionSingleton.sessionToken!!, song, activity)
             null
         } catch (e: Exception) {
             e.message
@@ -79,10 +79,10 @@ fun createSong(user: User, song: Song, activity: Activity, listener: (String?) -
     }.start()
 }
 
-fun updateUserData(user: User, activity: Activity, listener: (String?) -> Unit){
+fun updateUserData(user: User, activity: Activity, listener: (String?) -> Unit) {
     Thread {
         val resultado = try {
-            doUpdateAccountServer(user, SessionSingleton.sessionToken!!)
+            doUpdateAccountServer(user, SessionSingleton.sessionToken!!, activity)
             null
         } catch (e: Exception) {
             e.message
