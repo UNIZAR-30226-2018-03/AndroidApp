@@ -6,7 +6,7 @@ import com.spreadyourmusic.spreadyourmusic.models.*
 import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 import org.json.JSONObject
-import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Address of Back-End Server
@@ -195,12 +195,17 @@ fun isServerOnline(): Boolean {
  */
 @Throws(Exception::class)
 fun doLoginServer(username: String, password: String): String {
-    //TODO:
-    if (ServerEmulator.userList.containsKey(username)) {
-        Thread.sleep(300)
-        return "dfsdfdsdf"
+    val postData = ArrayList<Pair<String,String>>()
+    postData.add(Pair("pass",password))
+    val json = getJSONFromRequest("/users/$username/login", postData)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
     } else {
-        throw Exception("Error")
+        val error = json.getString("error")
+        if(error == "ok"){
+            return json.getString("token")
+        }else
+            throw Exception("Error: $error")
     }
 }
 

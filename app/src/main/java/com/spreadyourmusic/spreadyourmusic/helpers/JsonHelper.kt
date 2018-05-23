@@ -3,6 +3,7 @@ package com.spreadyourmusic.spreadyourmusic.helpers
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
+import java.net.HttpURLConnection
 import java.net.URL
 
 /**
@@ -60,7 +61,11 @@ fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>): J
         }
         urlParameters = urlParameters.substring(1)
 
-        val urlConnection = URL(urlString).openConnection()
+        val url = URL(urlString)
+        val urlConnection = url.openConnection() as HttpURLConnection
+
+        urlConnection.requestMethod = "POST"
+
         val output = BufferedOutputStream(urlConnection.getOutputStream())
         val writer = BufferedWriter ( OutputStreamWriter(output, "UTF-8"))
         writer.write(urlParameters)

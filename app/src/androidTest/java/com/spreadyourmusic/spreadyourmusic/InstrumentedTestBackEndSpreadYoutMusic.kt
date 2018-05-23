@@ -2,6 +2,7 @@ package com.spreadyourmusic.spreadyourmusic
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.spreadyourmusic.spreadyourmusic.apis.doLoginServer
 import com.spreadyourmusic.spreadyourmusic.apis.obtainUserDataServer
 import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
 
@@ -32,7 +33,12 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     }
 
     @Test
-fun userGetServer(){
-        obtainUserDataServer("lAngelP","dfdgffgdfgdf")
+    fun userGetServer() {
+        obtainUserDataServer("lAngelP", "dfdgffgdfgdf")
+    }
+
+    @Test
+    fun loginUserServer() {
+        doLoginServer("lAngelP", "dfdgffgdfgdf")
     }
 }
