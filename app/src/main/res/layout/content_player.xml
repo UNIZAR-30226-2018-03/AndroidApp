@@ -15,7 +15,7 @@
         android:scaleType="fitStart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sample_image" />
+        app:srcCompat="@drawable/default_song_image" />
 
     <LinearLayout
         android:id="@+id/background"
@@ -65,7 +65,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/sample_image"
+            android:src="@drawable/default_song_image"
             app:layout_constraintBottom_toBottomOf="@+id/visualizer"
             custom:border_color="@android:color/white"
             custom:border_width="2dp"
@@ -216,7 +216,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/background"
         app:layout_constraintEnd_toStartOf="@+id/randomReproduction"
-        app:srcCompat="@drawable/ic_visibility_white_24dp" />
+        app:srcCompat="@drawable/outline_closed_caption_white_24" />
 
     <ImageButton
         android:id="@+id/favoriteSong"

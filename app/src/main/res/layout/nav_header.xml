@@ -23,7 +23,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:src="@drawable/sample_image" />
+            android:src="@drawable/default_user_image" />
 
         <TextView
             android:id="@+id/usernameTextView"

@@ -183,7 +183,7 @@ class SignUpActivity : AppCompatActivity() {
             password = view!!.passwordEditText.text.toString().trim()
             mail = view!!.mailEditText.text.toString().trim()
 
-            if (password.isNullOrEmpty() || username.isNullOrEmpty() || userPictureLocationUri.isNullOrEmpty()) {
+            if (password.isNullOrEmpty() || username.isNullOrEmpty() || (!isEdition && userPictureLocationUri.isNullOrEmpty())) {
                 Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
                 Toast.makeText(activity, R.string.empty_fields_1, Toast.LENGTH_SHORT).show()
 

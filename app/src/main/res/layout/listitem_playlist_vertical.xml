@@ -19,7 +19,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/sample_image" />
+            android:src="@drawable/default_playlist_image" />
 
         <TextView
             android:id="@+id/nombre_playlist"
