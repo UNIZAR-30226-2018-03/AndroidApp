@@ -1,12 +1,15 @@
 package com.spreadyourmusic.spreadyourmusic.apis
 
 import android.content.Context
+import android.util.Log
 import com.spreadyourmusic.spreadyourmusic.R.string.password
 import com.spreadyourmusic.spreadyourmusic.helpers.*
 import com.spreadyourmusic.spreadyourmusic.models.*
 import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
 import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -182,15 +185,6 @@ private fun uploadAlbumCover(albumId: Long, filePath: String, context: Context):
     return true
 }
 
-/*
- *
- *  REQUESTS
- */
-
-/*
- * USERS
- */
-
 /**
  * Realiza un login en el servidor y devuelve el token de sesión
  * Warning: esta operación puede ser costosa en tiempo
@@ -198,7 +192,6 @@ private fun uploadAlbumCover(albumId: Long, filePath: String, context: Context):
 
 @Throws(Exception::class)
 fun doLoginServer(username: String, password: String): String {
-    //TODO-TEST
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("pass", password))
     val json = getJSONFromRequest("/users/$username/login", postData, TYPE_POST)
@@ -230,7 +223,6 @@ fun doGoogleLoginServer(serverAuthCode: String): String {
  */
 @Throws(Exception::class)
 fun doSignUpServer(user: User, context: Context): String {
-    //TODO-TEST
     val mail = user.email
     val pass = user.password
     val name = user.name
@@ -244,44 +236,16 @@ fun doSignUpServer(user: User, context: Context): String {
     postData.add(Pair("user", name!!))
     postData.add(Pair("birth", birth!!))
 
-    val json = getJSONFromRequest("/users/$username/login", postData, TYPE_POST)
+    val json = getJSONFromRequest("/users/$username/signup", postData, TYPE_POST)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
         if (error == "ok") {
-            return json.getString("token")
-        } else
-            throw Exception("Error: $error")
-    }
-}
-
-@Throws(Exception::class)
-fun doSignUpServer(user: User): String {
-    //TODO-TEST
-
-    val mail = user.email
-    val pass = user.password
-    val name = user.name
-    val birth = user.birthDate?.time?.toString()
-    val bio = user.biography
-    val username = user.username
-
-    val postData = ArrayList<Pair<String, String>>()
-    postData.add(Pair("pass0", pass!!))
-    postData.add(Pair("pass1", pass))
-    postData.add(Pair("mail", mail!!))
-    postData.add(Pair("user", name!!))
-    postData.add(Pair("birth", birth!!))
-    // if (bio != null) postData.add(Pair("bio", bio))
-
-    val json = getJSONFromRequest("/users/$username/login", postData, TYPE_POST)
-    if (json == null) {
-        throw Exception("Error: Servidor no accesible")
-    } else {
-        val error = json.getString("error")
-        if (error == "ok") {
-            return json.getString("token")
+            val token = json.getString("token")
+            doUpdateAccountServer(user, token, context)
+            uploadUserProfilePicture(username, user.pictureLocationUri!!, context)
+            return token
         } else
             throw Exception("Error: $error")
     }
@@ -339,8 +303,8 @@ fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
 fun doLogoutServer(username: String, sessionToken: String) {
     //TODO-TEST
     val postData = ArrayList<Pair<String, String>>()
-    postData.add(Pair("token", sessionToken))
-    val json = getJSONFromRequest("/users/$username/login", postData, TYPE_DELETE)
+    // DELETE /users/{nick}/login?token={TOKEN}
+    val json = getJSONFromRequest("/users/$username/login?token=$sessionToken", postData, TYPE_DELETE)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
@@ -358,7 +322,6 @@ fun doLogoutServer(username: String, sessionToken: String) {
 @Throws(Exception::class)
 fun obtainUserDataServer(username: String, sessionToken: String): User? {
     //TODO-TEST
-
     val json = getJSONFromRequest("/users/$username?token=$sessionToken", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -368,17 +331,16 @@ fun obtainUserDataServer(username: String, sessionToken: String): User? {
 
         val profile = json.getJSONObject("profile")
         val name = profile.getString("user")
-        val email = profile.getString("mail")
-        val biography = profile.getString("bio")
+        val mailVisible = profile.getBoolean("mail_visible")
 
-        //val dateStr = profile.getString("birth_date")
+        var birthDate: Date? = null
+        var email:String? = null
 
-        /*
-        TODO: Hacer en lo que se especifique
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val birthDate = sdf.parse(dateStr)*/
-
-        val birthDate = null
+        if (mailVisible) {
+            email = profile.getString("mail")
+            val dateStr = profile.getString("birth_date")
+            birthDate = SimpleDateFormat("yyyy-MM-dd").parse(dateStr)
+        }
 
         val verifiedAccount = profile.getBoolean("verified")
         val twitterAccount = profile.getString("twitter")
@@ -386,7 +348,7 @@ fun obtainUserDataServer(username: String, sessionToken: String): User? {
         val instagramAccount = profile.getString("instagram")
         val pictureLocationURI = getUserProfilePicturePath(username)
 
-        val user = User(username, name, pictureLocationURI, verifiedAccount, email, biography, birthDate)
+        val user = User(username, name, pictureLocationURI, verifiedAccount, email, null, birthDate)
         user.twitterAccount = twitterAccount
         user.facebookAccount = facebookAccount
         user.instagramAccount = instagramAccount
@@ -533,7 +495,7 @@ fun setSongFavoutireServer(username: String, sessionToken: String, song: Long) {
     postData.add(Pair("token", sessionToken))
     postData.add(Pair("songID", song.toString()))
 
-    val json = getJSONFromRequest("/users/$username/fav", postData, TYPE_POST)
+    val json = getJSONFromRequest("/songs/user/$username/fav", postData, TYPE_POST)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -557,7 +519,7 @@ fun unSetSongFavoutireServer(username: String, sessionToken: String, song: Long)
     postData.add(Pair("token", sessionToken))
     postData.add(Pair("songID", song.toString()))
 
-    val json = getJSONFromRequest("/songs/$username/unfav", postData, TYPE_POST)
+    val json = getJSONFromRequest("/songs/user/$username/unfav", postData, TYPE_POST)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -575,7 +537,6 @@ fun unSetSongFavoutireServer(username: String, sessionToken: String, song: Long)
 @Throws(Exception::class)
 fun isSongFavoutireByUserServer(username: String, sessionToken: String, song: Long): Boolean {
     //TODO-TEST
-    // TODO : REHACER
     val json = getJSONFromRequest("/songs/$username/faved/$song", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")

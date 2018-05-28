@@ -1,5 +1,6 @@
 package com.spreadyourmusic.spreadyourmusic
 
+import com.spreadyourmusic.spreadyourmusic.apis.doLoginServer
 import com.spreadyourmusic.spreadyourmusic.apis.doSignUpServer
 import com.spreadyourmusic.spreadyourmusic.apis.getFollowedPlaylistsServer
 import com.spreadyourmusic.spreadyourmusic.models.User
@@ -30,5 +31,11 @@ class UnitTestBackEndSpreadYoutMusic {
     fun doSignUpServerTest() {
         val usuario = User("abelcht", "dfgdfgfd","Este Es Un Nombre","","prueba@prueba.com","fghgfhgfhgfhgf", Date(1992,12,12))
         doSignUpServer(usuario)
+    }
+
+    @Test
+    fun loginUserServerd() {
+        val angle = doLoginServer("lAngelP", "1234")
+        println(angle)
     }
 }
