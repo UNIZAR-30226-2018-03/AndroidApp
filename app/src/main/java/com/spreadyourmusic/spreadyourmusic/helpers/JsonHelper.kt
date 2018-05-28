@@ -6,6 +6,11 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
+const val TYPE_DELETE = 0;
+const val TYPE_PUT = 1;
+const val TYPE_GET = 2;
+const val TYPE_POST = 3;
+
 /**
  * Download a JSON file from a server, parse the content and return the JSON
  * object.
@@ -13,7 +18,7 @@ import java.net.URL
  * @return result JSONObject containing the parsed representation.
  */
 @Throws(JSONException::class)
-fun fetchJSONFromUrl(urlString: String): JSONObject? {
+fun fetchJSONFromUrl(urlString: String, type: Int): JSONObject? {
     var reader: BufferedReader? = null
     try {
         val urlConnection = URL(urlString).openConnection()
@@ -50,14 +55,14 @@ fun fetchJSONFromUrl(urlString: String): JSONObject? {
  * @return result JSONObject containing the parsed representation.
  */
 @Throws(JSONException::class)
-fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>): JSONObject? {
+fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>, type: Int): JSONObject? {
     var reader: BufferedReader? = null
     try {
 
-        var urlParameters  = ""
+        var urlParameters = ""
 
-        for (i in postData){
-            urlParameters="$urlParameters&${i.first}=${i.second}"
+        for (i in postData) {
+            urlParameters = "$urlParameters&${i.first}=${i.second}"
         }
         urlParameters = urlParameters.substring(1)
 
@@ -67,7 +72,7 @@ fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>): J
         urlConnection.requestMethod = "POST"
 
         val output = BufferedOutputStream(urlConnection.getOutputStream())
-        val writer = BufferedWriter ( OutputStreamWriter(output, "UTF-8"))
+        val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))
         writer.write(urlParameters)
         writer.flush()
         writer.close()
