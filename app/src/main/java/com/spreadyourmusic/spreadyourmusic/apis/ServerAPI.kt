@@ -199,20 +199,19 @@ private fun uploadAlbumCover(albumId: Long, filePath: String, context: Context):
 */
 
 fun obtainAlbumFromID(id: Long): Album? {
-    //TODO-TEST
     val json = getJSONFromRequest("/albums/$id", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getBoolean("error")
-        if (error) throw Exception("Error")
+        val error = json.getString("error")
+        if (error!="ok")
+            throw Exception("Error:  $error")
 
         val album = json.getJSONObject("album")
         val idAlbum = album.getLong("id")
         val user_id = album.getLong("user_id")
         val title = album.getString("title")
         val publish_year = album.getLong("publish_year")
-        album.getLong("update_time")
         val songs = album.getJSONArray("songs")
 
         val songsIDlist: MutableList<Long> = ArrayList()
@@ -221,8 +220,9 @@ fun obtainAlbumFromID(id: Long): Album? {
         }
 
         val songslist: MutableList<Song> = ArrayList()
-        for (i in 0..songsIDlist.size - 1) {
-            songslist.add(obtainSongFromID(songsIDlist.get(i))!!)
+        for (i in songsIDlist) {
+            val song = obtainSongFromID(i)
+            if(song!=null)songslist.add(song)
         }
 
 
@@ -242,11 +242,11 @@ fun obtainSongFromID(id: Long): Song? {
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getBoolean("error")
-        if (error) throw Exception("Error")
+        val error = json.getString("error")
+        if (error!="ok") throw Exception("Error")
 
         val song = json.getJSONObject("song")
-        val id = json.getLong("id")
+        val id = song.getLong("id")
         val user_id = song.getLong("user_id")
         val title = song.getString("title")
         val country = song.getString("country")
@@ -344,8 +344,8 @@ fun obtainSongsFromUserServer(username: String): List<Song> {
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getBoolean("error")
-        if (error) throw Exception("Error")
+        val error = json.getString("error")
+        if (error!="ok") throw Exception("Error:  $error")
 
         val songs = json.getJSONArray("profile")
 
@@ -369,10 +369,9 @@ fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
-        if (error != "ok") throw Exception("Error")
+        if (error!="ok") throw Exception("Error:  $error")
 
         //TODO
-        return ArrayList<Playlist>()
     }
     val lista: List<Playlist> = ArrayList()
     return  lista
@@ -752,7 +751,9 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song, context
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
     postData.add(Pair("token", sessionToken))
-    postData.add(Pair("country", "O1"))
+    postData.add(Pair("title",song.name))
+    postData.add(Pair("albumID", song.album.id.toString()))
+    postData.add(Pair("country", "SP"))
 
     val json = getJSONFromRequest("/songs/$username/create", postData, TYPE_POST)
 
@@ -766,7 +767,7 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song, context
             val songJSOn = json.getJSONObject("song")
             val id = songJSOn.getLong("id")
             //uploadSongLocation(id,song.locationUri,context)
-            //uploadSongLyrics(id,song.lyricsPath,context)
+            //uploadSongLyrics(id,song.lyricsPath!!,context)
             return id
         }
     }
@@ -1049,25 +1050,25 @@ fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playl
 
 @Throws(Exception::class)
 fun obtainAlbumsFromUserServer(username: String): List<Album> {
-    //TODO(PREGUNTAR)
-    val json = getJSONFromRequest("users/$username/albums", null, TYPE_GET)
+    val json = getJSONFromRequest("/users/$username/albums", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getBoolean("error")
-        if (error) throw Exception("Error")
+        val error = json.getString("error")
+        if (error!="ok") throw Exception("Error: $error")
 
         val albums = json.getJSONArray("albums")
-        val size = json.getString("size")
 
-        val list: MutableList<Album>? = null
+        val list: MutableList<Album> = ArrayList()
 
         if (albums != null) {
-            for (i in size) {
-                val albumID = albums.getLong(i.toInt())
+            for (i in 0..albums.length()-1) {
+                val albumID = albums.getLong(i)
+                val album = obtainAlbumFromID(albumID)
+                if(album!=null)list.add(album)
             }
         }
-        return list!!.toList()
+        return list.toList()
     }
 }
 
@@ -1078,16 +1079,15 @@ fun obtainAlbumsFromUserServer(username: String): List<Album> {
 @Throws(Exception::class)
 fun createAlbumsServer(username: String, sessionToken: String, album: Album, context: Context): Long {
     //TODO-TEST
-
     val title = album.name
-    val year = album.releaseDate.time.year
+    val year = album.releaseDate.get(Calendar.YEAR)
 
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
     postData.add(Pair("title", title))
     postData.add(Pair("year", year.toString()))
 
-    val json = getJSONFromRequest("$username/create", postData, TYPE_POST)
+    val json = getJSONFromRequest("/albums/$username/create", postData, TYPE_POST)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -1096,11 +1096,32 @@ fun createAlbumsServer(username: String, sessionToken: String, album: Album, con
         if (error != "ok") {
             throw Exception("Error: $error")
         } else {
-            return album.id!!
+            // TODO : Descomentar
+            //uploadAlbumCover(json.getLong("id"),album.artLocationUri,context)
+            val objet = json.getJSONObject("album")
+            return objet.getLong("id")
+
         }
     }
 }
 
+@Throws(Exception::class)
+fun doDeleteAlbum(user: String, sessionToken: String, albumID:Long) {
+
+    val postData = ArrayList<Pair<String, String>>()
+    postData.add(Pair("token", sessionToken))
+    postData.add(Pair("nick", user))
+
+    val json = getJSONFromRequest("/albums/$albumID/delete", postData, TYPE_DELETE)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val error = json.getString("error")
+        if (error != "ok") {
+            throw Exception("Error: $error")
+        }
+    }
+}
 /////////////////////// FIN DE PETICIONES ALBUM///////////////////////////////////
 
 /*
