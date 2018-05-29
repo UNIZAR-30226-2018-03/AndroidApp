@@ -42,7 +42,7 @@ object ServerEmulator {
         val album6 = Album(5,"Graduation Day", autor5, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
         val album7 = Album(5,"Tremaine", autor6, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
 
-        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = null)
+        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = "dfsdf")
         val cancion2 = Song(album = album1, id = 2, name = "The Messenger", locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null, genere = null)
         val cancion3 = Song(album = album3, id = 3, name = "Psycho",   locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
         val cancion18 = Song(album = album3, id = 18, name = "Better Now",   locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)

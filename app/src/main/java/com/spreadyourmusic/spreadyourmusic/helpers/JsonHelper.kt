@@ -64,17 +64,21 @@ fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>, ty
         for (i in postData) {
             urlParameters = "$urlParameters&${i.first}=${i.second}"
         }
-        urlParameters = urlParameters.substring(1)
+        if (urlParameters.isNotBlank())
+            urlParameters = urlParameters.substring(1)
 
         val url = URL(urlString)
         val urlConnection = url.openConnection() as HttpURLConnection
 
-        urlConnection.requestMethod = when(type){
+        urlConnection.requestMethod = when (type) {
             TYPE_POST -> "POST"
             TYPE_PUT -> "PUT"
             TYPE_DELETE -> "DELETE"
             else -> "POST"
         }
+
+        urlConnection.setRequestProperty(
+                "Content-Type", "application/x-www-form-urlencoded")
 
         val output = BufferedOutputStream(urlConnection.getOutputStream())
         val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))
@@ -82,6 +86,8 @@ fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>, ty
         writer.flush()
         writer.close()
         output.close()
+
+
         urlConnection.connect()
 
         reader = BufferedReader(InputStreamReader(
