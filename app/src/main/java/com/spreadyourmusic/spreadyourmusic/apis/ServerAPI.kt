@@ -749,10 +749,11 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song, context
         if (error != "ok") {
             throw Exception("Error: $error")
         } else {
-            uploadSongLocation(song.id, song.locationUri, context)
-            uploadSongLyrics(song.id, song.lyricsPath!!, context)
             val songJSOn = json.getJSONObject("song")
-            return songJSOn.getLong("id")
+            val id = songJSOn.getLong("id")
+            //uploadSongLocation(id,song.locationUri,context)
+            //uploadSongLyrics(id,song.lyricsPath,context)
+            return id
         }
     }
 }

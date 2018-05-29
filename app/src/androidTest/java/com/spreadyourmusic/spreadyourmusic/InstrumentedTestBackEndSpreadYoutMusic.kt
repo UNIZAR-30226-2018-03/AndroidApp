@@ -4,8 +4,10 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import android.util.Log
 import com.spreadyourmusic.spreadyourmusic.apis.*
+import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
+import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -108,6 +110,12 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     @Test
     fun isUserFollowedByUserServerTest() {
         isUserFollowedByUserServer("abelcht", "lAngelP")
+    }
+
+    @Test
+    fun uploadSong(){
+        val appContext = InstrumentationRegistry.getTargetContext()
+        uploadSongServer("abelcht","dfs", ServerEmulator.songList[0]!!,appContext)
     }
 
     @Test
