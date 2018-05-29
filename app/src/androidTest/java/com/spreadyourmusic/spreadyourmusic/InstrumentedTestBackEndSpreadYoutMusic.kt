@@ -49,8 +49,8 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     @Test
     fun doSignUpServerTest() {
         val appContext = InstrumentationRegistry.getTargetContext()
-        val usuario = User("abelcht3", "1234", "Este Es Un Nombre", "/storage/emulated/0/Music/Prueba/profile_postmalone.jpg", "prueba@prueba.com", "fghgfhgfhgfhgf", Date(1992, 12, 12))
-        usuario.twitterAccount = "pruebaTwittee"
+        val usuario = User("abelcht4", "1234", "Este Es Un Nombre", "/storage/emulated/0/Music/Prueba/profile_postmalone.jpg", "prueba@prueba.com", "fghgfhgfhgfhgf", Date(1992, 12, 12))
+        //usuario.twitterAccount = "pruebaTwittee"
         doSignUpServer(usuario, appContext)
     }
 
@@ -68,9 +68,9 @@ class InstrumentedTestBackEndSpreadYoutMusic {
 
     @Test
     fun userGetServer() {
-        val token = doLoginServer("abelcht", "dfgdfgfd")
-        val usr = obtainUserDataServer("abelcht", token)
-        doLogoutServer("abelcht", token)
+        val token = doLoginServer("abelcht4", "1234")
+        val usr = obtainUserDataServer("abelcht4", token)
+        Log.i("TAGG", usr!!.pictureLocationUri)
     }
 
     @Test
