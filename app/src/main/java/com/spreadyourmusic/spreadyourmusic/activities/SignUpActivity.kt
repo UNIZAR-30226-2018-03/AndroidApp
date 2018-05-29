@@ -10,10 +10,8 @@ import com.spreadyourmusic.spreadyourmusic.R
 import kotlinx.android.synthetic.main.content_sign_up_screen_1.*
 import kotlinx.android.synthetic.main.content_sign_up_screen_2.*
 import java.util.*
-import android.net.Uri
 import android.app.DatePickerDialog
 import android.support.v4.app.Fragment
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.spreadyourmusic.spreadyourmusic.controller.*
@@ -21,27 +19,28 @@ import com.spreadyourmusic.spreadyourmusic.fragment.DatePickerFragment
 import com.spreadyourmusic.spreadyourmusic.helpers.getPathFromUri
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
+import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.content_sign_up_screen_1.view.*
 import kotlinx.android.synthetic.main.content_sign_up_screen_2.view.*
 
 
 class SignUpActivity : AppCompatActivity() {
-    var idEditActivity = false
-    var numOfScreen = 1
-    var username: String? = null
-    var realname: String? = null
-    var password: String? = null
-    var mail: String? = null
-    var userBirth: Date? = null
-    var userTwitterAccount: String? = null
-    var userInstagramAccount: String? = null
-    var userFacebookAccount: String? = null
-    var userPictureLocationUri: String? = null
+    private var idEditActivity = false
+    private var numOfScreen = 1
+    private var username: String? = null
+    private var realname: String? = null
+    private var password: String? = null
+    private var mail: String? = null
+    private var userBirth: Date? = null
+    private var userTwitterAccount: String? = null
+    private var userInstagramAccount: String? = null
+    private var userFacebookAccount: String? = null
+    private var userPictureLocationUri: String? = null
 
-    var userId: String? = null
+    private var userId: String? = null
 
-    var fragmentPage1: FragmentSignUpPage1? = null
-    var fragmentPage2: FragmentSignUpPage2? = null
+    private var fragmentPage1: FragmentSignUpPage1? = null
+    private var fragmentPage2: FragmentSignUpPage2? = null
 
 
     private val onContinueFunction: ((String?, String?, String?, String?) -> Unit) = { username, mail, password, userPictureLocationUri ->
@@ -96,11 +95,15 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        userId = intent.getStringExtra(resources.getString(R.string.user_id))
 
-        toolbar.setTitle(R.string.signup)
+        if (userId != null)
+            toolbar.setTitle(R.string.update_user)
+        else
+            toolbar.setTitle(R.string.signup)
+
+
         setSupportActionBar(toolbar)
-
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()
@@ -108,7 +111,6 @@ class SignUpActivity : AppCompatActivity() {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        userId = intent.getStringExtra(resources.getString(R.string.user_id))
         if (userId != null) {
             idEditActivity = true
             obtainCurrentUserData({
@@ -123,18 +125,16 @@ class SignUpActivity : AppCompatActivity() {
                     userPictureLocationUri = it.pictureLocationUri
 
                     fragmentPage1 = FragmentSignUpPage1.newInstance(username, mail, userPictureLocationUri, true, onContinueFunction)
-                    fragmentPage2 = FragmentSignUpPage2.newInstance(realname, userBirth, userTwitterAccount, userInstagramAccount, userFacebookAccount, onCreateFunction)
+                    fragmentPage2 = FragmentSignUpPage2.newInstance(realname, userBirth, userTwitterAccount, userInstagramAccount, userFacebookAccount, true, onCreateFunction)
                     changeActualFragment(fragmentPage1!!)
                 }
 
             }, this)
         } else {
             fragmentPage1 = FragmentSignUpPage1.newInstance(null, null, null, false, onContinueFunction)
-            fragmentPage2 = FragmentSignUpPage2.newInstance(null, null, null, null, null, onCreateFunction)
+            fragmentPage2 = FragmentSignUpPage2.newInstance(null, null, null, null, null, false, onCreateFunction)
             changeActualFragment(fragmentPage1!!)
         }
-
-
     }
 
     override fun onBackPressed() {
@@ -142,9 +142,8 @@ class SignUpActivity : AppCompatActivity() {
             numOfScreen = 1
             changeActualFragment(fragmentPage1!!)
 
-        } else {
+        } else
             super.onBackPressed()
-        }
     }
 
     private fun changeActualFragment(fragmento: Fragment) {
@@ -161,23 +160,21 @@ class SignUpActivity : AppCompatActivity() {
         var userPictureLocationUri: String? = null
         var l: ((String?, String?, String?, String?) -> Unit)? = null
         var isEdition: Boolean = false
-
-        var selectPictureCode: Int = 567
-
+        private var selectPictureCode: Int = 567
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                                   savedInstanceState: Bundle?): View? {
             val view = inflater.inflate(R.layout.content_sign_up_screen_1, container, false)
-            view.signupButton.setOnClickListener { onContinueClick() }
+            view.signUpButton.setOnClickListener { onContinueClick() }
             view.usernameEditText.setText(username)
             view.mailEditText.setText(mail)
-            if (userPictureLocationUri != null) {
-                    Glide.with(this).load(userPictureLocationUri).into(view.foto_perfil)
-            }
-            if (isEdition) {
+            if (userPictureLocationUri != null)
+                Glide.with(this).load(userPictureLocationUri).into(view.coverCircleImageView)
+
+            if (isEdition)
                 view.usernameEditText.isEnabled = false
-            }
-            view.foto_perfil.setOnClickListener { onProfilePictureClick() }
+
+            view.coverCircleImageView.setOnClickListener { onProfilePictureClick() }
             return view
         }
 
@@ -187,32 +184,30 @@ class SignUpActivity : AppCompatActivity() {
             mail = view!!.mailEditText.text.toString().trim()
 
             if (password.isNullOrEmpty() || username.isNullOrEmpty() || userPictureLocationUri.isNullOrEmpty()) {
-                Toast.makeText(activity, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
-                Toast.makeText(activity, R.string.campos_obligatorios_1, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.empty_fields_1, Toast.LENGTH_SHORT).show()
 
-            } else {
+            } else
                 l!!.invoke(username, mail, password, userPictureLocationUri)
-            }
         }
 
         private fun onProfilePictureClick() {
             val intent = Intent()
                     .setType("image/*")
                     .setAction(Intent.ACTION_GET_CONTENT)
-            startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.seleccione_fichero)), selectPictureCode)
+            startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_file)), selectPictureCode)
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
             super.onActivityResult(requestCode, resultCode, data)
             if (resultCode != RESULT_OK) {
-                Toast.makeText(activity, R.string.error_fichero, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.select_valid_file, Toast.LENGTH_SHORT).show()
             } else if (requestCode == selectPictureCode) {
                 val uriImage = data!!.data
                 userPictureLocationUri = getPathFromUri(context!!, uriImage!!)
 
-                if (userPictureLocationUri != null) {
-                    Glide.with(this).load(userPictureLocationUri).into(foto_perfil)
-                }
+                if (userPictureLocationUri != null)
+                    Glide.with(this).load(userPictureLocationUri).into(coverCircleImageView)
             }
         }
 
@@ -236,6 +231,7 @@ class SignUpActivity : AppCompatActivity() {
         var userTwitterAccount: String? = null
         var userInstagramAccount: String? = null
         var userFacebookAccount: String? = null
+        var isEdition: Boolean = false
 
         var l: ((String?, Date?, String?, String?, String?) -> Unit)? = null
 
@@ -252,6 +248,8 @@ class SignUpActivity : AppCompatActivity() {
             view.facebookAccountEditText.setText(userFacebookAccount)
             view.createUserButton.setOnClickListener { onCreateClick() }
             view.birthDateEditText.setOnClickListener { onSelectDate() }
+            if (isEdition)
+                view.createUserButton.setText(R.string.update)
             return view
         }
 
@@ -261,13 +259,11 @@ class SignUpActivity : AppCompatActivity() {
             userTwitterAccount = view!!.twitterAccountEditText.text.toString().trim()
             userInstagramAccount = view!!.instagramAccountEditText.text.toString().trim()
             if (realname.isNullOrEmpty()) {
-                Toast.makeText(activity, R.string.error_rellenar, Toast.LENGTH_SHORT).show()
-                Toast.makeText(activity, R.string.campos_obligatorios_2, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.empty_fields_2, Toast.LENGTH_SHORT).show()
 
-            } else {
+            } else
                 l!!.invoke(realname, userBirth, userFacebookAccount, userTwitterAccount, userInstagramAccount)
-            }
-
         }
 
         private fun onSelectDate() {
@@ -282,7 +278,7 @@ class SignUpActivity : AppCompatActivity() {
 
         companion object {
             fun newInstance(realname: String?, userBirth: Date?, userTwitterAccount: String?, userInstagramAccount: String?,
-                            userFacebookAccount: String?, l: (String?, Date?, String?, String?, String?) -> Unit): FragmentSignUpPage2 {
+                            userFacebookAccount: String?, isEdition: Boolean, l: (String?, Date?, String?, String?, String?) -> Unit): FragmentSignUpPage2 {
                 val frag = FragmentSignUpPage2()
                 frag.realname = realname
                 frag.userBirth = userBirth
@@ -290,6 +286,7 @@ class SignUpActivity : AppCompatActivity() {
                 frag.userInstagramAccount = userInstagramAccount
                 frag.userFacebookAccount = userFacebookAccount
                 frag.l = l
+                frag.isEdition = isEdition
                 return frag
             }
         }

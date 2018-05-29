@@ -1,4 +1,4 @@
-package com.spreadyourmusic.spreadyourmusic.media
+package com.spreadyourmusic.spreadyourmusic.media.common
 
 interface MusicProviderSource {
     companion object {

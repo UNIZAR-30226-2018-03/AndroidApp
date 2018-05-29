@@ -5,65 +5,55 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="@string/home"
             android:id="@+id/home"
-            />
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/home" />
         <item
-            android:icon="@drawable/ic_view_module_black_24dp"
-            android:title="@string/genres"
             android:id="@+id/genres"
-            />
+            android:icon="@drawable/ic_view_module_black_24dp"
+            android:title="@string/genres" />
 
         <item
-            android:icon="@drawable/ic_fiber_new_black_24dp"
-            android:title="@string/news"
             android:id="@+id/news"
-            />
+            android:icon="@drawable/ic_fiber_new_black_24dp"
+            android:title="@string/news" />
         <item
-            android:icon="@drawable/ic_trending_up_black_24dp"
-            android:title="@string/trends"
             android:id="@+id/trends"
-            />
+            android:icon="@drawable/ic_trending_up_black_24dp"
+            android:title="@string/trends" />
     </group>
 
     <item android:title="@string/my_library">
         <menu>
             <item
-                android:icon="@drawable/ic_queue_music_black_24dp"
-                android:title="@string/playlist"
                 android:id="@+id/playlist"
-                />
+                android:icon="@drawable/ic_queue_music_black_24dp"
+                android:title="@string/playlist" />
             <item
-                android:icon="@drawable/ic_person_black_24dp"
-                android:title="@string/artist"
                 android:id="@+id/artist"
-                />
+                android:icon="@drawable/ic_person_black_24dp"
+                android:title="@string/artist" />
             <item
-                android:icon="@drawable/ic_music_note_black_24dp"
-                android:title="@string/songs"
                 android:id="@+id/songs"
-                />
+                android:icon="@drawable/ic_music_note_black_24dp"
+                android:title="@string/songs" />
             <item
-                android:icon="@drawable/ic_file_download_black_24dp"
-                android:title="@string/downloaded"
                 android:id="@+id/downloaded"
-                />
+                android:icon="@drawable/ic_file_download_black_24dp"
+                android:title="@string/downloaded" />
         </menu>
     </item>
 
     <item android:title="@string/profile">
         <menu>
             <item
-                android:icon="@drawable/ic_person_pin_black_24dp"
-                android:title="@string/open_profile"
                 android:id="@+id/open_profile"
-                />
+                android:icon="@drawable/ic_person_pin_black_24dp"
+                android:title="@string/open_profile" />
             <item
-                android:icon="@drawable/ic_exit_to_app_black_24dp"
-                android:title="@string/close_session"
                 android:id="@+id/close_session"
-                />
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="@string/close_session" />
         </menu>
     </item>
 

@@ -11,7 +11,7 @@ import android.content.Context;
  * On 21/01/18.
  */
 
-@Database(entities = { SongVo.class}, version = 1)
+@Database(entities = {SongVo.class}, version = 1, exportSchema = false)
 @TypeConverters({DataTypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
