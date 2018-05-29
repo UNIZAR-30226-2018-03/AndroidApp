@@ -267,7 +267,6 @@ fun obtainSongFromID(id: Long): Song? {
 
 @Throws(Exception::class)
 fun obtainUserDataServerFromID(userID: Long, sessionToken: String): User? {
-    //TODO-TEST
     val json = getJSONFromRequest("/users/$userID/id?token=$sessionToken", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -276,20 +275,26 @@ fun obtainUserDataServerFromID(userID: Long, sessionToken: String): User? {
         if (error) throw Exception("Error")
 
         val profile = json.getJSONObject("profile")
-        val username = profile.getString("user")
         val name = profile.getString("user")
-        val email = profile.getString("mail")
-        val biography = profile.getString("bio")
+        val mailVisible = profile.getBoolean("mail_visible")
 
-        val birthDate = null
+        var birthDate: Date? = null
+        var email: String? = null
+
+        if (mailVisible) {
+            email = profile.getString("mail")
+            val dateStr = profile.getString("birth_date")
+            birthDate = SimpleDateFormat("yyyy-MM-dd").parse(dateStr)
+        }
 
         val verifiedAccount = profile.getBoolean("verified")
         val twitterAccount = profile.getString("twitter")
         val facebookAccount = profile.getString("facebook")
         val instagramAccount = profile.getString("instagram")
+        val username = profile.getString("nick")
         val pictureLocationURI = getUserProfilePicturePath(username)
 
-        val user = User(username, name, pictureLocationURI, verifiedAccount, email, biography, birthDate)
+        val user = User(username, name, pictureLocationURI, verifiedAccount, email, null, birthDate)
         user.twitterAccount = twitterAccount
         user.facebookAccount = facebookAccount
         user.instagramAccount = instagramAccount
@@ -435,7 +440,7 @@ fun doSignUpServer(user: User, context: Context): String {
     val token = json.getString("token")
     uploadUserProfilePicture(username, user.pictureLocationUri!!, context)
 
-    // LLamada a update para actualizar cuentas twitter facebook y demás
+    //TODO: Fallo LLamada a update para actualizar cuentas twitter facebook y demás
 
     val twitterAccount = user.twitterAccount
     val facebookAccount = user.facebookAccount
@@ -472,8 +477,8 @@ fun doDeleteAccountServer(user: String, sessionToken: String) {
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getString("error")
-        if (error != "ok") {
+        val error = json.getBoolean("error")
+        if (error) {
             throw Exception("Error: $error")
         }
     }
@@ -486,7 +491,7 @@ fun doDeleteAccountServer(user: String, sessionToken: String) {
  */
 @Throws(Exception::class)
 fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
-    //TODO-TEST
+    //TODO-TEST FALLA
     val username = user.username
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
@@ -540,20 +545,19 @@ fun doLogoutServer(username: String, sessionToken: String) {
  */
 @Throws(Exception::class)
 fun getFollowedUsersServer(username: String): List<User> {
-    //TODO(PREGUNTAR A OJO)
-    val json = getJSONFromRequest("/users/$username/followes", null, TYPE_GET)
+    val json = getJSONFromRequest("/users/$username/follows", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getBoolean("error")
-        if (error) throw Exception("Error")
+        val error = json.getString("error")
+        if (error!="ok") throw Exception("Error")
 
         val users = json.getJSONArray("users")
 
         val usersList: MutableList<User> = ArrayList()
-        for (i in 0..users.length() - 1) {
-            val id_user = users.getLong(i)
-            val user = obtainUserDataServerFromID(id_user, "")
+        for (i in 0 until users.length()) {
+            val userID = users.getLong(i)
+            val user = obtainUserDataServerFromID(userID, "")
             usersList.add(user!!)
         }
         return usersList.toList()
@@ -565,16 +569,15 @@ fun getFollowedUsersServer(username: String): List<User> {
  */
 @Throws(Exception::class)
 fun isUserFollowedByUserServer(username: String, user: String): Boolean {
-    //TODO(PREGUNTAR A OJO)
     val json = getJSONFromRequest("/users/$username/follows/$user", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
         if (error == "ok") {
-            return true;
-        } else if (error == "noFollow") {
-            return false;
+            return true
+        } else if (error == "noFollows") {
+            return false
         } else {
             throw Exception("Error: $error")
         }
@@ -587,17 +590,14 @@ fun isUserFollowedByUserServer(username: String, user: String): Boolean {
  */
 @Throws(Exception::class)
 fun getNumberOfFollowersOfUserServer(username: String): Long {
-    //TODO(PREGUNTAR A OJO)
-    val json = getJSONFromRequest("/users/$username/followes", null, TYPE_GET)
+    val json = getJSONFromRequest("/users/$username/followers", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getBoolean("error")
-        if (error) throw Exception("Error")
+        val error = json.getString("error")
+        if (error!="ok") throw Exception("Error")
 
-        val users = json.getJSONArray("users")
-
-        return users.length().toLong()
+        return json.getLong("size")
     }
 }
 
@@ -606,12 +606,10 @@ fun getNumberOfFollowersOfUserServer(username: String): Long {
  */
 @Throws(Exception::class)
 fun addFollowerToUserServer(username: String, sessionToken: String, followed: String) {
-    //TODO(PREGUNTAR A OJO)
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
-    postData.add(Pair("followed", followed))
 
-    val json = getJSONFromRequest("/users/$username/followers/add", postData, TYPE_POST)
+    val json = getJSONFromRequest("/users/$username/follow/$followed", postData, TYPE_POST)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -628,12 +626,10 @@ fun addFollowerToUserServer(username: String, sessionToken: String, followed: St
  */
 @Throws(Exception::class)
 fun deleteFollowerToUserServer(username: String, sessionToken: String, followed: String) {
-    //TODO(PREGUNTAR A OJO)
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
-    postData.add(Pair("followed", followed))
 
-    val json = getJSONFromRequest("/users/$username/followers/add", postData, TYPE_DELETE)
+    val json = getJSONFromRequest("/users/$username/unfollow/$followed", postData, TYPE_POST)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -656,6 +652,7 @@ fun deleteFollowerToUserServer(username: String, sessionToken: String, followed:
  */
 @Throws(Exception::class)
 fun addReproductionToSongServer(username: String, sessionToken: String, song: Long) {
+    //TODO-TEST
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
     postData.add(Pair("nick", username))
@@ -676,7 +673,6 @@ fun addReproductionToSongServer(username: String, sessionToken: String, song: Lo
 @Throws(Exception::class)
 fun setSongFavoutireServer(username: String, sessionToken: String, song: Long) {
     //TODO-TEST
-
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
     postData.add(Pair("token", sessionToken))
@@ -700,7 +696,6 @@ fun setSongFavoutireServer(username: String, sessionToken: String, song: Long) {
 @Throws(Exception::class)
 fun unSetSongFavoutireServer(username: String, sessionToken: String, song: Long) {
     //TODO-TEST
-
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
     postData.add(Pair("token", sessionToken))
@@ -749,6 +744,7 @@ fun isSongFavoutireByUserServer(username: String, sessionToken: String, song: Lo
 @Throws(Exception::class)
 
 fun uploadSongServer(username: String, sessionToken: String, song: Song, context: Context): Long {
+   // TODO
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
     postData.add(Pair("token", sessionToken))
@@ -777,6 +773,7 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song, context
  */
 @Throws(Exception::class)
 fun deleteSongServer(username: String, sessionToken: String, song: Song, context: Context) {
+    // TODO
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
     postData.add(Pair("token", sessionToken))
@@ -907,6 +904,7 @@ fun getNumberOfFollowersOfPlaylistServer(playlist: Long): Long {
 
 @Throws(Exception::class)
 fun addFollowerToPlaylistServer(username: String, sessionToken: String, followed: Long) {
+    // TODO
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
 
@@ -928,6 +926,7 @@ fun addFollowerToPlaylistServer(username: String, sessionToken: String, followed
 
 @Throws(Exception::class)
 fun deleteFollowerToPlaylistServer(username: String, sessionToken: String, followed: Long) {
+    // TODO
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
 
@@ -949,6 +948,7 @@ fun deleteFollowerToPlaylistServer(username: String, sessionToken: String, follo
  */
 @Throws(Exception::class)
 fun obtainPlaylistDataServer(id: Long): Playlist? {
+    // TODO
     val json = getJSONFromRequest("/user-lists/$id", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -1113,6 +1113,7 @@ fun createAlbumsServer(username: String, sessionToken: String, album: Album, con
  */
 @Throws(Exception::class)
 fun doGoogleLoginServer(serverAuthCode: String): String {
+    // TODO
     val postData = ArrayList<Pair<String,String>>()
     postData.add(Pair("token",serverAuthCode))
     val json = getJSONFromRequest("/oauth/login", null, TYPE_GET)

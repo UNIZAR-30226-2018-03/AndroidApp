@@ -108,11 +108,6 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     }
 
     @Test
-    fun isUserFollowedByUserServerTest() {
-        isUserFollowedByUserServer("abelcht", "lAngelP")
-    }
-
-    @Test
     fun uploadSong(){
         val appContext = InstrumentationRegistry.getTargetContext()
         uploadSongServer("abelcht","dfs", ServerEmulator.songList[0]!!,appContext)
@@ -184,6 +179,19 @@ class InstrumentedTestBackEndSpreadYoutMusic {
 
         doUpdateAccountServer(usuario, "1234", appContext)
 
+    }
+
+
+    @Test
+    fun isUserFollowedByUserServerTest() {
+        val token = doLoginServer("abelcht4", "1234")
+        addFollowerToUserServer("abelcht",token, "lAngelP")
+        getFollowedUsersServer("abelcht")
+        isUserFollowedByUserServer("abelcht", "lAngelP")
+
+        getNumberOfFollowersOfUserServer("abelcht")
+
+        deleteFollowerToUserServer("abelcht",token, "lAngelP")
     }
 
 }
