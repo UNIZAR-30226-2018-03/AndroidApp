@@ -319,26 +319,23 @@ fun obtainUserDataServer(username: String, sessionToken: String): User? {
 }
 
 fun obtainSongsFromUserServer(username: String): List<Song> {
-    //TODO-TEST
     val json = getJSONFromRequest("/users/$username/songs", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
-        if (error!="ok") throw Exception("Error:  $error")
+        if (error != "ok") throw Exception("Error:  $error")
 
-        val songs = json.getJSONArray("profile")
+        val songs = json.getJSONArray("songs")
 
-        val songsIDlist: MutableList<Long> = ArrayList()
-        for (i in 0..songs.length() - 1) {
-            songsIDlist.add(songs.getLong(i))
+        val songList = ArrayList<Song>()
+        for (j in 0 until songs.length()) {
+            val i = songs[j]
+            val songI = obtainSongFromID((i as Int).toLong())
+            if (songI != null)
+                songList.add(songI)
         }
-
-        val songslist: MutableList<Song> = ArrayList()
-        for (i in 0..songsIDlist.size - 1) {
-            songslist.add(obtainSongFromID(songsIDlist.get(i))!!)
-        }
-        return songslist.toList()
+        return songList
     }
 }
 
@@ -626,7 +623,6 @@ fun deleteFollowerToUserServer(username: String, sessionToken: String, followed:
  */
 @Throws(Exception::class)
 fun addReproductionToSongServer(username: String, sessionToken: String, song: Long) {
-    //TODO-TEST
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
     postData.add(Pair("nick", username))
@@ -736,7 +732,8 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song, context
             val songJSOn = json.getJSONObject("song")
             val id = songJSOn.getLong("id")
             uploadSongLocation(id, song.locationUri, context)
-            uploadSongLyrics(id, song.lyricsPath!!, context)
+            if (song.lyricsPath != null)
+                uploadSongLyrics(id, song.lyricsPath, context)
             return id
         }
     }
