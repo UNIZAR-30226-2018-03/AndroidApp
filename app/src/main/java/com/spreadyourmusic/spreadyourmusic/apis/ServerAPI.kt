@@ -484,7 +484,7 @@ fun doDeleteAccountServer(user: String, sessionToken: String) {
  */
 @Throws(Exception::class)
 fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
-    //TODO-TEST
+    //TODO-TEST FALLA
     val username = user.username
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
@@ -539,7 +539,7 @@ fun doLogoutServer(username: String, sessionToken: String) {
 @Throws(Exception::class)
 fun getFollowedUsersServer(username: String): List<User> {
     //TODO(PREGUNTAR A OJO)
-    val json = getJSONFromRequest("/users/$username/followes", null, TYPE_GET)
+    val json = getJSONFromRequest("/users/$username/following", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
