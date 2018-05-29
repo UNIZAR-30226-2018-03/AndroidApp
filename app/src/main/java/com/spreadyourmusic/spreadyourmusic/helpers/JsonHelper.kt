@@ -76,12 +76,15 @@ fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>, ty
             else -> "POST"
         }
 
-        val output = BufferedOutputStream(urlConnection.getOutputStream())
-        val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))
-        writer.write(urlParameters)
-        writer.flush()
-        writer.close()
-        output.close()
+        if(!urlParameters.isNullOrBlank()){
+            val output = BufferedOutputStream(urlConnection.getOutputStream())
+            val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))
+            writer.write(urlParameters)
+            writer.flush()
+            writer.close()
+            output.close()
+        }
+
         urlConnection.connect()
 
         reader = BufferedReader(InputStreamReader(
