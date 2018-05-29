@@ -374,6 +374,8 @@ fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
         //TODO
         return ArrayList<Playlist>()
     }
+    val lista: List<Playlist> = ArrayList()
+    return  lista
 }
 
 /////////////////////// FIN DE PETICIONES AUXILIARES///////////////////////////////
@@ -804,7 +806,7 @@ fun obtainFavouriteSongsByUserServer(username: String, sessionToken: String): Li
  * Devuelve las canciones populares (plazo de una semana o un mes)
  */
 @Throws(Exception::class)
-fun obtainPopularSongsServer(cantidad: Long): List<Song>? {
+fun obtainPopularSongsServer(cantidad: Long): List<Song> {
 
     // TODO:
 
@@ -820,7 +822,9 @@ fun obtainPopularSongsServer(cantidad: Long): List<Song>? {
             throw Exception("Error: $error")
         }
     }
-    return null
+
+    val list : List<Song> = ArrayList()
+    return list
 }
 
 /**
