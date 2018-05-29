@@ -1095,7 +1095,7 @@ fun doGoogleLoginServer(serverAuthCode: String): String {
 /////////////////////// FIN DE PETICIONES OAUTH///////////////////////////////////
 
 /*
- *                      PETICIONES GLOBALES
+ *                      PETICIONES GLOBALES  s
  */
 
 /**
