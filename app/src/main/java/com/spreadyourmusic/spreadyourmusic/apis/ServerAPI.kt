@@ -408,15 +408,15 @@ fun doSignUpServer(user: User, context: Context): String {
     val mail = user.email
     val pass = user.password
     val name = user.name
-    val birth = user.birthDate?.time?.toString()
+    val birth = user.birthDate?.time.toString()
     val username = user.username
 
     val postData = ArrayList<Pair<String, String>>()
-    postData.add(Pair("pass0", pass!!))
-    postData.add(Pair("pass1", pass))
-    postData.add(Pair("mail", mail!!))
-    postData.add(Pair("user", name!!))
-    postData.add(Pair("birth", birth!!))
+    if(pass!=null) postData.add(Pair("pass0", pass))
+    if(pass!=null) postData.add(Pair("pass1", pass))
+    if(mail!=null)postData.add(Pair("mail", mail))
+    if(name!=null)postData.add(Pair("user", name))
+    postData.add(Pair("birth", birth))
 
     val json = getJSONFromRequest("/users/$username/signup", postData, TYPE_POST)
     if (json == null) {
@@ -442,7 +442,7 @@ fun doDeleteAccountServer(user: String, sessionToken: String) {
     //TODO-TEST
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
-    val json = getJSONFromRequest("/users/$user/login", postData, TYPE_DELETE)
+    val json = getJSONFromRequest("/users/$user", postData, TYPE_DELETE)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -466,7 +466,19 @@ fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
 
-    val json = getJSONFromRequest("/users/$username?token=$sessionToken", postData, TYPE_PUT)
+    val mail = user.email
+    val bio = user.biography
+    val birth = user.birthDate
+
+    val update = JSONObject()
+    val body = JSONObject()
+    body.put("username",username)
+    body.put("mail",mail)
+    body.put("bio",bio)
+    body.put("birth_date",birth)
+    update.put("updates", body)
+
+    val json = getJSONFromRequest("/users/$username?token=$sessionToken&body={$update}", postData, TYPE_PUT)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -1077,9 +1089,7 @@ fun createAlbumsServer(username: String, sessionToken: String, album: Album, con
 fun doGoogleLoginServer(serverAuthCode: String): String {
     val postData = ArrayList<Pair<String,String>>()
     postData.add(Pair("token",serverAuthCode))
-    val json = getJSONFromRequest("/oauth/login?code=$serverAuthCode", null, TYPE_GET)
-
-    //TODO(PREGUNTAR)
+    val json = getJSONFromRequest("/oauth/login", null, TYPE_GET)
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
