@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/side_nav_bar"
@@ -15,28 +14,28 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center"
+        android:orientation="vertical"
         android:paddingTop="32dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/foto_perfil"
+            android:id="@+id/coverCircleImageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:src="@drawable/sample_image" />
 
         <TextView
+            android:id="@+id/usernameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:id="@+id/nombre_usuario"
-            android:textStyle="bold"
-            android:text="Trey Songz"
             android:layout_gravity="center"
-            android:textColor="@android:color/white"
             android:alpha="0.75"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:text="Trey Songz"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

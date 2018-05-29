@@ -1,4 +1,4 @@
-package com.spreadyourmusic.spreadyourmusic.media
+package com.spreadyourmusic.spreadyourmusic.media.notification
 
 import android.app.Notification
 import android.app.NotificationChannel

@@ -6,7 +6,7 @@ package com.spreadyourmusic.spreadyourmusic.models
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
-import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource
+import com.spreadyourmusic.spreadyourmusic.media.common.MusicProviderSource
 import com.spreadyourmusic.spreadyourmusic.helpers.media.MediaIDHelper
 
 /**
@@ -16,7 +16,7 @@ class Song(val name: String, var locationUri: String, val album: Album, val gene
     var id: Long = 0
     var isDownloaded = false
     //TODO: El link devuelto ha de ser el que apunta a la misma canción desde la interfaz web
-    override var shareLink: String = "http://SpreadYourMusic/song/"
+    override var shareLink: String = "http://155.210.13.105:8006/song?id=$id"
 
     /**
      * Constructor usado cuando se obtienen datos desde el back-end

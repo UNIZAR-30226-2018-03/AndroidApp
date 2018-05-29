@@ -67,11 +67,24 @@ fun doLogout(activity: Activity) {
 }
 
 fun doGoogleLogin(user: GoogleSignInAccount, activity: Activity): Boolean {
-    // TODO: Falta implementar
-    // Si el login es correcto se sobreescribe session
-    // Y preferences y demas
-    Thread.sleep(1000)
-    return false
+    return try {
+        val email = user.email
+        val authCode = user.serverAuthCode
+
+        if (authCode != null && email != null) {
+            val sessionToken = doGoogleLoginServer(authCode)
+
+            // El login en el server ha sido correcto
+            loginUserSharedPreferences(email, sessionToken, activity)
+
+            // Se actualiza el objeto de sesión
+            SessionSingleton.currentUser = User(email)
+            SessionSingleton.sessionToken = sessionToken
+            true
+        } else false
+    } catch (e: Exception) {
+        false
+    }
 }
 
 /**
@@ -106,7 +119,7 @@ fun doSignUp(user: User, activity: Activity, listener: (String?) -> Unit) {
     Thread {
         var sessionToken = ""
         val resultado = try {
-            sessionToken = doSignUpServer(user)
+            sessionToken = doSignUpServer(user,activity)
             null
         } catch (e: Exception) {
             e.message

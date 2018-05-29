@@ -5,6 +5,7 @@ import android.os.ResultReceiver
 import android.os.SystemClock
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
 
 import com.spreadyourmusic.spreadyourmusic.services.MusicService
 

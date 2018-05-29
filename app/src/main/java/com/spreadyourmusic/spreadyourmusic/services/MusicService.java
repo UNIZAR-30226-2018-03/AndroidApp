@@ -15,9 +15,9 @@ import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.spreadyourmusic.spreadyourmusic.media.MediaNotificationManager;
+import com.spreadyourmusic.spreadyourmusic.media.notification.MediaNotificationManager;
 import com.spreadyourmusic.spreadyourmusic.media.playback.LocalPlayback;
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager;
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager;
 import com.spreadyourmusic.spreadyourmusic.media.playback.PlaybackManager;
 
 import com.spreadyourmusic.spreadyourmusic.activities.HomeActivity;
