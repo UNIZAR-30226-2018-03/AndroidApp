@@ -199,6 +199,7 @@ private fun uploadAlbumCover(albumId: Long, filePath: String, context: Context):
 */
 
 fun obtainAlbumFromID(id: Long): Album? {
+    //TODO-TEST
     val json = getJSONFromRequest("/albums/$id", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -236,6 +237,7 @@ fun obtainAlbumFromID(id: Long): Album? {
 }
 
 fun obtainSongFromID(id: Long): Song? {
+    //TODO-TEST
     val json = getJSONFromRequest("/songs/$id", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -265,6 +267,7 @@ fun obtainSongFromID(id: Long): Song? {
 
 @Throws(Exception::class)
 fun obtainUserDataServerFromID(userID: Long, sessionToken: String): User? {
+    //TODO-TEST
     val json = getJSONFromRequest("/users/$userID/id?token=$sessionToken", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -301,7 +304,6 @@ fun obtainUserDataServerFromID(userID: Long, sessionToken: String): User? {
 @SuppressLint("SimpleDateFormat")
 @Throws(Exception::class)
 fun obtainUserDataServer(username: String, sessionToken: String): User? {
-    //TODO-TEST
     val json = getJSONFromRequest("/users/$username?token=$sessionToken", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -337,6 +339,7 @@ fun obtainUserDataServer(username: String, sessionToken: String): User? {
 }
 
 fun obtainSongsFromUserServer(username: String): List<Song> {
+    //TODO-TEST
     val json = getJSONFromRequest("/users/$username/songs", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -360,6 +363,7 @@ fun obtainSongsFromUserServer(username: String): List<Song> {
 }
 
 fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
+    //TODO-TEST
     val json = getJSONFromRequest("/user-lists/$username/lists", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -442,7 +446,7 @@ fun doSignUpServer(user: User, context: Context): String {
     if (!instagramAccount.isNullOrEmpty()) postDataAccounts.add(Pair("instagram", instagramAccount!!))
 
     if(postDataAccounts.size > 0){
-        val jsonAccounts = getJSONFromRequest("/users/$username?token=$token", postData, TYPE_PUT)
+        val jsonAccounts = getJSONFromRequest("/users/$username?token=$token", postDataAccounts, TYPE_PUT)
 
         if (jsonAccounts == null) {
             throw Exception("Error: Servidor no accesible")
@@ -462,11 +466,7 @@ fun doSignUpServer(user: User, context: Context): String {
  */
 @Throws(Exception::class)
 fun doDeleteAccountServer(user: String, sessionToken: String) {
-    //TODO-TEST
-    val postData = ArrayList<Pair<String, String>>()
-    postData.add(Pair("token", sessionToken))
-    val json = getJSONFromRequest("/users/$user/login", postData, TYPE_DELETE)
-
+    val json = getJSONFromRequest("/users/$user?token=$sessionToken", null, TYPE_DELETE)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
@@ -508,7 +508,6 @@ fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
  * Warning: esta operación puede ser costosa en tiempo
  */
 fun doLogoutServer(username: String, sessionToken: String) {
-    //TODO-TEST
     val postData = ArrayList<Pair<String, String>>()
     // DELETE /users/{nick}/login?token={TOKEN}
     val json = getJSONFromRequest("/users/$username/login?token=$sessionToken", postData, TYPE_DELETE)

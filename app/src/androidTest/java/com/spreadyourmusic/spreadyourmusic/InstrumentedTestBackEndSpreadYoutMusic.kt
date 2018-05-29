@@ -84,9 +84,10 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     fun deleteUserServer() {
         val appContext = InstrumentationRegistry.getTargetContext()
         // Utiliza internamente UpdateAccount
-        val user = User("usuarioParaEliminar", "dfgdfgfd", "Este Es Un Nombre", "", "prueba@prueba.com", "fghgfhgfhgfhgf", Date(1992, 12, 12))
+        val user = User("usuarioParaEliminar15", "dfgdfgfd", "Este Es Un Nombre", "/storage/emulated/0/Music/Prueba/profile_postmalone.jpg", "prueba@prueba.com", "fghgfhgfhgfhgf", Date(1992, 12, 12))
+        //user.twitterAccount = "dfdsfds"
         val token = doSignUpServer(user, appContext)
-        doDeleteAccountServer("usuarioParaEliminar", token)
+        doDeleteAccountServer("usuarioParaEliminar15", token)
     }
 
     @Test
@@ -110,9 +111,15 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     }
 
     @Test
+    fun multipletest2(){
+        val token = doLoginServer("abelcht", "1234")
+        addReproductionToSongServer("abelcht", token, 0)
+    }
+
+    @Test
     fun multipleTest() {
-        getNumberOfFollowersOfUserServer("abelcht")
-        val token = doLoginServer("abelcht", "dfgdfgfd")
+        //getNumberOfFollowersOfUserServer("abelcht")
+        val token = doLoginServer("abelcht", "1234")
         addFollowerToUserServer("abelcht", token, "lAngelP")
         deleteFollowerToUserServer("abelcht", token, "lAngelP")
         getFollowedPlaylistsServer("abelcht")

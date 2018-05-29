@@ -77,8 +77,8 @@ fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>, ty
             else -> "POST"
         }
 
-        /*urlConnection.setRequestProperty(
-                "Content-Type", "application/x-www-form-urlencoded")*/
+        urlConnection.setRequestProperty(
+                "Content-Type", "application/x-www-form-urlencoded")
 
         val output = BufferedOutputStream(urlConnection.getOutputStream())
         val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))
