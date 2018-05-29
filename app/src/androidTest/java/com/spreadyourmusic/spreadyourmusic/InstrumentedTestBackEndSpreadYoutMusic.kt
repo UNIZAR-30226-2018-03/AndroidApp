@@ -1,9 +1,12 @@
 package com.spreadyourmusic.spreadyourmusic
 
+import android.provider.CalendarContract
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import android.util.Log
 import com.spreadyourmusic.spreadyourmusic.apis.*
+import com.spreadyourmusic.spreadyourmusic.controller.obtainUserFromID
+import com.spreadyourmusic.spreadyourmusic.models.Album
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
@@ -20,8 +23,12 @@ import java.util.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+
 @RunWith(AndroidJUnit4::class)
 class InstrumentedTestBackEndSpreadYoutMusic {
+
+    fun ClosedRange<Int>.random() = Random().nextInt(endInclusive - start) +  start
+
     @Test
     fun useAppContext() {
         // Context of the app under test.
@@ -42,6 +49,8 @@ class InstrumentedTestBackEndSpreadYoutMusic {
         println(angle)
         Log.i("TAGG", angle)
     }
+
+
 
     @Test
     fun deleteUserTest() {
@@ -116,8 +125,64 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     @Test
     fun multipletest2(){
         val token = doLoginServer("abelcht", "1234")
-        addReproductionToSongServer("abelcht", token, 0)
+        //addReproductionToSongServer("abelcht", token, 0)
     }
+
+    @Test
+    fun createObtainAlbums(){
+        val appContext = InstrumentationRegistry.getTargetContext()
+        val angle = doLoginServer("abelcht4", "1234")
+        val user = obtainUserDataServer("abelcht4",angle)
+        val fecha = GregorianCalendar(2020,1,1)
+
+        val id = (0..1000).random()
+        val identificador = "Pornhub: $id"
+        val album = Album(id.toLong(),identificador,user!!,fecha,"")
+        val newAlbum = createAlbumsServer("abelcht4",angle,album,appContext)
+        val albums = obtainAlbumsFromUserServer("abelcht4")
+        val elAlbum:Album = obtainAlbumFromID(newAlbum)!!
+        val size = albums.size
+        Log.i("Nombre album", elAlbum.name)
+        Log.i("Tamaño album", size.toString())
+    }
+
+    @Test
+    fun createSongAndUpload(){
+        val appContext = InstrumentationRegistry.getTargetContext()
+        val idN = (0..1000).random()
+        val identificador = "Tn cuidao: $idN"
+        val angle = doLoginServer("abelcht4", "1234")
+        val albums = obtainAlbumsFromUserServer("abelcht4")
+        val song = Song(97,identificador," " ,obtainAlbumFromID(albums[0].id!!)!!,"Rock","")
+        val uploadedSong = uploadSongServer("abelcht4",angle,song,appContext)
+        Log.i("IDS",uploadedSong.toString() )
+    }
+
+    @Test
+    fun createSongAndDelete(){
+        val appContext = InstrumentationRegistry.getTargetContext()
+        val idN = (0..1000).random()
+        val identificador = "Tn cuidao: $idN"
+        val angle = doLoginServer("abelcht4", "1234")
+        val albums = obtainAlbumsFromUserServer("abelcht4")
+        val song = Song(97,identificador," " ,obtainAlbumFromID(albums[0].id!!)!!,"Rock","")
+        val uploadedSong = uploadSongServer("abelcht4",angle,song,appContext)
+        Log.i("IDS",uploadedSong.toString() )
+        deleteSongServer("abelcht4",angle,song,appContext)
+    }
+
+    @Test
+    fun deleteAlbums(){
+        val appContext = InstrumentationRegistry.getTargetContext()
+        val angle = doLoginServer("abelcht", "1234")
+        val albums = obtainAlbumsFromUserServer("abelcht")
+        var i=0
+        while(true){
+            doDeleteAlbum("abelcht",angle,albums[i].id!!)
+            i=i+1
+        }
+    }
+
 
     @Test
     fun multipleTest() {
