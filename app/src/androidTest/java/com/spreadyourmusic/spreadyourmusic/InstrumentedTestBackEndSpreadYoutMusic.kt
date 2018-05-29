@@ -178,7 +178,7 @@ class InstrumentedTestBackEndSpreadYoutMusic {
         val albums = obtainAlbumsFromUserServer("abelcht")
         var i=0
         while(true){
-            doDeleteAlbum("abelcht",angle,albums[i].id!!)
+            //doDeleteAlbum("abelcht",angle,albums[i].id!!)
             i=i+1
         }
     }

@@ -197,71 +197,46 @@ private fun uploadAlbumCover(albumId: Long, filePath: String, context: Context):
 * Obtiene la información asociada al usuario con nick @username
 * Warning: esta operación puede ser costosa en tiempo
 */
-
 fun obtainAlbumFromID(id: Long): Album? {
     val json = getJSONFromRequest("/albums/$id", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
-        if (error!="ok")
+        if (error != "ok")
             throw Exception("Error:  $error")
 
         val album = json.getJSONObject("album")
         val idAlbum = album.getLong("id")
-        val user_id = album.getLong("user_id")
+        val userID = album.getLong("user_id")
         val title = album.getString("title")
-        val publish_year = album.getLong("publish_year")
-        val songs = album.getJSONArray("songs")
+        val publishYear = album.getLong("publish_year")
 
-        val songsIDlist: MutableList<Long> = ArrayList()
-        for (i in 0..songs.length() - 1) {
-            songsIDlist.add(songs.getLong(i))
-        }
+        val user = obtainUserDataServerFromID(userID, "")
+        val date = GregorianCalendar(publishYear.toInt(), 1, 1)
+        val albumPath = getAlbumCoverPath(idAlbum)
 
-        val songslist: MutableList<Song> = ArrayList()
-        for (i in songsIDlist) {
-            val song = obtainSongFromID(i)
-            if(song!=null)songslist.add(song)
-        }
-
-
-        val user = obtainUserDataServerFromID(user_id, "")
-        val fecha = GregorianCalendar(publish_year.toInt(), 1, 1)
-        val albumpath = getAlbumCoverPath(idAlbum)
-
-        val retAlb = Album(idAlbum, title, user!!, fecha, albumpath)
-
-        return retAlb
+        return Album(idAlbum, title, user!!, date, albumPath)
     }
 }
 
 fun obtainSongFromID(id: Long): Song? {
-    //TODO-TEST
     val json = getJSONFromRequest("/songs/$id", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
-        if (error!="ok") throw Exception("Error")
+        if (error != "ok") throw Exception("Error: $error")
+        else {
 
-        val song = json.getJSONObject("song")
-        val id = song.getLong("id")
-        val user_id = song.getLong("user_id")
-        val title = song.getString("title")
-        val country = song.getString("country")
-        val upload_time = song.getLong("upload_time")
-        val album_id = song.getLong("album_id")
-
-
-        val path = getSongLocationPath(id)
-        val lpath = getSongLyricsPath(id)
-
-        val album = obtainAlbumFromID(album_id)
-
-        val retsong = Song(id, title, path, album!!, "", lpath)
-
-        return retsong
+            val song = json.getJSONObject("song")
+            val title = song.getString("title")
+            val albumId = song.getLong("album_id")
+            val path = getSongLocationPath(id)
+            val lyricsPath = getSongLyricsPath(id)
+            val album = obtainAlbumFromID(albumId)
+            return Song(id, title, path, album!!, "", lyricsPath)
+        }
     }
 }
 
@@ -741,13 +716,11 @@ fun isSongFavoutireByUserServer(username: String, sessionToken: String, song: Lo
  */
 
 @Throws(Exception::class)
-
 fun uploadSongServer(username: String, sessionToken: String, song: Song, context: Context): Long {
-   // TODO
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
     postData.add(Pair("token", sessionToken))
-    postData.add(Pair("title",song.name))
+    postData.add(Pair("title", song.name))
     postData.add(Pair("albumID", song.album.id.toString()))
     postData.add(Pair("country", "SP"))
 
@@ -762,8 +735,8 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song, context
         } else {
             val songJSOn = json.getJSONObject("song")
             val id = songJSOn.getLong("id")
-            //uploadSongLocation(id,song.locationUri,context)
-            //uploadSongLyrics(id,song.lyricsPath!!,context)
+            uploadSongLocation(id, song.locationUri, context)
+            uploadSongLyrics(id, song.lyricsPath!!, context)
             return id
         }
     }
@@ -774,13 +747,11 @@ fun uploadSongServer(username: String, sessionToken: String, song: Song, context
  */
 @Throws(Exception::class)
 fun deleteSongServer(username: String, sessionToken: String, song: Song, context: Context) {
-    // TODO
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("nick", username))
     postData.add(Pair("token", sessionToken))
 
     val json = getJSONFromRequest("/songs/${song.id}/delete", postData, TYPE_POST)
-
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
@@ -1078,7 +1049,6 @@ fun obtainAlbumsFromUserServer(username: String): List<Album> {
  */
 @Throws(Exception::class)
 fun createAlbumsServer(username: String, sessionToken: String, album: Album, context: Context): Long {
-    //TODO-TEST
     val title = album.name
     val year = album.releaseDate.get(Calendar.YEAR)
 
@@ -1096,32 +1066,14 @@ fun createAlbumsServer(username: String, sessionToken: String, album: Album, con
         if (error != "ok") {
             throw Exception("Error: $error")
         } else {
-            // TODO : Descomentar
-            //uploadAlbumCover(json.getLong("id"),album.artLocationUri,context)
             val objet = json.getJSONObject("album")
+            uploadAlbumCover(objet.getLong("id"),album.artLocationUri,context)
             return objet.getLong("id")
 
         }
     }
 }
 
-@Throws(Exception::class)
-fun doDeleteAlbum(user: String, sessionToken: String, albumID:Long) {
-
-    val postData = ArrayList<Pair<String, String>>()
-    postData.add(Pair("token", sessionToken))
-    postData.add(Pair("nick", user))
-
-    val json = getJSONFromRequest("/albums/$albumID/delete", postData, TYPE_DELETE)
-    if (json == null) {
-        throw Exception("Error: Servidor no accesible")
-    } else {
-        val error = json.getString("error")
-        if (error != "ok") {
-            throw Exception("Error: $error")
-        }
-    }
-}
 /////////////////////// FIN DE PETICIONES ALBUM///////////////////////////////////
 
 /*
