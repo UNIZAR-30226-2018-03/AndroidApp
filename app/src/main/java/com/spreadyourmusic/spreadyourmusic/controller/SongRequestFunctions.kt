@@ -1,12 +1,9 @@
 package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
-import android.content.Context
-import android.graphics.Bitmap
 import com.spreadyourmusic.spreadyourmusic.apis.*
 import com.spreadyourmusic.spreadyourmusic.models.*
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
-import java.io.File
 
 /**
  * Created by abel
@@ -17,7 +14,7 @@ import java.io.File
 fun obtainRecommendations(activity: Activity, listener: (List<Recommendation>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainRecomendationsForUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+            obtainRecomendationsForUserServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!,25)
         } catch (e: Exception) {
             null
         }
@@ -48,7 +45,7 @@ fun obtainPopularSongs(activity: Activity, listener: ( List<Song>?) -> Unit) {
 fun obtainNewsSongs(activity: Activity, listener: (List<Song> ?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainNewSongsFromFollowedArtistOfUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+            obtainNewSongsFromFollowedArtistOfUserServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!,25)
         } catch (e: Exception) {
             null
         }
@@ -78,7 +75,7 @@ fun obtainTrendSongs(activity: Activity, listener: (List<Song> ?) -> Unit) {
 fun obtainTrendInMyCountry(activity: Activity, listener: ( List<Song>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainTrendSongsInUserCountryServer(SessionSingleton.currentUser!!.username!!,25)
+            obtainTrendSongsInUserCountryServer(SessionSingleton.currentUser!!.username,SessionSingleton.sessionToken!!,25)
         } catch (e: Exception) {
             null
         }
@@ -93,7 +90,7 @@ fun obtainTrendInMyCountry(activity: Activity, listener: ( List<Song>?) -> Unit)
 fun obtainUpdatedPlaylists(activity: Activity, listener: ( List<Playlist>?) -> Unit) {
     Thread {
         val resultado = try {
-            obtainUpdatedPlaylistsFollowedByUserServer(SessionSingleton.currentUser!!.username!!, SessionSingleton.sessionToken!!,25)
+            obtainUpdatedPlaylistsFollowedByUserServer(SessionSingleton.currentUser!!.username, SessionSingleton.sessionToken!!,25)
         } catch (e: Exception) {
             null
         }
