@@ -340,18 +340,24 @@ fun obtainSongsFromUserServer(username: String): List<Song> {
 }
 
 fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
-    //TODO-TEST
     val json = getJSONFromRequest("/user-lists/$username/lists", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
         if (error != "ok") throw Exception("Error:  $error")
+        val lists = json.getJSONArray("lists")
 
-        //TODO
+        val playlistList = ArrayList<Playlist>()
+        for (j in 0 until lists.length()) {
+            val k = lists[j] as Int
+            val playlistId = obtainPlaylistDataServer(k.toLong())
+            if (playlistId != null)
+                playlistList.add(playlistId)
+        }
+        return playlistList
     }
-    val lista: List<Playlist> = ArrayList()
-    return lista
+
 }
 
 /////////////////////// FIN DE PETICIONES AUXILIARES///////////////////////////////
@@ -913,24 +919,24 @@ fun obtainTrendSongsInUserCountryServer(username: String, sessionToken: String, 
 /**
  * Devuelve la última canción escuchada por el usuario en alguna de sus sesiones
  */
- @Throws(Exception::class)
- fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? {
- // TODO: Internal server error (Volver a probar)
-     val json = getJSONFromRequest("/users/$username/feed?nFollow=1&nSongs=1&nRepr=1", null, TYPE_GET)
-     if (json == null) {
-         throw Exception("Error: Servidor no accesible")
-     } else {
-         val error = json.getString("error")
-         if (error != "ok") throw Exception("Error:  $error")
-         val songs = json.getJSONArray("repr")
-         if(songs.length() > 0){
-             val songId = songs.getLong(0)
-             return obtainSongFromID(songId)
-         }else {
-             return null
-         }
-     }
- }
+@Throws(Exception::class)
+fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? {
+// TODO: Internal server error (Volver a probar)
+    val json = getJSONFromRequest("/users/$username/feed?nFollow=1&nSongs=1&nRepr=1", null, TYPE_GET)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val error = json.getString("error")
+        if (error != "ok") throw Exception("Error:  $error")
+        val songs = json.getJSONArray("repr")
+        if (songs.length() > 0) {
+            val songId = songs.getLong(0)
+            return obtainSongFromID(songId)
+        } else {
+            return null
+        }
+    }
+}
 
 /////////////////////// FIN DE PETICIONES SONGS///////////////////////////////////
 
@@ -944,8 +950,22 @@ fun obtainTrendSongsInUserCountryServer(username: String, sessionToken: String, 
 
 @Throws(Exception::class)
 fun getFollowedPlaylistsServer(username: String): List<Playlist> {
-    //TODO(PREGUNTAR)
-    return ServerEmulator.playlistSeguidos[username]!!
+    val json = getJSONFromRequest("/user-lists/$username/following", null, TYPE_GET)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val error = json.getString("error")
+        if (error != "ok") throw Exception("Error:  $error")
+        val ids = json.getJSONArray("id")
+        val playlistList = ArrayList<Playlist>()
+        for (i in 0 until ids.length()) {
+            val id = ids[i] as Int
+            val playlist = obtainPlaylistDataServer(id.toLong())
+            if (playlist != null)
+                playlistList.add(playlist)
+        }
+        return playlistList
+    }
 }
 
 /**
@@ -953,11 +973,19 @@ fun getFollowedPlaylistsServer(username: String): List<Playlist> {
  */
 @Throws(Exception::class)
 fun isPlaylistFollowedByUserServer(username: String, playlist: Long): Boolean {
-    //TODO(PREGUNTAR)
-    for (i in ServerEmulator.playlistSeguidos[username]!!) {
-        if (i.id == playlist) return true
+    val json = getJSONFromRequest("/user-lists/$username/follows/$playlist", null, TYPE_GET)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val error = json.getString("error")
+        if (error == "ok") {
+            return true
+        } else if (error == "notFollows") {
+            return false
+        } else {
+            throw Exception("Error: $error")
+        }
     }
-    return false
 }
 
 
@@ -976,12 +1004,9 @@ fun getNumberOfFollowersOfPlaylistServer(playlist: Long): Long {
 
 @Throws(Exception::class)
 fun addFollowerToPlaylistServer(username: String, sessionToken: String, followed: Long) {
-    // TODO
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", sessionToken))
-
     val json = getJSONFromRequest("/user-lists/$username/$followed/follow", postData, TYPE_PUT)
-
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
@@ -998,12 +1023,9 @@ fun addFollowerToPlaylistServer(username: String, sessionToken: String, followed
 
 @Throws(Exception::class)
 fun deleteFollowerToPlaylistServer(username: String, sessionToken: String, followed: Long) {
-    // TODO
     val postData = ArrayList<Pair<String, String>>()
-    postData.add(Pair("token", sessionToken))
-
-    val json = getJSONFromRequest("/user-lists/$username/$followed/unfollow", postData, TYPE_DELETE)
-
+    //postData.add(Pair("token", sessionToken))
+    val json = getJSONFromRequest("/user-lists/$username/$followed/unfollow?token=$sessionToken", postData, TYPE_DELETE)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
@@ -1020,41 +1042,31 @@ fun deleteFollowerToPlaylistServer(username: String, sessionToken: String, follo
  */
 @Throws(Exception::class)
 fun obtainPlaylistDataServer(id: Long): Playlist? {
-    // TODO
-    val json = getJSONFromRequest("/user-lists/$id", null, TYPE_GET)
+    // TODO-TEST: With songs into
+    val json = getJSONFromRequest("/user-lists/$id/list", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
-        val error = json.getBoolean("error")
-        if (error) throw Exception("Error")
+        val error = json.getString("error")
+        if (error != "ok") throw Exception("Error: $error")
 
-        val title = json.getString("title")
-        val author = json.getString("author")
-        val creation_time = json.getLong("creation_time")
-        val songs_size = json.getLong("songs_size")
-        val songs = json.getJSONArray("songs")
-        val users = json.getJSONArray("users")
+        val interJson = json.getJSONObject("list")
 
-        val songsIDlist: MutableList<Long> = ArrayList()
-        for (i in 0..songs.length() - 1) {
-            songsIDlist.add(songs.getLong(i))
+        val title = interJson.getString("title")
+        val author = interJson.getLong("author")
+
+        val songs = interJson.getJSONArray("songs")
+        val songList = ArrayList<Song>()
+
+        for (j in 0 until songs.length()) {
+            val k = songs[j] as Int
+            val songI = obtainSongFromID(k.toLong())
+            if (songI != null)
+                songList.add(songI)
         }
+        val autor = obtainUserDataServerFromID(author, "") ?: throw Exception("Error: Autor no encontrado")
 
-        val songslist: MutableList<Song> = ArrayList()
-        for (i in 0..songsIDlist.size - 1) {
-            songslist.add(obtainSongFromID(songsIDlist.get(i))!!)
-        }
-
-        val usersIDlist: MutableList<Long> = ArrayList()
-        for (i in 0..songs_size - 1) {
-            usersIDlist.add(songs.getLong(i.toInt()))
-        }
-
-        val user = obtainUserDataServer(author, "")
-        val albumpath = getPlaylistCoverPath(id)
-
-        val playlist = Playlist(id, title, user!!, albumpath, songslist.toList())
-        return playlist
+        return Playlist(id, title, autor, getPlaylistCoverPath(id), songList)
     }
 }
 
@@ -1067,6 +1079,40 @@ fun obtainUpdatedPlaylistsFollowedByUserServer(username: String, sessionToken: S
     return ServerEmulator.playlistSeguidos[username]
 }
 
+fun addSongToPlaylistServer(username: String, sessionToken: String, playlistId: Long, songId: Long) {
+    //TODO: NO funciona back end
+    val postData = ArrayList<Pair<String, String>>()
+    postData.add(Pair("token", sessionToken))
+    postData.add(Pair("songId", "$songId"))
+    //{nick}/{listId}/add
+    val json = getJSONFromRequest("/user-lists/$username/$playlistId/add", postData, TYPE_POST)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val error = json.getString("error")
+        if (error != "ok") {
+            throw Exception("Error: $error")
+        }
+    }
+}
+
+fun removeSongFromPlaylistServer(username: String, sessionToken: String, playlistId: Long, songId: Long) {
+    //TODO: NO funciona back end
+    val postData = ArrayList<Pair<String, String>>()
+    postData.add(Pair("token", sessionToken))
+    postData.add(Pair("songsIds", "[$songId]"))
+    //{nick}/{listId}/add
+    val json = getJSONFromRequest("/user-lists/$username/$playlistId/add", postData, TYPE_POST)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val error = json.getString("error")
+        if (error != "ok") {
+            throw Exception("Error: $error")
+        }
+    }
+}
+
 /**
  * Crea una lista en el servidor
  * Sube los datos tanto al back-end (nombre, autor, ...) como la carátula al servidor de
@@ -1074,11 +1120,29 @@ fun obtainUpdatedPlaylistsFollowedByUserServer(username: String, sessionToken: S
  */
 @Throws(Exception::class)
 fun createPlaylistServer(username: String, sessionToken: String, playlist: Playlist, context: Context): Long {
-//TODO(PREGUNTAR)
-    val position = ServerEmulator.playlistList.size + 4
-    playlist.id = position.toLong()
-    ServerEmulator.playlistList[playlist.id!!] = playlist
-    return playlist.id!!
+    val title = playlist.name
+    val postData = ArrayList<Pair<String, String>>()
+    postData.add(Pair("token", sessionToken))
+    postData.add(Pair("title", title))
+
+    val json = getJSONFromRequest("/user-lists/$username/create", postData, TYPE_PUT)
+
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val error = json.getString("error")
+        if (error != "ok") {
+            throw Exception("Error: $error")
+        } else {
+            val objet = json.getJSONObject("list")
+            uploadPlaylistCover(objet.getLong("id"), playlist.artLocationUri, context)
+            val id = objet.getLong("id")
+            for (song in playlist.content) {
+                addSongToPlaylistServer(username, sessionToken, id, song.id)
+            }
+            return id
+        }
+    }
 }
 
 /**
@@ -1087,20 +1151,23 @@ fun createPlaylistServer(username: String, sessionToken: String, playlist: Playl
  */
 @Throws(Exception::class)
 fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist, context: Context) {
-//TODO(PREGUNTAR)
-    if (ServerEmulator.playlistList.containsKey(playlist.id) && ServerEmulator.playlistList[playlist.id]!!.creator.username.equals(username)) {
-        ServerEmulator.playlistList.remove(playlist.id)
-        for (i in ServerEmulator.playlistSeguidos.values) {
-            for (j in i) {
-                if (j.id == playlist.id) {
-                    i.remove(j)
-                    break
-                }
-            }
-        }
+    val postData = ArrayList<Pair<String, String>>()
+    //postData.add(Pair("listid", playlist.id.toString()))
+    //postData.add(Pair("token", sessionToken))
+
+    val json = getJSONFromRequest("/user-lists/$username/delete?token=$sessionToken&listid=${playlist.id}", postData, TYPE_DELETE)
+
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
     } else {
-        throw Exception("Error")
+        val error = json.getString("error")
+        if (error != "ok") {
+            throw Exception("Error: $error")
+        } else {
+            deletePlaylistCover(playlist.id!!, context)
+        }
     }
+
 }
 
 /**
@@ -1110,7 +1177,41 @@ fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playl
  */
 @Throws(Exception::class)
 fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playlist, context: Context) {
-//TODO(PREGUNTAR)
+    // TODO - TEST
+    val id = playlist.id ?: throw Exception("Error: Id Playlist nulo")
+    val originalSongs = obtainPlaylistDataServer(id)!!.content
+    val originalSongsList = ArrayList<Long>()
+    val newSongsList = ArrayList<Long>()
+    for (i in originalSongs) {
+        originalSongsList.add(i.id)
+    }
+
+    for (i in playlist.content) {
+        newSongsList.add(i.id)
+    }
+
+    val cancionesEliminar = ArrayList<Long>()
+    val cancionesPoner = ArrayList<Long>()
+
+    for (i in originalSongsList) {
+        if (!newSongsList.contains(i)) {
+            cancionesEliminar.add(i)
+        }
+    }
+
+    for (i in newSongsList) {
+        if (!originalSongsList.contains(i)) {
+            cancionesPoner.add(i)
+        }
+    }
+
+    for (i in cancionesPoner) {
+        addSongToPlaylistServer(username, sessionToken, id, i)
+    }
+
+    for (i in cancionesEliminar) {
+        removeSongFromPlaylistServer(username, sessionToken, id, i)
+    }
 }
 
 /////////////////////// FIN DE PETICIONES PLAYLISTS///////////////////////////////
