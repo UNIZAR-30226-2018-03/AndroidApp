@@ -913,11 +913,24 @@ fun obtainTrendSongsInUserCountryServer(username: String, sessionToken: String, 
 /**
  * Devuelve la última canción escuchada por el usuario en alguna de sus sesiones
  */
-@Throws(Exception::class)
-fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? {
-//TODO(PREGUNTAR)
-    return ServerEmulator.songList[1]
-}
+ @Throws(Exception::class)
+ fun obtainLastSongListenedServer(username: String, sessionToken: String): Song? {
+ // TODO: Internal server error (Volver a probar)
+     val json = getJSONFromRequest("/users/$username/feed?nFollow=1&nSongs=1&nRepr=1", null, TYPE_GET)
+     if (json == null) {
+         throw Exception("Error: Servidor no accesible")
+     } else {
+         val error = json.getString("error")
+         if (error != "ok") throw Exception("Error:  $error")
+         val songs = json.getJSONArray("repr")
+         if(songs.length() > 0){
+             val songId = songs.getLong(0)
+             return obtainSongFromID(songId)
+         }else {
+             return null
+         }
+     }
+ }
 
 /////////////////////// FIN DE PETICIONES SONGS///////////////////////////////////
 
@@ -1106,29 +1119,26 @@ fun updatePlaylistServer(username: String, sessionToken: String, playlist: Playl
  *                      PETICIONES DE TIPO ALBUM
  */
 
-@Throws(Exception::class)
-fun obtainAlbumsFromUserServer(username: String): List<Album> {
-    val json = getJSONFromRequest("/users/$username/albums", null, TYPE_GET)
-    if (json == null) {
-        throw Exception("Error: Servidor no accesible")
-    } else {
-        val error = json.getString("error")
-        if (error != "ok") throw Exception("Error: $error")
+ @Throws(Exception::class)
+ fun obtainAlbumsFromUserServer(username: String): List<Album> {
+     val json = getJSONFromRequest("/users/$username/albums", null, TYPE_GET)
+     if (json == null) {
+         throw Exception("Error: Servidor no accesible")
+     } else {
+         val error = json.getString("error")
+         if (error != "ok") throw Exception("Error: $error")
 
-        val albums = json.getJSONArray("albums")
+         val albums = json.getJSONArray("albums")
 
-        val list: MutableList<Album> = ArrayList()
-
-        if (albums != null) {
-            for (i in 0..albums.length() - 1) {
-                val albumID = albums.getLong(i)
-                val album = obtainAlbumFromID(albumID)
-                if (album != null) list.add(album)
-            }
-        }
-        return list.toList()
-    }
-}
+         val list = ArrayList<Album> ()
+         for (i in 0 until albums.length()) {
+             val albumID = albums.getLong(i)
+             val album = obtainAlbumFromID(albumID)
+             if (album != null) list.add(album)
+         }
+         return list.toList()
+     }
+ }
 
 /**
  * Sube los datos tanto al back-end (nombre, autor, ...) como la carátula al servidor de
@@ -1206,16 +1216,88 @@ fun obtainRecomendationsForUserServer(username: String, sessionToken: String, ca
 }
 
 /**
+ * Funcion auxiliar para obtainResultForQuery
+ */
+@Throws(Exception::class)
+private fun obtainResultForQueryInSongServer(amount: Long, query: String): List<Song> {
+    val json = getJSONFromRequest("/songs/search/?query=$query&n=$amount", null, TYPE_GET)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val songs = json.getJSONArray("songs")
+        val songList = ArrayList<Song>()
+        for (j in 0 until songs.length()) {
+
+            // Warning: Aunque la respuesta devuelve ya el objeto canción completo, paea evitar complicar el código
+            // se vuelve a llamar a la rest api para obtener a partir del id toda la información. En caso de que el
+            // rendimiento sea muy pobre, esta llamada se puede rehacer
+            val k = songs[j] as JSONObject
+            val i = k.getLong("id")
+
+            val songI = obtainSongFromID(i)
+            if (songI != null)
+                songList.add(songI)
+        }
+        return songList
+    }
+}
+
+/**
+ * Funcion auxiliar para obtainResultForQuery
+ */
+@Throws(Exception::class)
+private fun obtainResultForQueryInUsersServer(amount: Long, query: String): List<User> {
+    val json = getJSONFromRequest("/users/search/?query=$query&n=$amount", null, TYPE_GET)
+    if (json == null) {
+        throw Exception("Error: Servidor no accesible")
+    } else {
+        val users = json.getJSONArray("users")
+        val usersList = ArrayList<User>()
+        for (j in 0 until users.length()) {
+
+            // Warning: Aunque la respuesta devuelve ya el objeto canción completo, paea evitar complicar el código
+            // se vuelve a llamar a la rest api para obtener a partir del id toda la información. En caso de que el
+            // rendimiento sea muy pobre, esta llamada se puede rehacer
+            val k = users[j] as JSONObject
+            val i = k.getLong("id")
+
+            val userI = obtainUserDataServerFromID(i, "")
+            if (userI != null)
+                usersList.add(userI)
+        }
+        return usersList
+    }
+}
+
+/**
+ * Funcion auxiliar para obtainResultForQuery
+ */
+@Throws(Exception::class)
+private fun obtainResultForQueryInPlaylistsServer(cantidad: Long, query: String): List<Playlist> {
+// TODO: Esperar nueva especificacion
+    return ArrayList<Playlist>()
+}
+
+/**
  * Devuelve la lista de maximo @cantidad resultados a la consulta @query
  * Si tipo es null devuelve todos los resultados a la query realizada, si tipo es 1 devuelve solamente canciones, si tipo = 2
  * devuelve solamente playlists y si tipo = 3 devuelve solamente autores
  */
 @Throws(Exception::class)
-fun obtainResultForQueryServer(cantidad: Long, query: String, tipo: Int?): List<Recommendation>? {
-//TODO(PREGUNTAR)
-    return ServerEmulator.trends
+fun obtainResultForQueryServer(cantidad: Long, query: String, type: Int?): List<Recommendation>? {
+    val list = ArrayList<Recommendation>()
+    when(type){
+        1 -> list.addAll(obtainResultForQueryInSongServer(cantidad,query))
+        2 -> list.addAll(obtainResultForQueryInPlaylistsServer(cantidad,query))
+        3 -> list.addAll(obtainResultForQueryInUsersServer(cantidad,query))
+        else ->{
+            list.addAll(obtainResultForQueryInSongServer(cantidad,query))
+            list.addAll(obtainResultForQueryInPlaylistsServer(cantidad,query))
+            list.addAll(obtainResultForQueryInUsersServer(cantidad,query))
+        }
+    }
+    return list
 }
-
 /**
  * Devuelve una lista compuesta por pares nombre del genero, canciones populares. Las canciones populares
  * tendrán un máximo de @cantidad canciones
@@ -1229,11 +1311,22 @@ fun obtainPopularByGenreServer(cantidad: Long): List<Pair<String, List<Recommend
 /**
  * Devuelve true si el usuario tiene una sesión abierta
  */
-@Throws(Exception::class)
-fun isOtherSessionOpenFromSameUserServer(username: String, sessionToken: String): Boolean {
-//TODO(PREGUNTAR)
-    return false
-}
+ @Throws(Exception::class)
+ fun isOtherSessionOpenFromSameUserServer(username: String, sessionToken: String): Boolean {
+     val json = getJSONFromRequest("/users/$username/session_open?token=$sessionToken", null, TYPE_GET)
+     if (json == null) {
+         throw Exception("Error: Servidor no accesible")
+     } else {
+         val error = json.getString("error")
+         if (error == "ok") {
+             return true
+         } else if (error == "sessionClosed") {
+             return false
+         } else {
+             throw Exception("Error: $error")
+         }
+     }
+ }
 
 @Throws(Exception::class)
 fun obtainGeneresServer(): List<String> {
