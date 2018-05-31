@@ -76,8 +76,8 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }, this)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onMediaControllerConnected(){
+        super.onMediaControllerConnected()
         val lastSongListened = SessionSingleton.lastSongListened
         if (lastSongListened != null) {
             SessionSingleton.lastSongListened = null

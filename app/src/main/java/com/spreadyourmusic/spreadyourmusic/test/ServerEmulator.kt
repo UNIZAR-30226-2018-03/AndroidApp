@@ -21,22 +21,31 @@ object ServerEmulator {
     val generos = ArrayList<Pair<String, List<Recommendation>>>()
 
     init {
-        // TODO: HACER
         val autor1 = User("silentpartner", "Silent Partner","http://storage.googleapis.com/automotive-media/album_art.jpg", false)
         val autor2 = User("jinglepunks", "Jingle Punks", "http://storage.googleapis.com/automotive-media/album_art_2.jpg",false)
-        val autor3 = User("abelcht", "Abel ChT", "http://storage.googleapis.com/automotive-media/album_art.jpg", false)
-        val autor4 = User("postmalone", "Post Malone", "http://storage.googleapis.com/automotive-media/album_art_2.jpg", true)
+        val autor3 = User("abel", "Abel", "http://storage.googleapis.com/automotive-media/album_art_3.jpg", false)
+        val autor4 = User("postmalone", "Post Malone", "http://storage.googleapis.com/automotive-media/album_art.jpg", true)
+        val autor5 = User("6ix9ine", "6ix9ine", "http://storage.googleapis.com/automotive-media/album_art_2.jpg", false)
+        val autor6 = User("tremaine", "Trey Songz", "http://storage.googleapis.com/automotive-media/album_art_3.jpg", false)
+        autor1.twitterAccount = "asdasfdsfdsfds"
+        autor1.instagramAccount = "asdasfdsfdsfds"
+        autor1.facebookAccount = "asdasfdsfdsfds"
+
 
         val album1 = Album(1,"Jazz & Blues", autor1, GregorianCalendar(2018, 3, 22), "http://storage.googleapis.com/automotive-media/album_art.jpg")
         val album2 = Album(2,"Cinematic", autor1, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
-        val album3 = Album(3,"POst", autor4, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_3.jpg")
+        val album3 = Album(3,"B&B", autor4, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
         val album4 = Album(4,"Blues", autor2, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
 
         val album5 = Album(5,"Blues 2", autor3, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
 
-        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = null)
+        val album6 = Album(5,"Graduation Day", autor5, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
+        val album7 = Album(5,"Tremaine", autor6, GregorianCalendar(2017, 6, 27), "http://storage.googleapis.com/automotive-media/album_art_2.jpg")
+
+        val cancion1 = Song(album = album1, id = 1, name = "Jazz in Paris", locationUri = "http://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3", lyricsPath = null, genere = "dfsdf")
         val cancion2 = Song(album = album1, id = 2, name = "The Messenger", locationUri = "http://storage.googleapis.com/automotive-media/The_Messenger.mp3", lyricsPath = null, genere = null)
-        val cancion3 = Song(album = album3, id = 3, name = "Psycho",   locationUri = "/storage/emulated/0/Music/Prueba/postmalone.mp3", lyricsPath = "/storage/emulated/0/Music/Prueba/postmalone.srt", genere = null)
+        val cancion3 = Song(album = album3, id = 3, name = "Psycho",   locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
+        val cancion18 = Song(album = album3, id = 18, name = "Better Now",   locationUri = "http://storage.googleapis.com/automotive-media/Drop_and_Roll.mp3", lyricsPath = null, genere = null)
         val cancion4 = Song(album = album2, id = 4, name = "Talkies", locationUri = "http://storage.googleapis.com/automotive-media/Talkies.mp3", lyricsPath = null, genere = null)
         val cancion5 = Song(album = album2, id = 5, name = "On the Bach", locationUri = "http://storage.googleapis.com/automotive-media/On_the_Bach.mp3", lyricsPath = null, genere = null)
         val cancion6 = Song(album = album4, id = 6, name = "The Story Unfolds", locationUri = "http://storage.googleapis.com/automotive-media/The_Story_Unfolds.mp3", lyricsPath = null, genere = null)
@@ -73,15 +82,17 @@ object ServerEmulator {
         val list2 = ArrayList<Song>()
         list2.add(cancion3)
 
-        val playlist1 = Playlist(1, "Todas", autor3, "http://storage.googleapis.com/automotive-media/album_art_3.jpg", list1)
+        val playlist1 = Playlist(1, "Jazz", autor2, "http://storage.googleapis.com/automotive-media/album_art_3.jpg", list1)
         val playlist2 = Playlist(2, "Post Malone", autor3, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list2)
         val playlist3 = Playlist(3, "Mix Trap", autor1, "http://storage.googleapis.com/automotive-media/album_art_1.jpg", list1)
         val playlist4 = Playlist(4, "Flow", autor3, "http://storage.googleapis.com/automotive-media/album_art_2.jpg", list1)
 
-        userList[autor1.username!!] = autor1
-        userList[autor2.username!!] = autor2
-        userList[autor3.username!!] = autor3
-        userList[autor4.username!!] = autor4
+        userList[autor1.username] = autor1
+        userList[autor2.username] = autor2
+        userList[autor3.username] = autor3
+        userList[autor4.username] = autor4
+        userList[autor5.username] = autor5
+        userList[autor6.username] = autor6
 
         songList[cancion1.id] = cancion1
         songList[cancion2.id] = cancion2
@@ -109,37 +120,43 @@ object ServerEmulator {
         playlistList[playlist4.id!!] = playlist4
 
 
-        artistasSeguidos[autor3.username!!] = ArrayList()
-        artistasSeguidos[autor3.username!!]!!.add(autor1)
-        artistasSeguidos[autor3.username!!]!!.add(autor2)
-        artistasSeguidos[autor3.username!!]!!.add(autor4)
+        artistasSeguidos[autor3.username] = ArrayList()
+        artistasSeguidos[autor3.username]!!.add(autor1)
+        artistasSeguidos[autor3.username]!!.add(autor2)
+        artistasSeguidos[autor3.username]!!.add(autor4)
 
-        cancionesFavoritas[autor3.username!!] = ArrayList()
-        cancionesFavoritas[autor3.username!!]!!.add(cancion1)
-        cancionesFavoritas[autor3.username!!]!!.add(cancion2)
-        cancionesFavoritas[autor3.username!!]!!.add(cancion3)
-        cancionesFavoritas[autor3.username!!]!!.add(cancion4)
-        cancionesFavoritas[autor3.username!!]!!.add(cancion5)
-        cancionesFavoritas[autor3.username!!]!!.add(cancion6)
-        cancionesFavoritas[autor3.username!!]!!.add(cancion7)
+        cancionesFavoritas[autor3.username] = ArrayList()
+        cancionesFavoritas[autor3.username]!!.add(cancion3)
+        cancionesFavoritas[autor3.username]!!.add(cancion18)
+
+        cancionesFavoritas[autor3.username]!!.add(cancion1)
+        cancionesFavoritas[autor3.username]!!.add(cancion2)
+
+        cancionesFavoritas[autor3.username]!!.add(cancion4)
+        cancionesFavoritas[autor3.username]!!.add(cancion5)
+        cancionesFavoritas[autor3.username]!!.add(cancion6)
+        cancionesFavoritas[autor3.username]!!.add(cancion7)
 
 
-        playlistSeguidos[autor3.username!!] = ArrayList()
-        playlistSeguidos[autor3.username!!]!!.add(playlist1)
-        playlistSeguidos[autor3.username!!]!!.add(playlist2)
+        playlistSeguidos[autor3.username] = ArrayList()
+        playlistSeguidos[autor3.username]!!.add(playlist1)
+        playlistSeguidos[autor3.username]!!.add(playlist2)
 
-        recomendaciones[autor3.username!!] = ArrayList()
-        recomendaciones[autor3.username!!]!!.add(playlist1)
-        recomendaciones[autor3.username!!]!!.add(playlist2)
-        recomendaciones[autor3.username!!]!!.add(autor2)
-        recomendaciones[autor3.username!!]!!.add(autor1)
-        recomendaciones[autor3.username!!]!!.add(autor4)
-        recomendaciones[autor3.username!!]!!.add(cancion1)
-        recomendaciones[autor3.username!!]!!.add(cancion2)
+        recomendaciones[autor3.username] = ArrayList()
+        recomendaciones[autor3.username]!!.add(autor4)
+        recomendaciones[autor3.username]!!.add(autor5)
+        recomendaciones[autor3.username]!!.add(playlist1)
+        recomendaciones[autor3.username]!!.add(playlist2)
+        recomendaciones[autor3.username]!!.add(autor2)
+        recomendaciones[autor3.username]!!.add(autor1)
+        recomendaciones[autor3.username]!!.add(cancion1)
+        recomendaciones[autor3.username]!!.add(cancion2)
 
-        trends.add(cancion1)
-        trends.add(cancion2)
         trends.add(cancion3)
+        trends.add(cancion19)
+        trends.add(cancion20)
+        trends.add(cancion2)
+        trends.add(cancion1)
         trends.add(cancion4)
 
         generesList.add("Rock")

@@ -29,7 +29,6 @@ fun getPathFromUri(context: Context, uri: Uri): String? {
                 return Environment.getExternalStorageDirectory().path + "/" + split[1]
             }
 
-            // TODO handle non-primary volumes
         } else if (isDownloadsDocument(uri)) {
 
             val id = DocumentsContract.getDocumentId(uri)

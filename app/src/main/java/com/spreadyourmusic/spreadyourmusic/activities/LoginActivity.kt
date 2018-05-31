@@ -23,24 +23,29 @@ import com.spreadyourmusic.spreadyourmusic.models.User
 import com.spreadyourmusic.spreadyourmusic.session.SessionSingleton
 
 
+
+
 class LoginActivity : AppCompatActivity() {
 
     private val rcSignIn = 9001
     private var mGoogleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
         if(isLogin(this)){
             openHomeActivity()
         }
 
-        // TODO: Contrastar con backend https://developers.google.com/identity/sign-in/android/backend-auth
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // TODO: Cambiar client id a client id de release
+        val serverClientId = "946633470887-7sre5m4dltntp7ijsc1looufu7seu77i.apps.googleusercontent.com"
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(resources.getString(R.string.server_client_id))
+                .requestServerAuthCode(serverClientId)
+                .requestEmail()
                 .build()
 
         // Build a GoogleSignInClient with the options specified by gso.

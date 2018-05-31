@@ -20,7 +20,7 @@ class User(val username: String) : Recommendation {
     var instagramAccount: String? = null
 
     //TODO: El link devuelto ha de ser el que apunta a la misma playlist desde la interfaz web
-    override var shareLink: String = "http://SpreadYourMusic/playlist/"
+    override var shareLink: String = "http://155.210.13.105:8006/profile?user=$username"
 
     constructor(username: String, password: String) : this(username) {
         this.password = password

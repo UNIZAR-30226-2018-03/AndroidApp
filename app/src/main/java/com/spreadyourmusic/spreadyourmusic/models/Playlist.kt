@@ -11,7 +11,7 @@ class Playlist(val name: String, val creator: User, val artLocationUri: String, 
     var id: Long? = null
 
     //TODO: El link devuelto ha de ser el que apunta a la misma playlist desde la interfaz web
-    override var shareLink: String = "http://SpreadYourMusic/playlist/"
+    override var shareLink: String = "http://155.210.13.105:8006/playlist?type=playlist&id=$id"
 
     /**
      * Constructor usado cuando se obtienen datos desde el back-end
