@@ -22,6 +22,10 @@ fun fetchJSONFromUrl(urlString: String): JSONObject? {
     var reader: BufferedReader? = null
     try {
         val urlConnection = URL(urlString).openConnection()
+        // Falla en android
+       // urlConnection.doOutput = true
+        urlConnection.setRequestProperty(
+                "Content-Type", "application/x-www-form-urlencoded")
         reader = BufferedReader(InputStreamReader(
                 urlConnection.getInputStream(), "iso-8859-1"))
         val sb = StringBuilder()
@@ -55,18 +59,9 @@ fun fetchJSONFromUrl(urlString: String): JSONObject? {
  * @return result JSONObject containing the parsed representation.
  */
 @Throws(JSONException::class)
-fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>, type: Int): JSONObject? {
+fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>?, type: Int): JSONObject? {
     var reader: BufferedReader? = null
     try {
-
-        var urlParameters = ""
-
-        for (i in postData) {
-            urlParameters = "$urlParameters&${i.first}=${i.second}"
-        }
-        if (urlParameters.isNotBlank())
-            urlParameters = urlParameters.substring(1)
-
         val url = URL(urlString)
         val urlConnection = url.openConnection() as HttpURLConnection
 
@@ -77,21 +72,33 @@ fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>, ty
             else -> "POST"
         }
 
+        if(type != TYPE_GET)  urlConnection.doOutput = true
+
         urlConnection.setRequestProperty(
                 "Content-Type", "application/x-www-form-urlencoded")
 
-        val output = BufferedOutputStream(urlConnection.getOutputStream())
-        val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))
-        writer.write(urlParameters)
-        writer.flush()
-        writer.close()
-        output.close()
+        if (postData != null && !postData.isEmpty()) {
 
+            var urlParameters = ""
+
+            for (i in postData) {
+                urlParameters = "$urlParameters&${i.first}=${i.second}"
+            }
+            if (urlParameters.isNotBlank())
+                urlParameters = urlParameters.substring(1)
+
+            val output = BufferedOutputStream(urlConnection.outputStream)
+            val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))
+            writer.write(urlParameters)
+            writer.flush()
+            writer.close()
+            output.close()
+        }
 
         urlConnection.connect()
 
         reader = BufferedReader(InputStreamReader(
-                urlConnection.getInputStream(), "iso-8859-1"))
+                urlConnection.inputStream, "iso-8859-1"))
         val sb = StringBuilder()
         var line: String? = reader.readLine()
         while (!line.isNullOrEmpty()) {

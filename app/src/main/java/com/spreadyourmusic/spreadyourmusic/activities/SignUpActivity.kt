@@ -258,7 +258,7 @@ class SignUpActivity : AppCompatActivity() {
             userFacebookAccount = view!!.facebookAccountEditText.text.toString().trim()
             userTwitterAccount = view!!.twitterAccountEditText.text.toString().trim()
             userInstagramAccount = view!!.instagramAccountEditText.text.toString().trim()
-            if (realname.isNullOrEmpty() || userBirth != null) {
+            if (realname.isNullOrEmpty() || userBirth == null) {
                 Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
                 //Toast.makeText(activity, R.string.empty_fields_2, Toast.LENGTH_SHORT).show()
 
