@@ -18,74 +18,34 @@ const val TYPE_POST = 3
  * @return result JSONObject containing the parsed representation.
  */
 @Throws(JSONException::class)
-fun fetchJSONFromUrl(urlString: String): JSONObject? {
-    var reader: BufferedReader? = null
-    try {
-        val urlConnection = URL(urlString).openConnection()
-        // Falla en android
-       // urlConnection.doOutput = true
-        urlConnection.setRequestProperty(
-                "Content-Type", "application/x-www-form-urlencoded")
-        reader = BufferedReader(InputStreamReader(
-                urlConnection.getInputStream(), "iso-8859-1"))
-        val sb = StringBuilder()
-        var line: String? = reader.readLine()
-        while (!line.isNullOrEmpty()) {
-            sb.append(line)
-            line = reader.readLine()
-        }
-        return JSONObject(sb.toString())
-    } catch (e: JSONException) {
-        throw e
-    } catch (e: Exception) {
-
-        return null
-    } finally {
-        if (reader != null) {
-            try {
-                reader.close()
-            } catch (e: IOException) {
-                // ignore
-            }
-
-        }
-    }
-}
-
-/**
- * Download a JSON file from a server, parse the content and return the JSON
- * object.
- *
- * @return result JSONObject containing the parsed representation.
- */
-@Throws(JSONException::class)
-fun fetchJSONFromUrl(urlString: String, postData: List<Pair<String, String>>?, type: Int): JSONObject? {
+fun fetchJSONFromUrl(urlString: String, bodyData: List<Pair<String, String>>?, type: Int): JSONObject? {
     var reader: BufferedReader? = null
     try {
         val url = URL(urlString)
         val urlConnection = url.openConnection() as HttpURLConnection
 
+        // Se coloca el método correcto
         urlConnection.requestMethod = when (type) {
             TYPE_POST -> "POST"
             TYPE_PUT -> "PUT"
             TYPE_DELETE -> "DELETE"
+            TYPE_GET -> "GET"
             else -> "POST"
         }
-
-        if(type != TYPE_GET)  urlConnection.doOutput = true
 
         urlConnection.setRequestProperty(
                 "Content-Type", "application/x-www-form-urlencoded")
 
-        if (postData != null && !postData.isEmpty()) {
+        if (bodyData != null && !bodyData.isEmpty()) {
 
-            var urlParameters = ""
+            // Se establece que tiene body
+            urlConnection.doOutput = true
 
-            for (i in postData) {
-                urlParameters = "$urlParameters&${i.first}=${i.second}"
+            val urlParameters = bodyData.map {
+                "${it.first}=${it.second}"
+            }.reduce { acc, s ->
+                "$acc&$s"
             }
-            if (urlParameters.isNotBlank())
-                urlParameters = urlParameters.substring(1)
 
             val output = BufferedOutputStream(urlConnection.outputStream)
             val writer = BufferedWriter(OutputStreamWriter(output, "UTF-8"))

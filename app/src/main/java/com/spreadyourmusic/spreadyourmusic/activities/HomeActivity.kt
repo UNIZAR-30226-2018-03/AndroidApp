@@ -69,14 +69,15 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 circularImageView.setOnClickListener {
                     onUserSelected(mmCurrentUser, this)
                 }
-                Glide.with(this).load(mmCurrentUser.pictureLocationUri).into(circularImageView)
+                if (mmCurrentUser.pictureLocationUri != null)
+                    Glide.with(this).load(mmCurrentUser.pictureLocationUri).into(circularImageView)
             } else {
                 Toast.makeText(this, "Error: No se han podido obtener los datos de usuario", Toast.LENGTH_SHORT).show()
             }
         }, this)
     }
 
-    override fun onMediaControllerConnected(){
+    override fun onMediaControllerConnected() {
         super.onMediaControllerConnected()
         val lastSongListened = SessionSingleton.lastSongListened
         if (lastSongListened != null) {

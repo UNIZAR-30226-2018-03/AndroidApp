@@ -148,7 +148,7 @@ fun doDeleteAccount(activity: Activity): Boolean {
         SessionSingleton.sessionToken = null
         SessionSingleton.isUserDataLoaded = false
         try {
-            doDeleteAccountServer(user, sessionToken)
+            doDeleteAccountServer(user, sessionToken, activity)
             true
         } catch (e: Exception) {
             false

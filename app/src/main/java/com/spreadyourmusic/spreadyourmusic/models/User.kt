@@ -26,13 +26,13 @@ class User(val username: String) : Recommendation {
         this.password = password
     }
 
-    constructor(username: String, name: String, pictureLocationUri: String, verifiedAccount: Boolean) : this(username) {
+    constructor(username: String, name: String, pictureLocationUri: String?, verifiedAccount: Boolean) : this(username) {
         this.name = name
         this.verifiedAccount = verifiedAccount
         this.pictureLocationUri = pictureLocationUri
     }
 
-    constructor(username: String, name: String, pictureLocationUri: String, verifiedAccount: Boolean,
+    constructor(username: String, name: String, pictureLocationUri: String?, verifiedAccount: Boolean,
                 email: String?, biography: String?, birthDate: Date?) : this(username) {
         this.name = name
         this.email = email
@@ -42,7 +42,7 @@ class User(val username: String) : Recommendation {
         this.birthDate = birthDate
     }
 
-    constructor(username: String, name: String, pictureLocationUri: String,
+    constructor(username: String, name: String, pictureLocationUri: String?,
                 email: String?, biography: String?, birthDate: Date?) : this(username) {
         this.name = name
         this.email = email
@@ -52,7 +52,7 @@ class User(val username: String) : Recommendation {
         this.birthDate = birthDate
     }
 
-    constructor(username: String, password: String, name: String, pictureLocationUri: String,
+    constructor(username: String, password: String, name: String, pictureLocationUri: String?,
                 email: String?, biography: String?, birthDate: Date?) : this(username) {
         this.password = password
         this.name = name

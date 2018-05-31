@@ -65,7 +65,8 @@ class PlaylistActivity : BaseActivity() {
                 supportActionBar!!.title = playlist!!.name
 
                 recyclerViewAdapter.changeData(playlist!!.content)
-                Glide.with(this).load(playlist!!.artLocationUri).into(image)
+                if (playlist!!.artLocationUri != null)
+                    Glide.with(this).load(playlist!!.artLocationUri).into(image)
 
                 // Lista de reproducción creada por usuario
                 val sCreatorName = resources.getString(R.string.creator) + ":@" + playlist!!.creator.username
