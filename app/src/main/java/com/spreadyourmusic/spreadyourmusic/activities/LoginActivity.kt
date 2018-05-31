@@ -31,12 +31,12 @@ class LoginActivity : AppCompatActivity() {
     private var mGoogleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
         if(isLogin(this)){
             openHomeActivity()
         }
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.

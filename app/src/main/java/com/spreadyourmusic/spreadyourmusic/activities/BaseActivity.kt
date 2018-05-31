@@ -123,6 +123,12 @@ abstract class BaseActivity : AppCompatActivity() {
             mControlsFragment!!.onConnected()
         }
 
+        onMediaControllerConnected()
+
+    }
+
+    open fun onMediaControllerConnected() {
+        // empty implementation, can be overridden by clients.
     }
 
 }
