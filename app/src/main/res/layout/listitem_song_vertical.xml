@@ -19,7 +19,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="8dp"
-            app:srcCompat="@drawable/sample_image" />
+            app:srcCompat="@drawable/default_song_image" />
 
         <TextView
             android:id="@+id/songNameTextView"

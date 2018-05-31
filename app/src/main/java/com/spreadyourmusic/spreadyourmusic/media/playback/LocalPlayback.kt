@@ -307,6 +307,21 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
             hasSongChange = false
         }else{
             audioSessionListener = l
+
+            // FIX SOUNDVIEWER FAIL: When select same song that is being listening it works bad
+            Thread{
+                Thread.sleep(250)
+                if(hasSongChange){
+                    hasAusioSessionChange = if (audioSessionListener != null) {
+                        audioSessionListener!!.invoke(audioSessionId)
+                        audioSessionListener = null
+                        hasSongChange = false
+                        false
+                    } else {
+                        true
+                    }
+                }
+            }.start()
         }
     }
 

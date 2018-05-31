@@ -142,7 +142,7 @@ class LoginActivity : AppCompatActivity() {
         val progressDialog = ProgressDialog(this,
                 R.style.AppTheme_Dialog)
         progressDialog.isIndeterminate = true
-        progressDialog.setMessage("Authenticating...")
+        progressDialog.setMessage(resources.getString(R.string.authenticating))
         progressDialog.show()
         return progressDialog
     }

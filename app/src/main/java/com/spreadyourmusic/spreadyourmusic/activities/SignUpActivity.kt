@@ -183,9 +183,9 @@ class SignUpActivity : AppCompatActivity() {
             password = view!!.passwordEditText.text.toString().trim()
             mail = view!!.mailEditText.text.toString().trim()
 
-            if (password.isNullOrEmpty() || username.isNullOrEmpty() || userPictureLocationUri.isNullOrEmpty()) {
+            if (userPictureLocationUri.isNullOrEmpty() || username.isNullOrEmpty() || (!isEdition && password.isNullOrEmpty()) || mail.isNullOrEmpty()) {
                 Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
-                Toast.makeText(activity, R.string.empty_fields_1, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(activity, R.string.empty_fields_1, Toast.LENGTH_SHORT).show()
 
             } else
                 l!!.invoke(username, mail, password, userPictureLocationUri)
@@ -258,9 +258,9 @@ class SignUpActivity : AppCompatActivity() {
             userFacebookAccount = view!!.facebookAccountEditText.text.toString().trim()
             userTwitterAccount = view!!.twitterAccountEditText.text.toString().trim()
             userInstagramAccount = view!!.instagramAccountEditText.text.toString().trim()
-            if (realname.isNullOrEmpty()) {
+            if (realname.isNullOrEmpty() || userBirth != null) {
                 Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
-                Toast.makeText(activity, R.string.empty_fields_2, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(activity, R.string.empty_fields_2, Toast.LENGTH_SHORT).show()
 
             } else
                 l!!.invoke(realname, userBirth, userFacebookAccount, userTwitterAccount, userInstagramAccount)

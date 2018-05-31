@@ -516,7 +516,7 @@ class PlayerActivity : AppCompatActivity() {
             finalTimeTextView.visibility = View.VISIBLE
             circleSoundVisualizer.visibility = View.VISIBLE
             lyricsTextView.visibility = View.INVISIBLE
-            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp))
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.outline_closed_caption_white_24))
 
         } else {
             albumArtCircularMusicProgressBar.visibility = View.INVISIBLE
@@ -524,7 +524,7 @@ class PlayerActivity : AppCompatActivity() {
             startTimeTextView.visibility = View.INVISIBLE
             finalTimeTextView.visibility = View.INVISIBLE
             lyricsTextView.visibility = View.VISIBLE
-            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_white_24dp))
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.round_closed_caption_white_24))
 
         }
         isLyricsShowed = !isLyricsShowed
