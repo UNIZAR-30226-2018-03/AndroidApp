@@ -895,17 +895,13 @@ fun obtainPopularSongsServer(amount: Long): List<Song> {
  */
 @Throws(Exception::class)
 fun obtainNewSongsFromFollowedArtistOfUserServer(username: String, sessionToken: String, amount: Long): List<Song>? {
-    // Datos de prueba para simulacion
-    return obtainTrendSongsServer(amount)
-
-    //TODO: Falla en BE
-    val json = getJSONFromRequest("/songs/popular/user/$username/?n=$amount", null, TYPE_GET)
+    val json = getJSONFromRequest("/users/$username/feed", null, TYPE_GET)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
         if (error != "ok") throw Exception("Error:  $error")
-        val songs = json.getJSONArray("songs")
+        val songs = json.getJSONObject("follow").getJSONArray("data")
         val songList = ArrayList<Song>()
         for (j in 0 until songs.length()) {
 
