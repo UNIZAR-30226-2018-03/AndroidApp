@@ -77,7 +77,8 @@ class UserActivity : BaseActivity() {
                         tabLayout.setupWithViewPager(viewPager)
                     })
                 })
-                Glide.with(this).load(it.pictureLocationUri).into(profileImage)
+                if (it.pictureLocationUri != null)
+                    Glide.with(this).load(it.pictureLocationUri).into(profileImage)
                 val sArtistUsername = "@" + it.username
                 artistUsername.text = sArtistUsername
                 obtainNumberOfFollowers(it, this, {
@@ -120,7 +121,8 @@ class UserActivity : BaseActivity() {
                     })
                 })
                 val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profileCircleImageView)
-                Glide.with(this).load(it.pictureLocationUri).into(profileImage)
+                if (it.pictureLocationUri != null)
+                    Glide.with(this).load(it.pictureLocationUri).into(profileImage)
             })
         }
         editActivityOpen = false

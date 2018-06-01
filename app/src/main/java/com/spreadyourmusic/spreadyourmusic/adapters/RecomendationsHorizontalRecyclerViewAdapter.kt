@@ -95,7 +95,7 @@ class RecomendationsHorizontalRecyclerViewAdapter(val context: Context?) : Recyc
                 val imagen = itemView.findViewById<View>(R.id.coverCircleImageView) as ImageView
                 titulo.text = obj.name
                 autor.text = obj.album.creator.username
-                if (context != null)
+                if (context != null && obj.album.artLocationUri != null)
                     Glide.with(context).load(obj.album.artLocationUri).into(imagen)
             }
             itemView.setOnClickListener(this)
@@ -119,7 +119,7 @@ class RecomendationsHorizontalRecyclerViewAdapter(val context: Context?) : Recyc
                 val usuario = itemView.findViewById<View>(R.id.creatorNameTextView) as TextView
                 val imagen = itemView.findViewById<View>(R.id.coverCircleImageView) as de.hdodenhof.circleimageview.CircleImageView
                 usuario.text = obj.username
-                if (context != null)
+                if (context != null && obj.pictureLocationUri != null)
                     Glide.with(context).load(obj.pictureLocationUri).into(imagen)
             }
             itemView.setOnClickListener(this)
@@ -143,7 +143,7 @@ class RecomendationsHorizontalRecyclerViewAdapter(val context: Context?) : Recyc
                 val imagen = itemView.findViewById<View>(R.id.coverCircleImageView) as de.hdodenhof.circleimageview.CircleImageView
                 usuario.text = obj.creator.username
                 titulo.text = obj.name
-                if (context != null)
+                if (context != null && obj.artLocationUri != null)
                     Glide.with(context).load(obj.artLocationUri).into(imagen)
             }
             itemView.setOnClickListener(this)

@@ -55,7 +55,7 @@ class SystemlistActivity : BaseActivity() {
         val image = findViewById<ImageView>(R.id.coverImageView)
 
         obtainCurrentUserData({
-            if (it != null)
+            if (it?.pictureLocationUri != null)
                 Glide.with(this).load(it.pictureLocationUri).into(image)
         }, this)
     }

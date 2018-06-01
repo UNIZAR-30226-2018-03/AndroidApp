@@ -353,9 +353,11 @@ class PlayerActivity : AppCompatActivity() {
         val songCreatorS = currentSong.album.name + " | " + currentSong.album.creator.username
         songCreatorTextView.text = songCreatorS
 
-        val artUrl = description.iconUri!!.toString()
-        Glide.with(this).load(artUrl).into(playerBackGroundImageView)
-        Glide.with(this).load(artUrl).into(albumArtCircularMusicProgressBar)
+        val artUrl = description.iconUri
+        if (artUrl != null) {
+            Glide.with(this).load(artUrl.toString()).into(playerBackGroundImageView)
+            Glide.with(this).load(artUrl.toString()).into(albumArtCircularMusicProgressBar)
+        }
 
         val favoriteSongImageButton: ImageButton = findViewById(R.id.favoriteSong)
         isCurrentSongFavorite(this, {

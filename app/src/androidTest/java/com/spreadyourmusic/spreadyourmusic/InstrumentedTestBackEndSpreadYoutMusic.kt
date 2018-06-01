@@ -1,16 +1,12 @@
 package com.spreadyourmusic.spreadyourmusic
 
-import android.provider.CalendarContract
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import android.util.Log
 import com.spreadyourmusic.spreadyourmusic.apis.*
-import com.spreadyourmusic.spreadyourmusic.controller.obtainUserFromID
 import com.spreadyourmusic.spreadyourmusic.models.Album
+import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
-import com.spreadyourmusic.spreadyourmusic.services.AmazonS3UploadFileService
-import com.spreadyourmusic.spreadyourmusic.test.ServerEmulator
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,8 +23,6 @@ import java.util.*
 @RunWith(AndroidJUnit4::class)
 class InstrumentedTestBackEndSpreadYoutMusic {
 
-    fun ClosedRange<Int>.random() = Random().nextInt(endInclusive - start) +  start
-
     @Test
     fun useAppContext() {
         // Context of the app under test.
@@ -37,226 +31,223 @@ class InstrumentedTestBackEndSpreadYoutMusic {
     }
 
     @Test
-    fun amazonServicesDelete() {
-        AmazonS3UploadFileService.deleteFile("postmalone", InstrumentationRegistry.getTargetContext(), {
-            val i = it
-        })
+    fun UserRequestTest() {
+        val username = "usuarioPruebasAndroid223"
+        val username2 = "usuarioPruebasAndroid334"
+        var token: String
+        var token2: String
+        val password = "1234"
+        val context = InstrumentationRegistry.getTargetContext()
+        val user = User(username, password, "Prueba", "d", "prueba@prupru.com", null, Date(1998, 1, 1))
+        val user2 = User(username2, password, "Prueba", "d", "prueb2a@prupru.com", null, Date(1998, 1, 1))
+        //user.twitterAccount = "dfsdf"
+
+        token = doSignUpServer(user, context)
+        token2 = doSignUpServer(user2, context)
+
+        //user.instagramAccount = "dfsdf"
+        //user.facebookAccount = "dfsdf"
+        //doUpdateAccountServer(user,token,context)
+
+        doLogoutServer(username, token)
+        token = doLoginServer(username, password)
+
+        obtainUserDataServer(username, "")
+        obtainUserDataServer(username, token)
+
+        addFollowerToUserServer(username, token, username2)
+
+        if (getFollowedUsersServer(username).size != 1) throw Exception("getFollowedUsers")
+
+        if (!isUserFollowedByUserServer(username, username2)) throw Exception("isUserFollowedByUserServer")
+
+        if (getNumberOfFollowersOfUserServer(username2) != 1L) throw Exception("getNumberOfFollowersOfUserServer")
+
+        deleteFollowerToUserServer(username, token, username2)
+
+        doDeleteAccountServer(username, token, context)
+        doDeleteAccountServer(username2, token2, context)
     }
 
     @Test
-    fun loginUserServerTest() {
-        val angle = doLoginServer("abelcht", "1234")
-        println(angle)
-        Log.i("TAGG", angle)
-    }
+    fun AlbumRequestTest() {
+        val username = "usuarioPruebasAndroid555"
+        val username2 = "usuarioPruebasAndroid444"
+        var token: String
+        var token2: String
+        val password = "1234"
+        val context =  InstrumentationRegistry.getTargetContext()
+        val user = User(username, password, "Prueba", "d", "prueba@prupru.com", null, Date(1998, 1, 1))
+        val user2 = User(username2, password, "Prueba", "d", "prueb2a@prupru.com", null, Date(1998, 1, 1))
+        //user.twitterAccount = "dfsdf"
 
+        val album = Album("Spiderman", user, GregorianCalendar(1998, 1, 1), "sdf")
 
+        token = doSignUpServer(user, context)
+        token2 = doSignUpServer(user2, context)
 
-    @Test
-    fun deleteUserTest() {
-        doDeleteAccountServer("abelcht", "l4lk0vopfqc285mg")
-    }
+        val id = createAlbumsServer(username, token, album, context)
 
-    @Test
-    fun doSignUpServerTest() {
-        val appContext = InstrumentationRegistry.getTargetContext()
-        val usuario = User("abelcht4", "1234", "Este Es Un Nombre", "/storage/emulated/0/Music/Prueba/profile_postmalone.jpg", "prueba@prueba.com", "fghgfhgfhgfhgf", Date(1992, 12, 12))
-        //usuario.twitterAccount = "pruebaTwittee"
-        doSignUpServer(usuario, appContext)
-    }
+        obtainAlbumFromID(id)
 
+        if (obtainAlbumsFromUserServer(username).size != 1) throw Exception("obtainAlbumsFromUserServer")
 
-    ///////////////////////////////
-    // Probar a partir de aqui
-    ///////////////////////////////
-
-    @Test
-    fun doLogoutTest() {
-        val token = doLoginServer("abelcht", "1234")
-        doLogoutServer("abelcht", token)
-    }
-
-
-    @Test
-    fun userGetServer() {
-        val token = doLoginServer("abelcht4", "1234")
-        val usr = obtainUserDataServer("abelcht4", token)
-        Log.i("TAGG", usr!!.pictureLocationUri)
+        doDeleteAccountServer(username, token, context)
+        doDeleteAccountServer(username2, token2, context)
     }
 
     @Test
-    fun setFavouriteServer() {
-        val token = doLoginServer("abelcht", "dfgdfgfd")
-        setSongFavoutireServer("abelcht", token, 0)
-        doLogoutServer("abelcht", token)
+    fun SongsRequestTest() {
+        val username = "usuarioPruebasAndroid666"
+        val username2 = "usuarioPruebasAndroid777"
+        var token: String
+        var token2: String
+        val password = "1234"
+        val context =  InstrumentationRegistry.getTargetContext()
+        val user = User(username, password, "Prueba", "d", "prueba@prupru.com", null, Date(1998, 1, 1))
+        val user2 = User(username2, password, "Prueba", "d", "prueb2a@prupru.com", null, Date(1998, 1, 1))
+        val album = Album("Spiderman", user, GregorianCalendar(1998, 1, 1), "sdf")
+
+        token = doSignUpServer(user, context)
+        token2 = doSignUpServer(user2, context)
+
+        val id = createAlbumsServer(username, token, album, context)
+
+        val albumpass = obtainAlbumFromID(id)
+        val song = Song("nobre", "df", albumpass!!, "ds", null)
+
+        val idS = uploadSongServer(username, token, song, context)
+        val songD = obtainSongFromID(idS)
+
+        addReproductionToSongServer(username2, token2, idS)
+
+        setSongFavoutireServer(username2, token2, idS)
+        if (!isSongFavoutireByUserServer(username2, token2, idS)) throw Exception("isSongFavoutireByUserServer")
+        obtainFavouriteSongsByUserServer(username2, token2)
+
+        obtainPopularSongsServer(50)
+
+        //obtainNewSongsFromFollowedArtistOfUserServer(username2, token2, 20)
+
+        obtainTrendSongsServer(50)
+
+        obtainTrendSongsInUserCountryServer(username2, token2, 20)
+
+        obtainLastSongListenedServer(username2, token2)
+
+        unSetSongFavoutireServer(username2, token2, idS)
+
+        deleteSongServer(username, token, songD!!, context)
+        doDeleteAccountServer(username, token, context)
+        doDeleteAccountServer(username2, token2, context)
     }
 
     @Test
-    fun deleteUserServer() {
-        val appContext = InstrumentationRegistry.getTargetContext()
-        // Utiliza internamente UpdateAccount
-        val user = User("usuarioParaEliminar15", "dfgdfgfd", "Este Es Un Nombre", "/storage/emulated/0/Music/Prueba/profile_postmalone.jpg", "prueba@prueba.com", "fghgfhgfhgfhgf", Date(1992, 12, 12))
-        //user.twitterAccount = "dfdsfds"
-        val token = doSignUpServer(user, appContext)
-        doDeleteAccountServer("usuarioParaEliminar15", token)
+    fun PlaylistRequestTest() {
+        val username = "usuarioPruebasAndroid888"
+        val username2 = "usuarioPruebasAndroid999"
+        var token: String
+        var token2: String
+        val password = "1234"
+        val context =  InstrumentationRegistry.getTargetContext()
+        val user = User(username, password, "Prueba", "d", "prueba@prupru.com", null, Date(1998, 1, 1))
+        val user2 = User(username2, password, "Prueba", "d", "prueb2a@prupru.com", null, Date(1998, 1, 1))
+        val album = Album("Spiderman", user, GregorianCalendar(1998, 1, 1), "sdf")
+
+        token = doSignUpServer(user, context)
+        token2 = doSignUpServer(user2, context)
+
+        val id = createAlbumsServer(username, token, album, context)
+
+        val albumpass = obtainAlbumFromID(id)
+        val song = Song("nobre", "df", albumpass!!, "ds", null)
+
+        val idS = uploadSongServer(username, token, song, context)
+        val songD = obtainSongFromID(idS)
+
+        val songList = ArrayList<Song>()
+        songList.add(songD!!)
+
+        val playlist = Playlist("nombre", albumpass.creator, "sadas", songList)
+
+        val pid = createPlaylistServer(playlist.creator.username, token, playlist, context)
+
+        val playlistData = obtainPlaylistDataServer(pid)
+
+        addFollowerToPlaylistServer(username2, token2, pid)
+
+        if (!isPlaylistFollowedByUserServer(username2, pid)) throw Exception("isPlaylistFollowedByUserServer")
+        getNumberOfFollowersOfPlaylistServer(pid)
+        getFollowedPlaylistsServer(username2)
+        obtainUpdatedPlaylistsFollowedByUserServer(username2, token2, 30)
+        deleteFollowerToPlaylistServer(username2, token2, pid)
+
+
+        deleteSongServer(username, token, songD, context)
+
+        deletePlaylistServer(playlist.creator.username, token, playlistData!!, context)
+
+        doDeleteAccountServer(username, token, context)
+        doDeleteAccountServer(username2, token2, context)
     }
 
     @Test
-    fun obtainSongsFromUserServerTest() {
-        obtainSongsFromUserServer("abelcht")
-    }
+    fun ComplexRequestsTest() {
+        val username = "usuarioPruebasAndroid10101r"
+        val username2 = "usuarioPruebasAndroid1010d"
+        var token: String
+        var token2: String
+        val password = "1234"
+        val context =  InstrumentationRegistry.getTargetContext()
+        val user = User(username, password, "Prueba", "d", "prueba@prupru.com", null, Date(1998, 1, 1))
+        val user2 = User(username2, password, "Prueba", "d", "prueb2a@prupru.com", null, Date(1998, 1, 1))
+        val album = Album("Spiderman", user, GregorianCalendar(1998, 1, 1), "sdf")
+        token = doSignUpServer(user, context)
+        token2 = doSignUpServer(user2, context)
 
-    @Test
-    fun obtainPlaylistsFromUserServerTest() {
-        obtainPlaylistsFromUserServer("abelcht")
-    }
+        val id = createAlbumsServer(username, token, album, context)
 
-    @Test
-    fun getFollowedUsersServerTest() {
-        getFollowedUsersServer("abelcht")
-    }
+        val albumpass = obtainAlbumFromID(id)
+        val song = Song("nobre", "df", albumpass!!, "ds", null)
 
-    @Test
-    fun uploadSong(){
-        val appContext = InstrumentationRegistry.getTargetContext()
-        uploadSongServer("abelcht","dfs", ServerEmulator.songList[0]!!,appContext)
-    }
+        val idS = uploadSongServer(username, token, song, context)
+        val songD = obtainSongFromID(idS)
 
-    @Test
-    fun multipletest2(){
-        val token = doLoginServer("abelcht", "1234")
-        //addReproductionToSongServer("abelcht", token, 0)
-    }
+        val songList = ArrayList<Song>()
+        songList.add(songD!!)
 
-    @Test
-    fun createObtainAlbums(){
-        val appContext = InstrumentationRegistry.getTargetContext()
-        val angle = doLoginServer("abelcht4", "1234")
-        val user = obtainUserDataServer("abelcht4",angle)
-        val fecha = GregorianCalendar(2020,1,1)
+        val playlist = Playlist("nombre", albumpass.creator, "sadas", songList)
 
-        val id = (0..1000).random()
-        val identificador = "Pornhub: $id"
-        val album = Album(id.toLong(),identificador,user!!,fecha,"")
-        val newAlbum = createAlbumsServer("abelcht4",angle,album,appContext)
-        val albums = obtainAlbumsFromUserServer("abelcht4")
-        val elAlbum:Album = obtainAlbumFromID(newAlbum)!!
-        val size = albums.size
-        Log.i("Nombre album", elAlbum.name)
-        Log.i("Tamaño album", size.toString())
-    }
+        val pid = createPlaylistServer(playlist.creator.username, token, playlist, context)
 
-    @Test
-    fun createSongAndUpload(){
-        val appContext = InstrumentationRegistry.getTargetContext()
-        val idN = (0..1000).random()
-        val identificador = "Tn cuidao: $idN"
-        val angle = doLoginServer("abelcht4", "1234")
-        val albums = obtainAlbumsFromUserServer("abelcht4")
-        val song = Song(97,identificador," " ,obtainAlbumFromID(albums[0].id!!)!!,"Rock","")
-        val uploadedSong = uploadSongServer("abelcht4",angle,song,appContext)
-        Log.i("IDS",uploadedSong.toString() )
-    }
+        val playlistData = obtainPlaylistDataServer(pid)
 
-    @Test
-    fun createSongAndDelete(){
-        val appContext = InstrumentationRegistry.getTargetContext()
-        val idN = (0..1000).random()
-        val identificador = "Tn cuidao: $idN"
-        val angle = doLoginServer("abelcht4", "1234")
-        val albums = obtainAlbumsFromUserServer("abelcht4")
-        val song = Song(97,identificador," " ,obtainAlbumFromID(albums[0].id!!)!!,"Rock","")
-        val uploadedSong = uploadSongServer("abelcht4",angle,song,appContext)
-        Log.i("IDS",uploadedSong.toString() )
-        deleteSongServer("abelcht4",angle,song,appContext)
-    }
+        addFollowerToPlaylistServer(username2, token2, pid)
 
-    @Test
-    fun deleteAlbums(){
-        val appContext = InstrumentationRegistry.getTargetContext()
-        val angle = doLoginServer("abelcht", "1234")
-        val albums = obtainAlbumsFromUserServer("abelcht")
-        var i=0
-        while(true){
-            //doDeleteAlbum("abelcht",angle,albums[i].id!!)
-            i=i+1
-        }
-    }
+        if (!isPlaylistFollowedByUserServer(username2, pid)) throw Exception("isPlaylistFollowedByUserServer")
+        getNumberOfFollowersOfPlaylistServer(pid)
+        getFollowedPlaylistsServer(username2)
+        obtainUpdatedPlaylistsFollowedByUserServer(username2, token2, 30)
+        deleteFollowerToPlaylistServer(username2, token2, pid)
 
+        obtainSongsFromUserServer(albumpass.creator.username)
 
-    @Test
-    fun multipleTest() {
-        //getNumberOfFollowersOfUserServer("abelcht")
-        val token = doLoginServer("abelcht", "1234")
-        addFollowerToUserServer("abelcht", token, "lAngelP")
-        deleteFollowerToUserServer("abelcht", token, "lAngelP")
-        getFollowedPlaylistsServer("abelcht")
+        obtainPlaylistsFromUserServer(albumpass.creator.username)
 
-        // Se supone que la playlist con id 1 esta creada
-        isPlaylistFollowedByUserServer("abelcht", 1)
-        getNumberOfFollowersOfPlaylistServer(1)
+        obtainRecomendationsForUserServer(username, token, 20)
 
-        addFollowerToPlaylistServer("abelcht", token, 1)
-        deleteFollowerToPlaylistServer("abelcht", token, 1)
-        obtainPlaylistDataServer(1)
+        obtainResultForQueryServer(20, "gosepumbs", null)
+        obtainResultForQueryServer(20, "gosepumbs", 1)
+        obtainPopularByGenreServer(20)
 
-        // Se supone que la cancion con id 1 esta creada
-        addReproductionToSongServer("abelcht", token, 1)
-
-        setSongFavoutireServer("abelcht", token, 1)
-        unSetSongFavoutireServer("abelcht", token, 1)
-        isSongFavoutireByUserServer("abelcht", token, 1)
-
-        obtainFavouriteSongsByUserServer("abelcht", token)
-
-        obtainRecomendationsForUserServer("abelcht", token, 20)
-
-        obtainPopularSongsServer(10)
-
-        obtainNewSongsFromFollowedArtistOfUserServer("abelcht", token, 20)
-
-        obtainTrendSongsServer(10)
-
-        obtainTrendSongsInUserCountryServer("abelcht", 20)
-
-        obtainUpdatedPlaylistsFollowedByUserServer("abelcht", token, 20)
-
-        obtainResultForQueryServer(20, "abel", null)
-
-        obtainPopularByGenreServer(30)
-
-        isOtherSessionOpenFromSameUserServer("abelcht", token)
-
-        obtainLastSongListenedServer("abelcht", token)
-
+        isOtherSessionOpenFromSameUserServer(username, token)
         obtainGeneresServer()
 
-        obtainAlbumsFromUserServer("abelcht")
-    }
+        //deleteSongServer(username, token, songD, context)
+        //deletePlaylistServer(playlist.creator.username, token, playlistData!!, context)
 
-    @Test
-    fun updateUser() {
-        val appContext = InstrumentationRegistry.getTargetContext()
-
-        val usuario = User("abelcht3", "1234", "Este Es Un Nombress", "/storage/emulated/0/Music/Prueba/profile_postmalone.jpg", "prueba@prueba.com", "fghgfhgfhgfhgf", Date(1992, 12, 12))
-        usuario.twitterAccount = "pruebasdfsdfdsTwittee"
-        doLoginServer("abelcht3", "1234")
-
-        doUpdateAccountServer(usuario, "1234", appContext)
-
-    }
-
-
-    @Test
-    fun isUserFollowedByUserServerTest() {
-        val token = doLoginServer("abelcht4", "1234")
-        addFollowerToUserServer("abelcht",token, "lAngelP")
-        getFollowedUsersServer("abelcht")
-        isUserFollowedByUserServer("abelcht", "lAngelP")
-
-        getNumberOfFollowersOfUserServer("abelcht")
-
-        deleteFollowerToUserServer("abelcht",token, "lAngelP")
+        doDeleteAccountServer(username, token, context)
+        doDeleteAccountServer(username2, token2, context)
     }
 
 }

@@ -65,6 +65,7 @@ class SignUpActivity : AppCompatActivity() {
         user.facebookAccount = userFacebookAccount
         user.instagramAccount = userInstagramAccount
         if (!idEditActivity) {
+            Toast.makeText(this, R.string.creating, Toast.LENGTH_SHORT).show()
             doSignUp(user, this, {
                 if (!it.isNullOrEmpty()) {
                     Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
@@ -80,6 +81,7 @@ class SignUpActivity : AppCompatActivity() {
                 }
             })
         } else {
+            Toast.makeText(this, R.string.updating, Toast.LENGTH_SHORT).show()
             updateUserData(user, this, {
                 if (!it.isNullOrEmpty()) {
                     Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
@@ -258,7 +260,7 @@ class SignUpActivity : AppCompatActivity() {
             userFacebookAccount = view!!.facebookAccountEditText.text.toString().trim()
             userTwitterAccount = view!!.twitterAccountEditText.text.toString().trim()
             userInstagramAccount = view!!.instagramAccountEditText.text.toString().trim()
-            if (realname.isNullOrEmpty() || userBirth != null) {
+            if (realname.isNullOrEmpty() || userBirth == null) {
                 Toast.makeText(activity, R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
                 //Toast.makeText(activity, R.string.empty_fields_2, Toast.LENGTH_SHORT).show()
 

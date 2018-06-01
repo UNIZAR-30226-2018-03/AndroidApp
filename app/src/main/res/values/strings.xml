@@ -115,6 +115,9 @@
     <string name="empty_fields_4">Los campos caratula y nombre son obligatorios. La playlist ha de poseer al menos un elemento</string>
     <string name="error_upload_file_error">Error al subir el archivo al servidor de almacenamiento</string>
 
+    <!-- Espera subir contenido -->
+    <string name="creating">Creando</string>
+    <string name="updating">Actualizando</string>
 
     <!-- Oauth -->
     <string name="server_client_id">·</string>

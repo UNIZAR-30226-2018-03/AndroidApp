@@ -21,7 +21,7 @@ fun saveSongLocal(song: Song, context: Context): Boolean {
 
     val songFilename = saveSongInternalStorage(song.locationUri, song.id, context)
 
-    val albumFilename = saveAlbumArtInternalStorage(song.album.artLocationUri, song.id, context)
+    val albumFilename = saveAlbumArtInternalStorage(song.album.artLocationUri!!, song.id, context)
 
     if (songFilename == null || albumFilename == null)
     // Ha existido un error al crear la cancion
@@ -35,7 +35,7 @@ fun saveSongLocal(song: Song, context: Context): Boolean {
     saveSongLocalDataBase(song, context)
 
     song.album.artLocationUri = antAlbum
-    song.locationUri = antLocation
+    song.locationUri = antLocation!!
 
     return true
 }
@@ -48,7 +48,7 @@ fun deleteSongLocal(song: Song, context: Context): Boolean {
         return false
     }
     deleteFileInternalStorage(song.locationUri, context)
-    deleteFileInternalStorage(song.album.artLocationUri, context)
+    deleteFileInternalStorage(song.album.artLocationUri!!, context)
     deleteSongLocalDataBase(song, context)
     return true
 }
