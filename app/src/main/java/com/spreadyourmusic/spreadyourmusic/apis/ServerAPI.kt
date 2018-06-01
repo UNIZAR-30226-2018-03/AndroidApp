@@ -849,7 +849,9 @@ fun isSongFavoutireByUserServer(username: String, sessionToken: String, song: Lo
     }
 }
 
-
+/**
+ * Obtiene la lista de canciones favoritas del usuario @username
+ */
 @Throws(Exception::class)
 fun obtainFavouriteSongsByUserServer(username: String, sessionToken: String): List<Song>? {
     val json = getJSONFromRequest("/songs/user/$username/faved", null, TYPE_GET)
@@ -1106,8 +1108,6 @@ fun createPlaylistServer(username: String, sessionToken: String, playlist: Playl
 @Throws(Exception::class)
 fun deletePlaylistServer(username: String, sessionToken: String, playlist: Playlist, context: Context) {
     val postData = ArrayList<Pair<String, String>>()
-    //postData.add(Pair("listid", playlist.id.toString()))
-    //postData.add(Pair("token", sessionToken))
     val json = getJSONFromRequest("/user-lists/$username/delete?token=$sessionToken&listid=${playlist.id}", postData, TYPE_DELETE)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -1217,7 +1217,6 @@ fun addFollowerToPlaylistServer(username: String, sessionToken: String, followed
 @Throws(Exception::class)
 fun deleteFollowerToPlaylistServer(username: String, sessionToken: String, followed: Long) {
     val postData = ArrayList<Pair<String, String>>()
-    //postData.add(Pair("token", sessionToken))
     val json = getJSONFromRequest("/user-lists/$username/$followed/unfollow?token=$sessionToken", postData, TYPE_DELETE)
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -1292,10 +1291,9 @@ fun getFollowedPlaylistsServer(username: String): List<Playlist> {
  */
 @Throws(Exception::class)
 fun obtainUpdatedPlaylistsFollowedByUserServer(username: String, sessionToken: String, cantidad: Long): List<Playlist>? {
+    //TODO: En Back-End no se ha implementado
+    // Datos para probar
     return getFollowedPlaylistsServer(username)
-
-    //TODO HACER (feed Falla BE)
-
 }
 
 //---------------------------------------------------------------------------------------
@@ -1310,11 +1308,11 @@ fun obtainUpdatedPlaylistsFollowedByUserServer(username: String, sessionToken: S
  */
 @Throws(Exception::class)
 fun doGoogleLoginServer(serverAuthCode: String): String {
-    // TODO: Esperar especificaicon Pinilla
+    //TODO: En Back-End no se ha implementado
+    // Estos datos harán saltar una excepción
     val postData = ArrayList<Pair<String, String>>()
     postData.add(Pair("token", serverAuthCode))
     val json = getJSONFromRequest("/oauth/login", null, TYPE_GET)
-
 
     if (json == null) {
         throw Exception("Error: Servidor no accesible")
@@ -1386,7 +1384,8 @@ fun obtainPlaylistsFromUserServer(username: String): List<Playlist> {
  */
 @Throws(Exception::class)
 fun obtainRecomendationsForUserServer(username: String, sessionToken: String, cantidad: Long): List<Recommendation>? {
-//TODO: Esperar especificacion
+    //TODO: En Back-End no se ha implementado
+    // Datos para probar
     return obtainPopularSongsServer(cantidad)
 }
 
@@ -1449,7 +1448,8 @@ private fun obtainResultForQueryInUsersServer(amount: Long, query: String): List
  */
 @Throws(Exception::class)
 private fun obtainResultForQueryInPlaylistsServer(cantidad: Long, query: String): List<Playlist> {
-// TODO: Esperar nueva especificacion
+    //TODO: En Back-End no se ha implementado
+    // Datos para probar
     return ArrayList<Playlist>()
 }
 
@@ -1480,7 +1480,8 @@ fun obtainResultForQueryServer(cantidad: Long, query: String, type: Int?): List<
  */
 @Throws(Exception::class)
 fun obtainPopularByGenreServer(cantidad: Long): List<Pair<String, List<Recommendation>>>? {
-//TODO: Esperar Pinilla lo haga
+    //TODO: En Back-End no se ha implementado
+    // Datos para probar
     val devolver = ArrayList<Pair<String, List<Recommendation>>>()
     for (i in obtainGeneresServer()) {
         devolver.add(Pair(i, obtainTrendSongsServer(cantidad)!!))
@@ -1494,27 +1495,28 @@ fun obtainPopularByGenreServer(cantidad: Long): List<Pair<String, List<Recommend
 @Throws(Exception::class)
 fun isOtherSessionOpenFromSameUserServer(username: String, sessionToken: String): Boolean {
     val json = getJSONFromRequest("/users/$username/session_open?token=$sessionToken", null, TYPE_GET)
-    if (json == null) {
+    return if (json == null) {
         throw Exception("Error: Servidor no accesible")
     } else {
         val error = json.getString("error")
-        if (error == "ok") {
-            return true
-        } else if (error == "sessionClosed") {
-            return false
-        } else {
-            throw Exception("Error: $error")
+        when (error) {
+            "ok" -> true
+            "sessionClosed" -> false
+            else -> throw Exception("Error: $error")
         }
     }
 }
 
 @Throws(Exception::class)
 fun obtainGeneresServer(): List<String> {
-    //TODO: Esperar Pinilla lo haga
-    val devolver = ArrayList<String>()
-    devolver.add("Trap")
-    devolver.add("Rap")
-    return devolver
+    //TODO: En Back-End no se ha implementado
+    // Datos para probar
+    val returnArrayList = ArrayList<String>()
+    returnArrayList.add("Trap")
+    returnArrayList.add("Rap")
+    returnArrayList.add("Pop")
+    returnArrayList.add("Latin")
+    return returnArrayList
 }
 
 //---------------------------------------------------------------------------------------
