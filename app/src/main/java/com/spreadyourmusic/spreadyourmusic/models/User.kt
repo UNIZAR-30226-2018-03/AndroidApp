@@ -18,7 +18,6 @@ class User(val username: String) : Recommendation {
     var facebookAccount: String? = null
     var instagramAccount: String? = null
 
-    //TODO: El link devuelto ha de ser el que apunta a la misma playlist desde la interfaz web
     private val shareLinkPath = "http://155.210.13.105:8006/profile?user="
     override var shareLink: String = shareLinkPath
 

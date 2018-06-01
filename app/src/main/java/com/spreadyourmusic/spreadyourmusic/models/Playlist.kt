@@ -10,7 +10,6 @@ package com.spreadyourmusic.spreadyourmusic.models
 class Playlist(val name: String, val creator: User, val artLocationUri: String?, val content: List<Song>) : Recommendation {
     var id: Long? = null
 
-    //TODO: El link devuelto ha de ser el que apunta a la misma playlist desde la interfaz web
     private val shareLinkPath = "http://155.210.13.105:8006/playlist?type=playlist&id="
     override var shareLink: String = shareLinkPath
 
