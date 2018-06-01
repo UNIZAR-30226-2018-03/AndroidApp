@@ -323,34 +323,41 @@ fun doDeleteAccountServer(user: String, sessionToken: String, context: Context) 
  */
 @Throws(Exception::class)
 fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
-    //TODO-TEST FALLA
+    //TODO-TEST FALLA DEBIDO A LOS BODY
+
     val username = user.username
-    val postData = ArrayList<Pair<String, String>>()
-    postData.add(Pair("nick", username))
+    val oldUserData = obtainUserDataServer(username, sessionToken)
+    val updateData = ArrayList<Pair<String, String>>()
+    if (oldUserData!!.birthDate != user.birthDate) updateData.add(Pair("birth_date", user.birthDate?.time.toString()))
+    if (oldUserData.name != user.name) updateData.add(Pair("user", user.name!!))
+    if (oldUserData.email != user.email) updateData.add(Pair("mail", user.email!!))
+    if (oldUserData.twitterAccount != user.twitterAccount) updateData.add(Pair("twitter", user.twitterAccount!!))
+    if (oldUserData.facebookAccount != user.facebookAccount) updateData.add(Pair("instagram", user.facebookAccount!!))
+    if (oldUserData.instagramAccount != user.instagramAccount) updateData.add(Pair("facebook", user.instagramAccount!!))
 
-    val mail = user.email
-    val bio = user.biography
-    val birth = user.birthDate
-
-    val update = JSONObject()
-    val body = JSONObject()
-    body.put("username", username)
-    body.put("mail", mail)
-    body.put("bio", bio)
-    body.put("birth_date", birth)
-    update.put("updates", body)
-
-    val json = getJSONFromRequest("/users/$username?token=$sessionToken&body={$update}", postData, TYPE_PUT)
-
-    if (json == null) {
-        throw Exception("Error: Servidor no accesible")
-    } else {
-        val error = json.getString("error")
-        if (error != "ok") {
-            throw Exception("Error: $error")
-        } else {
-            uploadUserProfilePicture(username, user.pictureLocationUri!!, context)
+    if (updateData.size > 0) {
+        val arrayBody = updateData.map {
+            "${it.first}=\"${it.second}\""
+        }.reduce { acc, s ->
+            "$acc,$s"
         }
+        val bodyData = ArrayList<Pair<String, String>>()
+        bodyData.add(Pair("token", sessionToken))
+        bodyData.add(Pair("request_body", "{\"updates\":{$arrayBody}}"))
+        val jsonAccounts = getJSONFromRequest("/users/$username", bodyData, TYPE_PUT)
+        if (jsonAccounts == null) {
+            throw Exception("Error: Servidor no accesible")
+        } else {
+            val error = jsonAccounts.getString("error")
+            if (error != "ok") {
+                throw Exception("Error: $error")
+            }
+        }
+    }
+    if (oldUserData.pictureLocationUri != user.pictureLocationUri) {
+        deleteUserProfilePicture(username, context)
+        if (user.pictureLocationUri != null)
+            uploadUserProfilePicture(username, user.pictureLocationUri!!, context)
     }
 }
 
@@ -1465,6 +1472,10 @@ fun obtainResultForQueryServer(cantidad: Long, query: String, type: Int?): List<
 @Throws(Exception::class)
 fun obtainPopularByGenreServer(cantidad: Long): List<Pair<String, List<Recommendation>>>? {
 //TODO: Esperar Pinilla lo haga
+    val devolver = ArrayList<Pair<String, List<Recommendation>>>()
+    for (i in obtainGeneresServer()){
+        devolver.add(Pair(i, obtainTrendSongsServer(cantidad)!!))
+    }
     return ArrayList()
 }
 
@@ -1491,7 +1502,10 @@ fun isOtherSessionOpenFromSameUserServer(username: String, sessionToken: String)
 @Throws(Exception::class)
 fun obtainGeneresServer(): List<String> {
     //TODO: Esperar Pinilla lo haga
-    return ArrayList()
+    val devolver = ArrayList<String>()
+    devolver.add("Trap")
+    devolver.add("Rap")
+    return devolver
 }
 
 //---------------------------------------------------------------------------------------

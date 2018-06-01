@@ -52,13 +52,23 @@ fun isLogin(activity: Activity): Boolean {
  * Elimina al actual usuario logeado si existe
  * Warning: Esta función puede ser costosa en tiempo, ejecutar en thread diferente al principal
  */
-fun doLogout(activity: Activity) {
+fun doLogout(activity: Activity, listener: (Boolean) -> Unit) {
     val mSharedPreferences = getUserSharedPreferences(activity)
     if (mSharedPreferences != null) {
         val user = mSharedPreferences.first
         val sessionToken = mSharedPreferences.second
-        doLogoutServer(user, sessionToken)
         logoutUserSharedPreferences(activity)
+        Thread {
+            val result = try {
+                doLogoutServer(user, sessionToken)
+                true
+            } catch (e: Exception) {
+                false
+            }
+            activity.runOnUiThread {
+                listener(result)
+            }
+        }.start()
     } else {
         SessionSingleton.currentUser = null
         SessionSingleton.sessionToken = null

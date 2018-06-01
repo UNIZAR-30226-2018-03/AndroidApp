@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.media.session.MediaControllerCompat
 
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -83,6 +84,10 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (lastSongListened != null) {
             SessionSingleton.lastSongListened = null
             onSongSelected(lastSongListened, this)
+
+            // Pausamos la canción nada más empezar
+            val controller = MediaControllerCompat.getMediaController(this)
+            controller?.transportControls?.pause()
         }
     }
 
@@ -188,15 +193,16 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }, this)
             }
             R.id.close_session -> {
-                doLogout(this)
-                val int = Intent(applicationContext, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                startActivity(int)
-                finish()
+                doLogout(this, {
+                    if (!it) Toast.makeText(this, "Error al realizar el logout en el Servidor", Toast.LENGTH_SHORT).show()
+                    val int = Intent(applicationContext, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    startActivity(int)
+                    finish()
+                })
             }
 
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
