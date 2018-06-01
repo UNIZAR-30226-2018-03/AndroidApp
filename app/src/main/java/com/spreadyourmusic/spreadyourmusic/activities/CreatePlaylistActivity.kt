@@ -172,6 +172,7 @@ class CreatePlaylistActivity : AppCompatActivity() {
         } else {
             obtainCurrentUserData({
                 if (playlistId != 0L) {
+                    Toast.makeText(this, R.string.updating, Toast.LENGTH_SHORT).show()
                     val newPlaylist = Playlist(playlistId, nombre, it!!, pathCover!!, selectedList)
                     updatePlaylist(newPlaylist, this, { error ->
                         if (error != null) {
@@ -181,6 +182,7 @@ class CreatePlaylistActivity : AppCompatActivity() {
                         }
                     })
                 } else {
+                    Toast.makeText(this, R.string.creating, Toast.LENGTH_SHORT).show()
                     val newPlaylist = Playlist(nombre, it!!, pathCover!!, selectedList)
                     createPlaylist(newPlaylist, this, { error, _ ->
                         if (error != null) {

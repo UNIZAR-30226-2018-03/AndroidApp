@@ -86,6 +86,7 @@ class UploadSongActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, R.string.empty_fields_3, Toast.LENGTH_SHORT).show()
         } else {
             obtainCurrentUserData({
+                Toast.makeText(this, R.string.creating, Toast.LENGTH_SHORT).show()
                 val newSong = Song(songname, pathSong!!, selectedAlbum!!, selectedGenre!!, pathLyrics)
                 createSong(it!!, newSong, this, {
                     if (it != null) {

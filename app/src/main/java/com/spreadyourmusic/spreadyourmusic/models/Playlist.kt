@@ -11,13 +11,14 @@ class Playlist(val name: String, val creator: User, val artLocationUri: String?,
     var id: Long? = null
 
     //TODO: El link devuelto ha de ser el que apunta a la misma playlist desde la interfaz web
-    override var shareLink: String = "http://155.210.13.105:8006/playlist?type=playlist&id=$id"
+    private val shareLinkPath = "http://155.210.13.105:8006/playlist?type=playlist&id="
+    override var shareLink: String = shareLinkPath
 
     /**
      * Constructor usado cuando se obtienen datos desde el back-end
      */
     constructor(id: Long, name: String, creator: User, artLocationUri: String?, content: List<Song>) : this(name, creator, artLocationUri, content) {
         this.id = id
-        this.shareLink = shareLink + id.toString() + "/"
+        this.shareLink = shareLinkPath + id.toString() + "/"
     }
 }

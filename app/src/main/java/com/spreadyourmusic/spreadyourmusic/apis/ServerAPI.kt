@@ -167,6 +167,7 @@ private fun uploadSongLyrics(songId: Long, filePath: String, context: Context): 
     AmazonS3UploadFileService.uploadFile(filePath, "$songLyricsUploadPrefix$songId", context, {
         // CUIDADO: Si falla al subir no se está tratando el error
     })
+    Thread.sleep(300)
 
     return true
 }
@@ -180,6 +181,8 @@ private fun uploadSongLocation(songId: Long, filePath: String, context: Context)
     AmazonS3UploadFileService.uploadFile(filePath, "$songLocationUploadPrefix$songId", context, {
         // CUIDADO: Si falla al subir no se está tratando el error
     })
+    Thread.sleep(3000)
+
     return true
 }
 
@@ -192,6 +195,8 @@ private fun uploadUserProfilePicture(username: String, filePath: String, context
     AmazonS3UploadFileService.uploadFile(filePath, "$userUploadPrefix$username", context, {
         // CUIDADO: Si falla al subir no se está tratando el error
     })
+    Thread.sleep(1000)
+
     return true
 }
 
@@ -204,6 +209,8 @@ private fun uploadPlaylistCover(playlistId: Long, filePath: String, context: Con
     AmazonS3UploadFileService.uploadFile(filePath, "$playlistUploadPrefix$playlistId", context, {
         // CUIDADO: Si falla al subir no se está tratando el error
     })
+    Thread.sleep(1000)
+
     return true
 }
 
@@ -215,6 +222,8 @@ private fun uploadAlbumCover(albumId: Long, filePath: String, context: Context):
     AmazonS3UploadFileService.uploadFile(filePath, "$albumUploadPrefix$albumId", context, {
         // CUIDADO: Si falla al subir no se está tratando el error
     })
+    Thread.sleep(1000)
+
     return true
 }
 
@@ -329,7 +338,8 @@ fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
     if (oldUserData!!.birthDate != user.birthDate) updateData.add(Pair("birth_date", user.birthDate?.time.toString()))
     if (oldUserData.name != user.name) updateData.add(Pair("user", user.name ?: ""))
     if (oldUserData.email != user.email) updateData.add(Pair("mail", user.email ?: ""))
-    if (oldUserData.twitterAccount != user.twitterAccount) updateData.add(Pair("twitter", user.twitterAccount ?: ""))
+    if (oldUserData.twitterAccount != user.twitterAccount) updateData.add(Pair("twitter", user.twitterAccount
+            ?: ""))
     if (oldUserData.facebookAccount != user.facebookAccount) updateData.add(Pair("instagram", user.facebookAccount
             ?: ""))
     if (oldUserData.instagramAccount != user.instagramAccount) updateData.add(Pair("facebook", user.instagramAccount
@@ -1472,7 +1482,7 @@ fun obtainResultForQueryServer(cantidad: Long, query: String, type: Int?): List<
 fun obtainPopularByGenreServer(cantidad: Long): List<Pair<String, List<Recommendation>>>? {
 //TODO: Esperar Pinilla lo haga
     val devolver = ArrayList<Pair<String, List<Recommendation>>>()
-    for (i in obtainGeneresServer()){
+    for (i in obtainGeneresServer()) {
         devolver.add(Pair(i, obtainTrendSongsServer(cantidad)!!))
     }
     return ArrayList()

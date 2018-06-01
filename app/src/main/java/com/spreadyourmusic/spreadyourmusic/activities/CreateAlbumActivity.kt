@@ -63,6 +63,7 @@ class CreateAlbumActivity : AppCompatActivity() {
         } else {
             obtainCurrentUserData({
                 val newAlbum = Album(albumName, it!!, current, imagePath!!)
+                Toast.makeText(this, R.string.creating, Toast.LENGTH_SHORT).show()
                 createAlbum(newAlbum, this, { error, idAlbum ->
                     if (!error.isNullOrEmpty()) {
                         Toast.makeText(this, error, Toast.LENGTH_SHORT).show()

@@ -65,6 +65,7 @@ class SignUpActivity : AppCompatActivity() {
         user.facebookAccount = userFacebookAccount
         user.instagramAccount = userInstagramAccount
         if (!idEditActivity) {
+            Toast.makeText(this, R.string.creating, Toast.LENGTH_SHORT).show()
             doSignUp(user, this, {
                 if (!it.isNullOrEmpty()) {
                     Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
@@ -80,6 +81,7 @@ class SignUpActivity : AppCompatActivity() {
                 }
             })
         } else {
+            Toast.makeText(this, R.string.updating, Toast.LENGTH_SHORT).show()
             updateUserData(user, this, {
                 if (!it.isNullOrEmpty()) {
                     Toast.makeText(this, it, Toast.LENGTH_SHORT).show()

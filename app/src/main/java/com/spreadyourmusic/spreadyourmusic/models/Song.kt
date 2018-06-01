@@ -16,7 +16,8 @@ class Song(val name: String, var locationUri: String, val album: Album, val gene
     var id: Long = 0
     var isDownloaded = false
     //TODO: El link devuelto ha de ser el que apunta a la misma canción desde la interfaz web
-    override var shareLink: String = "http://155.210.13.105:8006/song?id=$id"
+    private val shareLinkPath = "http://155.210.13.105:8006/song?id="
+    override var shareLink: String = shareLinkPath
 
     /**
      * Constructor usado cuando se obtienen datos desde el back-end
@@ -24,6 +25,7 @@ class Song(val name: String, var locationUri: String, val album: Album, val gene
     constructor(id: Long, name: String, locationUri: String, album: Album, genere: String?, lyricsPath: String?)
             : this(name, locationUri, album, genere, lyricsPath) {
         this.id = id
+        this.shareLink = shareLinkPath + id.toString() + "/"
     }
 
     fun getMediaItem(): MediaBrowserCompat.MediaItem {
