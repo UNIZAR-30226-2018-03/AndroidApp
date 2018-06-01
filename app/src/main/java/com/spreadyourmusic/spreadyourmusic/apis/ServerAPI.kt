@@ -259,8 +259,6 @@ fun doSignUpServer(user: User, context: Context): String {
     val token = json.getString("token")
     uploadUserProfilePicture(username, user.pictureLocationUri!!, context)
 
-    //TODO: Fallo LLamada a update para actualizar cuentas twitter facebook y demás
-
     val twitterAccount = user.twitterAccount
     val facebookAccount = user.facebookAccount
     val instagramAccount = user.instagramAccount
@@ -276,21 +274,23 @@ fun doSignUpServer(user: User, context: Context): String {
 
     if (accounts.size > 0) {
         val arrayBody = accounts.map {
-            "${it.first}=\"${it.second}\""
+            "${it.first}:\"${it.second}\""
         }.reduce { acc, s ->
             "$acc,$s"
         }
-
-        postDataAccounts.add(Pair("body", "{\"updates\":{$arrayBody}}"))
-
-        val jsonAccounts = getJSONFromRequest("/users/$username", postDataAccounts, TYPE_PUT)
-
+        val c = "{\"updates\":{$arrayBody}}"
+        val jsonAccounts = getJSONFromRequest("/users/$username?token=$token&body=$c", null, TYPE_PUT)
         if (jsonAccounts == null) {
             throw Exception("Error: Servidor no accesible")
         } else {
-            val error = jsonAccounts.getString("error")
-            if (error != "ok") {
-                throw Exception("Error: $error")
+            var errorCapturado: String? = null
+            try {
+                errorCapturado = jsonAccounts.getString("error")
+            } catch (e: Exception) {
+
+            }
+            if (errorCapturado != null) {
+                throw Exception("Error: $errorCapturado")
             }
         }
     }
@@ -323,34 +323,37 @@ fun doDeleteAccountServer(user: String, sessionToken: String, context: Context) 
  */
 @Throws(Exception::class)
 fun doUpdateAccountServer(user: User, sessionToken: String, context: Context) {
-    //TODO-TEST FALLA DEBIDO A LOS BODY
-
     val username = user.username
     val oldUserData = obtainUserDataServer(username, sessionToken)
     val updateData = ArrayList<Pair<String, String>>()
     if (oldUserData!!.birthDate != user.birthDate) updateData.add(Pair("birth_date", user.birthDate?.time.toString()))
-    if (oldUserData.name != user.name) updateData.add(Pair("user", user.name!!))
-    if (oldUserData.email != user.email) updateData.add(Pair("mail", user.email!!))
-    if (oldUserData.twitterAccount != user.twitterAccount) updateData.add(Pair("twitter", user.twitterAccount!!))
-    if (oldUserData.facebookAccount != user.facebookAccount) updateData.add(Pair("instagram", user.facebookAccount!!))
-    if (oldUserData.instagramAccount != user.instagramAccount) updateData.add(Pair("facebook", user.instagramAccount!!))
+    if (oldUserData.name != user.name) updateData.add(Pair("user", user.name ?: ""))
+    if (oldUserData.email != user.email) updateData.add(Pair("mail", user.email ?: ""))
+    if (oldUserData.twitterAccount != user.twitterAccount) updateData.add(Pair("twitter", user.twitterAccount ?: ""))
+    if (oldUserData.facebookAccount != user.facebookAccount) updateData.add(Pair("instagram", user.facebookAccount
+            ?: ""))
+    if (oldUserData.instagramAccount != user.instagramAccount) updateData.add(Pair("facebook", user.instagramAccount
+            ?: ""))
 
     if (updateData.size > 0) {
         val arrayBody = updateData.map {
-            "${it.first}=\"${it.second}\""
+            "${it.first}:\"${it.second}\""
         }.reduce { acc, s ->
             "$acc,$s"
         }
-        val bodyData = ArrayList<Pair<String, String>>()
-        bodyData.add(Pair("token", sessionToken))
-        bodyData.add(Pair("request_body", "{\"updates\":{$arrayBody}}"))
-        val jsonAccounts = getJSONFromRequest("/users/$username", bodyData, TYPE_PUT)
+        val c = "{\"updates\":{$arrayBody}}"
+        val jsonAccounts = getJSONFromRequest("/users/$username?token=$sessionToken&body=$c", null, TYPE_PUT)
         if (jsonAccounts == null) {
             throw Exception("Error: Servidor no accesible")
         } else {
-            val error = jsonAccounts.getString("error")
-            if (error != "ok") {
-                throw Exception("Error: $error")
+            var errorCapturado: String? = null
+            try {
+                errorCapturado = jsonAccounts.getString("error")
+            } catch (e: Exception) {
+
+            }
+            if (errorCapturado != null) {
+                throw Exception("Error: $errorCapturado")
             }
         }
     }
