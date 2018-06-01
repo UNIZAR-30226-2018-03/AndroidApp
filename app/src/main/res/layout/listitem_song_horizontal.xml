@@ -14,11 +14,11 @@
         android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/caratula"
+        app:layout_constraintStart_toEndOf="@+id/coverCircleImageView"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/nombre_cancion"
+            android:id="@+id/songNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CanciónCan"
@@ -26,7 +26,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/nombre_artista"
+            android:id="@+id/creatorNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="15"
@@ -38,7 +38,7 @@
 
 
     <ImageView
-        android:id="@+id/caratula"
+        android:id="@+id/coverCircleImageView"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
@@ -48,6 +48,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        android:src="@drawable/sample_image" />
+        android:src="@drawable/default_song_image" />
 
 </android.support.constraint.ConstraintLayout>

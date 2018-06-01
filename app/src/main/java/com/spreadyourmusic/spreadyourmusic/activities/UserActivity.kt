@@ -56,7 +56,7 @@ class UserActivity : BaseActivity() {
 
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         val viewPager = findViewById<ViewPager>(R.id.viewPager)
-        val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
+        val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profileCircleImageView)
         val artistUsername = findViewById<TextView>(R.id.artistUsername)
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
         followButton = findViewById(R.id.followButton)
@@ -77,7 +77,8 @@ class UserActivity : BaseActivity() {
                         tabLayout.setupWithViewPager(viewPager)
                     })
                 })
-                Glide.with(this).load(it.pictureLocationUri).into(profileImage)
+                if (it.pictureLocationUri != null)
+                    Glide.with(this).load(it.pictureLocationUri).into(profileImage)
                 val sArtistUsername = "@" + it.username
                 artistUsername.text = sArtistUsername
                 obtainNumberOfFollowers(it, this, {
@@ -119,8 +120,9 @@ class UserActivity : BaseActivity() {
                         mTabsAdapter!!.playlistListFragment.changeData(playlistList)
                     })
                 })
-                val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
-                Glide.with(this).load(it.pictureLocationUri).into(profileImage)
+                val profileImage = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profileCircleImageView)
+                if (it.pictureLocationUri != null)
+                    Glide.with(this).load(it.pictureLocationUri).into(profileImage)
             })
         }
         editActivityOpen = false
@@ -309,7 +311,7 @@ class UserActivity : BaseActivity() {
         builder.show()
     }
 
-    private fun stopSongReproduction(){
+    private fun stopSongReproduction() {
         val mediaController = MediaControllerCompat.getMediaController(this)
         mediaController.transportControls.stop()
     }

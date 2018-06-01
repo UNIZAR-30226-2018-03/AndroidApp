@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Spread Your Music</string>
+    <string name="app_name_no_spaces">SpreadYourMusic</string>
+
     <string name="title_activity_home">Inicio</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_artist">ArtistActivity</string>
@@ -21,11 +23,9 @@
     <string name="incorrect_user_or_password">Usuario o contraseña incorrecta</string>
 
     <!-- Upload Song Screen -->
-
-    <string name="newSongName">Nombre de la canción</string>
+    <string name="song_name">Nombre de la canción</string>
 
     <!-- Home screen -->
-
     <string name="recommendations">Recomendaciones</string>
     <string name="news">Novedades</string>
     <string name="populars">Populares</string>
@@ -35,18 +35,15 @@
     <string name="action_search">Buscar</string>
 
     <!-- Recomendaciones -->
-
     <string name="playlist_updates">Playlists actualizadas</string>
     <string name="new_songs">Canciones nuevas</string>
 
     <!-- Novedades -->
-
     <string name="popular_now">Populares ahora</string>
     <string name="popular_in_my_country">Populares en mi país</string>
     <string name="popular_in_the_world">Populares en el mundo</string>
 
     <!-- Navigation drawer-->
-
     <string name="browse">Explorar</string>
     <string name="my_library">Mi biblioteca</string>
     <string name="playlist">Playlists</string>
@@ -59,14 +56,11 @@
     <string name="open_profile">Ver perfil</string>
     <string name="close_session">Cerrar sesión</string>
 
-
     <!-- Notificaiton Channel -->
-
     <string name="notification_channel">SYM_Channel_ID</string>
     <string name="notification_channel_description">Channel ID for SYM</string>
 
     <!-- Activity comunication-->
-
     <string name="user_id">UserId</string>
     <string name="playlist_id">PlaylistId</string>
     <string name="system_list_id">SystemList</string>
@@ -74,7 +68,6 @@
     <string name="followers">Seguidores</string>
 
     <!-- Activity User -->
-
     <string name="edit">Editar</string>
     <string name="create_playlist">Crear playlist</string>
     <string name="add_song">Añadir canción</string>
@@ -88,47 +81,47 @@
     <string name="delete_playlist_dialog">Esta seguro de que desea eliminar la playlist. Esta acción es irreversible.</string>
     <string name="no_lyrics">Sin letra</string>
 
-    <!-- Upload songs activity -->
-
-    <string name="continuar">Continuar</string>
+    <!-- Upload data -->
     <string name="album">Álbum</string>
-    <string name="letras">Letras</string>
-    <string name="seleccionar">Seleccionar</string>
+    <string name="lyrics">Letras</string>
+    <string name="select">Seleccionar</string>
     <string name="audio">Audio</string>
     <string name="genre">Género</string>
-    <string name="new_album_name">Nombre álbum</string>
-    <string name="caratula">Caratula</string>
+    <string name="cover">Caratula</string>
     <string name="create_album">Crear álbum</string>
-    <string name="seleccione_fichero">Seleccione un fichero válido</string>
-    <string name="guardar">Guardar</string>
-
-    <string name="crear_playlist">Crear Playlist</string>
-    <string name="nueva_playlist">Nueva Playlist</string>
-    <string name="portada">Portada</string>
-    <string name="canciones">Canciones</string>
-
-    <!-- Errores -->
-
-    <string name="error_caratula">"Seleccione una carátula válida"</string>
-    <string name="error_nombre_album">"Seleccione un nombre de álbum válido"</string>
-    <string name="error_fichero">"Seleccione un fichero válido"</string>
-    <string name="error_rellenar">"Rellene todos los campos correctamente"</string>
-    <string name="error_nombre_playlist">"Seleccione un nombre de playlist válido"</string>
-
-    <string name="campos_obligatorios_1">Los campos username, password y la foto de usuario son obligatorios</string>
-    <string name="campos_obligatorios_2">El campo nombre es obligatorio</string>
-
-    <string name="campos_obligatorios_3">Los campos nombre, álbum, genero y audio son obligatorios </string>
-    <string name="campos_obligatorios_4">Los campos caratula y nombre son obligatorios. La playlist ha de poseer al menos un elemento</string>
-
+    <string name="select_file">Seleccione un fichero válido</string>
+    <string name="save">Guardar</string>
     <string name="create">Crear</string>
-
-
     <string name="album_id">AlbumID</string>
     <string name="album_name">AlbumName</string>
-
     <string name="upload_song">Subir canción</string>
-
     <string name="browser">Buscador</string>
     <string name="selected">Seleccionadas</string>
+    <string name="update_user">Actualizar usuario</string>
+    <string name="update_playlist">Actualizar playlist</string>
+    <string name="error">Error</string>
+    <string name="update">Actualizar</string>
+
+    <!-- Errores -->
+    <string name="select_valid_cover">"Seleccione una carátula válida"</string>
+    <string name="select_valid_album_name">"Seleccione un nombre de álbum válido"</string>
+    <string name="select_valid_file">"Seleccione un fichero válido"</string>
+    <string name="fill_all_fields">"Rellene todos los campos correctamente"</string>
+    <string name="select_valid_playlist">"Seleccione un nombre de playlist válido"</string>
+
+    <string name="empty_fields_1">Los campos username, password y la foto de usuario son obligatorios</string>
+    <string name="empty_fields_2">El campo nombre es obligatorio</string>
+    <string name="empty_fields_3">Los campos nombre, álbum, genero y audio son obligatorios </string>
+    <string name="empty_fields_4">Los campos caratula y nombre son obligatorios. La playlist ha de poseer al menos un elemento</string>
+    <string name="error_upload_file_error">Error al subir el archivo al servidor de almacenamiento</string>
+
+    <!-- Espera subir contenido -->
+    <string name="creating">Creando</string>
+    <string name="updating">Actualizando</string>
+
+    <!-- Oauth -->
+    <string name="server_client_id">·</string>
+
+    <string name="authenticating">Autenticando</string>
+
 </resources>

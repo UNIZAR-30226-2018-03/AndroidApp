@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.media.session.MediaControllerCompat
 
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -27,11 +28,11 @@ import kotlinx.android.synthetic.main.app_bar_home.*
 class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     // Controla los cambios entre fragmentos
     private var actualFragmentDisplayed: Int = -1
-    private val FRAGMENT_HOME_ID: Int = 0
-    private val FRAGMENT_TREND_ID: Int = 1
-    private val FRAGMENT_NEWS_ID: Int = 2
-    private val FRAGMENT_BROWSER_ID: Int = 3
-    private val FRAGMENT_GENRES_ID: Int = 4
+    private val fragmentHomeID: Int = 0
+    private val fragmentTrendID: Int = 1
+    private val fragmentNewsID: Int = 2
+    private val fragmentBrowserID: Int = 3
+    private val fragmentGenresID: Int = 4
 
     // Almacena el ultimo fragmento antes de abrir el browser
     private var beforeBrowserOpenID: Int = -1
@@ -52,16 +53,16 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        getFragmentFromID(FRAGMENT_HOME_ID,{
+        getFragmentFromID(fragmentHomeID, {
             changeActualFragment(it)
-            actualFragmentDisplayed = FRAGMENT_HOME_ID
+            actualFragmentDisplayed = fragmentHomeID
             beforeBrowserOpenID = -1
         })
 
         val hView = nav_view.getHeaderView(0)
 
-        val circularImageView = hView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.foto_perfil)
-        val userName = hView.findViewById<TextView>(R.id.nombre_usuario)
+        val circularImageView = hView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.coverCircleImageView)
+        val userName = hView.findViewById<TextView>(R.id.usernameTextView)
         obtainCurrentUserData({
             val mmCurrentUser = it
             if (mmCurrentUser != null) {
@@ -69,19 +70,24 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 circularImageView.setOnClickListener {
                     onUserSelected(mmCurrentUser, this)
                 }
-                Glide.with(this).load(mmCurrentUser.pictureLocationUri).into(circularImageView)
+                if (mmCurrentUser.pictureLocationUri != null)
+                    Glide.with(this).load(mmCurrentUser.pictureLocationUri).into(circularImageView)
             } else {
                 Toast.makeText(this, "Error: No se han podido obtener los datos de usuario", Toast.LENGTH_SHORT).show()
             }
         }, this)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onMediaControllerConnected() {
+        super.onMediaControllerConnected()
         val lastSongListened = SessionSingleton.lastSongListened
-        if(lastSongListened!=null){
+        if (lastSongListened != null) {
             SessionSingleton.lastSongListened = null
-            onSongSelected(lastSongListened,this)
+            onSongSelected(lastSongListened, this)
+
+            // Pausamos la canción nada más empezar
+            val controller = MediaControllerCompat.getMediaController(this)
+            controller?.transportControls?.pause()
         }
     }
 
@@ -100,7 +106,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                 val fragmento: Fragment? = BrowserFragment.newInstance(onRecomendationSelected, queryResults)
                                 if (fragmento != null) {
                                     beforeBrowserOpenID = actualFragmentDisplayed
-                                    actualFragmentDisplayed = FRAGMENT_BROWSER_ID
+                                    actualFragmentDisplayed = fragmentBrowserID
                                     changeActualFragment(fragmento)
                                 }
                             } else Toast.makeText(this@HomeActivity, "Error", Toast.LENGTH_SHORT).show()
@@ -125,7 +131,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             searchView!!.isIconified = true
             searchView!!.clearFocus()
             if (beforeBrowserOpenID != -1) {
-                getFragmentFromID(beforeBrowserOpenID,{changeActualFragment(it)})
+                getFragmentFromID(beforeBrowserOpenID, { changeActualFragment(it) })
                 actualFragmentDisplayed = beforeBrowserOpenID
                 beforeBrowserOpenID = -1
                 searchView!!.setQuery("", false)
@@ -133,7 +139,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 searchView!!.clearFocus()
             }
         } else if (beforeBrowserOpenID != -1) {
-            getFragmentFromID(beforeBrowserOpenID,{changeActualFragment(it)})
+            getFragmentFromID(beforeBrowserOpenID, { changeActualFragment(it) })
             actualFragmentDisplayed = beforeBrowserOpenID
             beforeBrowserOpenID = -1
             searchView!!.setQuery("", false)
@@ -145,10 +151,10 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if ((item.itemId == R.id.trends && actualFragmentDisplayed == FRAGMENT_TREND_ID) ||
-                (item.itemId == R.id.home && actualFragmentDisplayed == FRAGMENT_HOME_ID) ||
-                (item.itemId == R.id.news && actualFragmentDisplayed == FRAGMENT_NEWS_ID) ||
-                (item.itemId == R.id.genres && actualFragmentDisplayed == FRAGMENT_GENRES_ID)) {
+        if ((item.itemId == R.id.trends && actualFragmentDisplayed == fragmentTrendID) ||
+                (item.itemId == R.id.home && actualFragmentDisplayed == fragmentHomeID) ||
+                (item.itemId == R.id.news && actualFragmentDisplayed == fragmentNewsID) ||
+                (item.itemId == R.id.genres && actualFragmentDisplayed == fragmentGenresID)) {
             drawer_layout.closeDrawer(GravityCompat.START)
             return true
         }
@@ -156,23 +162,23 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Handle navigation view item clicks
         when (item.itemId) {
             R.id.trends -> {
-                actualFragmentDisplayed = FRAGMENT_TREND_ID
+                actualFragmentDisplayed = fragmentTrendID
                 beforeBrowserOpenID = -1
                 getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
 
             R.id.home -> {
-                actualFragmentDisplayed = FRAGMENT_HOME_ID
+                actualFragmentDisplayed = fragmentHomeID
                 beforeBrowserOpenID = -1
                 getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
             R.id.news -> {
-                actualFragmentDisplayed = FRAGMENT_NEWS_ID
+                actualFragmentDisplayed = fragmentNewsID
                 beforeBrowserOpenID = -1
                 getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
             R.id.genres -> {
-                actualFragmentDisplayed = FRAGMENT_GENRES_ID
+                actualFragmentDisplayed = fragmentGenresID
                 beforeBrowserOpenID = -1
                 getFragmentFromID(actualFragmentDisplayed, { changeActualFragment(it) })
             }
@@ -187,15 +193,16 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }, this)
             }
             R.id.close_session -> {
-                doLogout(this)
-                val int = Intent(applicationContext, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                startActivity(int)
-                finish()
+                doLogout(this, {
+                    if (!it) Toast.makeText(this, "Error al realizar el logout en el Servidor", Toast.LENGTH_SHORT).show()
+                    val int = Intent(applicationContext, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    startActivity(int)
+                    finish()
+                })
             }
 
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -209,7 +216,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun getFragmentFromID(id: Int, listener: (Fragment) -> Unit) {
         when (id) {
-            FRAGMENT_TREND_ID -> {
+            fragmentTrendID -> {
                 if (!fragmentHashMap.containsKey(id)) {
                     val mList = ArrayList<Pair<String, List<Recommendation>>>()
                     // Mientras se carga se muestra una pantalla en blanco
@@ -238,7 +245,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
 
-            FRAGMENT_HOME_ID -> {
+            fragmentHomeID -> {
                 if (!fragmentHashMap.containsKey(id)) {
                     val mList = ArrayList<Pair<String, List<Recommendation>>>()
                     // Mientras se carga se muestra una pantalla en blanco
@@ -267,7 +274,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
 
-            FRAGMENT_NEWS_ID -> {
+            fragmentNewsID -> {
                 if (!fragmentHashMap.containsKey(id)) {
                     val mList = ArrayList<Pair<String, List<Recommendation>>>()
                     // Mientras se carga se muestra una pantalla en blanco
@@ -292,7 +299,7 @@ class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
 
-            FRAGMENT_GENRES_ID -> {
+            fragmentGenresID -> {
                 if (!fragmentHashMap.containsKey(id)) {
                     val mList = ArrayList<Pair<String, List<Recommendation>>>()
                     // Mientras se carga se muestra una pantalla en blanco

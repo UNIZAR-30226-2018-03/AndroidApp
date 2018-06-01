@@ -27,22 +27,21 @@ import com.spreadyourmusic.spreadyourmusic.services.MusicService
 
 
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.circularprogressbar.CircularMusicProgressBar
-import com.spreadyourmusic.spreadyourmusic.circularprogressbar.OnCircularSeekBarChangeListener
+import com.spreadyourmusic.spreadyourmusic.view.circularprogressbar.CircularMusicProgressBar
+import com.spreadyourmusic.spreadyourmusic.view.circularprogressbar.OnCircularSeekBarChangeListener
 import com.spreadyourmusic.spreadyourmusic.controller.*
 import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
-import com.spreadyourmusic.spreadyourmusic.soundvisualizer.CircleSoundVisualizer
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
+import com.spreadyourmusic.spreadyourmusic.view.soundvisualizer.CircleSoundVisualizer
 
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-
 class PlayerActivity : AppCompatActivity() {
 
-    private val PROGRESS_UPDATE_INTERNAL: Long = 1000
-    private val PROGRESS_UPDATE_INITIAL_INTERVAL: Long = 100
+    private val progressUpdateInterval: Long = 1000
+    private val progressUpdateInitialInterval: Long = 100
 
     private lateinit var playPauseImageButton: ImageButton
     private lateinit var nextSongImageButton: ImageButton
@@ -92,7 +91,7 @@ class PlayerActivity : AppCompatActivity() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             if (metadata != null) {
                 updateMediaDescription(metadata.description)
-               // updateDuration(metadata)
+                // updateDuration(metadata)
             }
         }
     }
@@ -295,7 +294,7 @@ class PlayerActivity : AppCompatActivity() {
         val metadata = mMediaController.metadata
         if (metadata != null) {
             updateMediaDescription(metadata.description)
-          //  updateDuration(metadata)
+            //  updateDuration(metadata)
         }
 
         updateProgress()
@@ -308,8 +307,8 @@ class PlayerActivity : AppCompatActivity() {
         stopSeekbarUpdate()
         if (!mExecutorService.isShutdown) {
             mScheduleFuture = mExecutorService.scheduleAtFixedRate(
-                    { mHandler.post(mUpdateProgressTask) }, PROGRESS_UPDATE_INITIAL_INTERVAL,
-                    PROGRESS_UPDATE_INTERNAL, TimeUnit.MILLISECONDS)
+                    { mHandler.post(mUpdateProgressTask) }, progressUpdateInitialInterval,
+                    progressUpdateInterval, TimeUnit.MILLISECONDS)
         }
     }
 
@@ -354,9 +353,11 @@ class PlayerActivity : AppCompatActivity() {
         val songCreatorS = currentSong.album.name + " | " + currentSong.album.creator.username
         songCreatorTextView.text = songCreatorS
 
-        val artUrl = description.iconUri!!.toString()
-        Glide.with(this).load(artUrl).into(playerBackGroundImageView)
-        Glide.with(this).load(artUrl).into(albumArtCircularMusicProgressBar)
+        val artUrl = description.iconUri
+        if (artUrl != null) {
+            Glide.with(this).load(artUrl.toString()).into(playerBackGroundImageView)
+            Glide.with(this).load(artUrl.toString()).into(albumArtCircularMusicProgressBar)
+        }
 
         val favoriteSongImageButton: ImageButton = findViewById(R.id.favoriteSong)
         isCurrentSongFavorite(this, {
@@ -385,15 +386,15 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
-   /* private fun updateDuration(metadata: MediaMetadataCompat?) {
-        if (metadata == null) {
-            return
-        }
-        val currentSong = getCurrentSong()
-        val duration = currentSong.duration.toInt()
-        songDuration = duration
-        finalTimeTextView.text = DateUtils.formatElapsedTime((duration / 1000f).toLong())
-    }*/
+    /* private fun updateDuration(metadata: MediaMetadataCompat?) {
+         if (metadata == null) {
+             return
+         }
+         val currentSong = getCurrentSong()
+         val duration = currentSong.duration.toInt()
+         songDuration = duration
+         finalTimeTextView.text = DateUtils.formatElapsedTime((duration / 1000f).toLong())
+     }*/
 
     private fun updatePlaybackState(state: PlaybackStateCompat?) {
         if (state == null) {
@@ -517,7 +518,7 @@ class PlayerActivity : AppCompatActivity() {
             finalTimeTextView.visibility = View.VISIBLE
             circleSoundVisualizer.visibility = View.VISIBLE
             lyricsTextView.visibility = View.INVISIBLE
-            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp))
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.outline_closed_caption_white_24))
 
         } else {
             albumArtCircularMusicProgressBar.visibility = View.INVISIBLE
@@ -525,7 +526,7 @@ class PlayerActivity : AppCompatActivity() {
             startTimeTextView.visibility = View.INVISIBLE
             finalTimeTextView.visibility = View.INVISIBLE
             lyricsTextView.visibility = View.VISIBLE
-            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_white_24dp))
+            lyricsImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.round_closed_caption_white_24))
 
         }
         isLyricsShowed = !isLyricsShowed

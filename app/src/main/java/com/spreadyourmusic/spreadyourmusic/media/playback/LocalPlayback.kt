@@ -19,7 +19,7 @@ import com.google.android.exoplayer2.text.TextOutput
 import com.google.android.exoplayer2.util.MimeTypes
 import com.spreadyourmusic.spreadyourmusic.media.lyrics.LyricsManager
 import com.spreadyourmusic.spreadyourmusic.models.Song
-import com.spreadyourmusic.spreadyourmusic.media.MusicProviderSource
+import com.spreadyourmusic.spreadyourmusic.media.common.MusicProviderSource
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.DefaultRenderersFactory
@@ -40,6 +40,7 @@ import android.support.v4.media.session.MediaSessionCompat.QueueItem
 import com.google.android.exoplayer2.C.CONTENT_TYPE_MUSIC
 import com.google.android.exoplayer2.C.USAGE_MEDIA
 import com.spreadyourmusic.spreadyourmusic.controller.addReproductionToSong
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
 
 /**
  * This class control com.google.android.exoplayer2.ExoPlayer
@@ -306,6 +307,21 @@ class LocalPlayback(context: Context, private val mMusicQueueManager: MusicQueue
             hasSongChange = false
         }else{
             audioSessionListener = l
+
+            // FIX SOUNDVIEWER FAIL: When select same song that is being listening it works bad
+            Thread{
+                Thread.sleep(250)
+                if(hasSongChange){
+                    hasAusioSessionChange = if (audioSessionListener != null) {
+                        audioSessionListener!!.invoke(audioSessionId)
+                        audioSessionListener = null
+                        hasSongChange = false
+                        false
+                    } else {
+                        true
+                    }
+                }
+            }.start()
         }
     }
 

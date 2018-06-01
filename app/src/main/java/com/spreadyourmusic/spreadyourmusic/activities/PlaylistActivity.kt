@@ -24,9 +24,9 @@ import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User
 
 class PlaylistActivity : BaseActivity() {
-    var playlist: Playlist? = null
-    var followButton: Button? = null
-    var mMenu: Menu? = null
+    private var playlist: Playlist? = null
+    private var followButton: Button? = null
+    private var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,48 +51,49 @@ class PlaylistActivity : BaseActivity() {
 
         recyclerViewAdapter.setOnClickListener(onRecomendationSelected)
 
-        val image = findViewById<ImageView>(R.id.image)
+        val image = findViewById<ImageView>(R.id.coverImageView)
 
-        val creatorName = findViewById<TextView>(R.id.creatorUsername)
+        val creatorName = findViewById<TextView>(R.id.creatorTextView)
 
         val followers = findViewById<TextView>(R.id.numOfFollowersTextView)
 
         followButton = findViewById(R.id.followButton)
 
-        obtainPlaylistFromID(playlistId,this,{
-            if(it!= null){
+        obtainPlaylistFromID(playlistId, this, {
+            if (it != null) {
                 playlist = it
                 supportActionBar!!.title = playlist!!.name
 
                 recyclerViewAdapter.changeData(playlist!!.content)
-                Glide.with(this).load(playlist!!.artLocationUri).into(image)
+                if (playlist!!.artLocationUri != null)
+                    Glide.with(this).load(playlist!!.artLocationUri).into(image)
 
                 // Lista de reproducción creada por usuario
                 val sCreatorName = resources.getString(R.string.creator) + ":@" + playlist!!.creator.username
 
                 creatorName.text = sCreatorName
 
-                obtainNumberOfFollowers(it,this,{
+                obtainNumberOfFollowers(it, this, {
                     val sNumFollowers = it.toString() + " " + resources.getString(R.string.followers)
                     followers.text = sNumFollowers
                 })
 
                 obtainCurrentUserData({
                     if (!playlist!!.creator.username.equals(it!!.username)) {
-                        isFollowing(it,this,{
+                        isFollowing(it, this, {
                             followButton!!.text = if (!it) resources.getString(R.string.follow) else resources.getString(R.string.unfollow)
                         })
                     } else {
                         followButton!!.text = resources.getString(R.string.edit)
                     }
-                },this)
+                }, this)
 
-            }else{
-                Toast.makeText(this,"Error", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                 finish()
             }
 
-            if(mMenu != null){
+            if (mMenu != null) {
                 // Los datos del usuario no habian llegado aun cuando se creo el menu
                 onCreateOptionsMenu(mMenu)
             }
@@ -102,11 +103,11 @@ class PlaylistActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val mInflater = menuInflater
         obtainCurrentUserData({
-            if(playlist != null){
+            if (playlist != null) {
                 if (!playlist!!.creator.username.equals(it!!.username)) {
                     mInflater.inflate(R.menu.menu_playlist, menu)
                 }
-            }else{
+            } else {
                 mMenu = menu
             }
         }, this)
@@ -114,9 +115,9 @@ class PlaylistActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(item!= null && item.itemId == R.id.share){
+        if (item != null && item.itemId == R.id.share) {
             shareElement(playlist!!.shareLink, this)
-           return true
+            return true
         }
         return super.onOptionsItemSelected(item)
     }

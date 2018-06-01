@@ -2,14 +2,12 @@ package com.spreadyourmusic.spreadyourmusic.controller
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.media.session.MediaControllerCompat
 import com.spreadyourmusic.spreadyourmusic.R
-import com.spreadyourmusic.spreadyourmusic.activities.PlayerActivity
 import com.spreadyourmusic.spreadyourmusic.activities.PlaylistActivity
 import com.spreadyourmusic.spreadyourmusic.activities.SystemlistActivity
 import com.spreadyourmusic.spreadyourmusic.activities.UserActivity
-import com.spreadyourmusic.spreadyourmusic.media.playback.MusicQueueManager
+import com.spreadyourmusic.spreadyourmusic.media.queue.MusicQueueManager
 import com.spreadyourmusic.spreadyourmusic.models.Playlist
 import com.spreadyourmusic.spreadyourmusic.models.Song
 import com.spreadyourmusic.spreadyourmusic.models.User

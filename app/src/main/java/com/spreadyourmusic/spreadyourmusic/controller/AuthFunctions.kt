@@ -52,13 +52,23 @@ fun isLogin(activity: Activity): Boolean {
  * Elimina al actual usuario logeado si existe
  * Warning: Esta función puede ser costosa en tiempo, ejecutar en thread diferente al principal
  */
-fun doLogout(activity: Activity) {
+fun doLogout(activity: Activity, listener: (Boolean) -> Unit) {
     val mSharedPreferences = getUserSharedPreferences(activity)
     if (mSharedPreferences != null) {
         val user = mSharedPreferences.first
         val sessionToken = mSharedPreferences.second
-        doLogoutServer(user, sessionToken)
         logoutUserSharedPreferences(activity)
+        Thread {
+            val result = try {
+                doLogoutServer(user, sessionToken)
+                true
+            } catch (e: Exception) {
+                false
+            }
+            activity.runOnUiThread {
+                listener(result)
+            }
+        }.start()
     } else {
         SessionSingleton.currentUser = null
         SessionSingleton.sessionToken = null
@@ -67,11 +77,24 @@ fun doLogout(activity: Activity) {
 }
 
 fun doGoogleLogin(user: GoogleSignInAccount, activity: Activity): Boolean {
-    // TODO: Falta implementar
-    // Si el login es correcto se sobreescribe session
-    // Y preferences y demas
-    Thread.sleep(1000)
-    return false
+    return try {
+        val email = user.email
+        val authCode = user.serverAuthCode
+
+        if (authCode != null && email != null) {
+            val sessionToken = doGoogleLoginServer(authCode)
+
+            // El login en el server ha sido correcto
+            loginUserSharedPreferences(email, sessionToken, activity)
+
+            // Se actualiza el objeto de sesión
+            SessionSingleton.currentUser = User(email)
+            SessionSingleton.sessionToken = sessionToken
+            true
+        } else false
+    } catch (e: Exception) {
+        false
+    }
 }
 
 /**
@@ -106,7 +129,7 @@ fun doSignUp(user: User, activity: Activity, listener: (String?) -> Unit) {
     Thread {
         var sessionToken = ""
         val resultado = try {
-            sessionToken = doSignUpServer(user)
+            sessionToken = doSignUpServer(user,activity)
             null
         } catch (e: Exception) {
             e.message
@@ -135,7 +158,7 @@ fun doDeleteAccount(activity: Activity): Boolean {
         SessionSingleton.sessionToken = null
         SessionSingleton.isUserDataLoaded = false
         try {
-            doDeleteAccountServer(user, sessionToken)
+            doDeleteAccountServer(user, sessionToken, activity)
             true
         } catch (e: Exception) {
             false
